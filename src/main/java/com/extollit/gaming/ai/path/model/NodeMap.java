@@ -1,11 +1,12 @@
 package com.extollit.gaming.ai.path.model;
 
-import com.extollit.collect.SparseSpatialMap;
+import com.extollit.gaming.ai.path.model.octree.Iteratee;
+import com.extollit.gaming.ai.path.model.octree.VoxelOctTreeMap;
 import com.extollit.linalg.immutable.IntAxisAlignedBox;
 import com.extollit.linalg.immutable.Vec3i;
 
 public final class NodeMap {
-    private final SparseSpatialMap<Node> it = new SparseSpatialMap<>(3);
+    private final VoxelOctTreeMap<Node> it = new VoxelOctTreeMap<>(Node.class);
     private final IInstanceSpace instanceSpace;
     private final IOcclusionProviderFactory occlusionProviderFactory;
 
@@ -38,7 +39,7 @@ public final class NodeMap {
     }
 
     public final void reset(SortedPointQueue queue) {
-        for (Node p : this.it.values())
+        for (Node p : this.it)
             p.reset();
 
         queue.clear();
@@ -108,8 +109,15 @@ public final class NodeMap {
     }
 
     public final void cullOutside(int x0, int z0, int xN, int zN) {
-        for (Node p : this.it.cullOutside(new IntAxisAlignedBox(x0, Integer.MIN_VALUE, z0, xN, Integer.MAX_VALUE, zN)))
-            p.reset();
+        this.it.cullOutside(
+            new IntAxisAlignedBox(x0, Integer.MIN_VALUE, z0, xN, Integer.MAX_VALUE, zN),
+            new Iteratee<Node>() {
+                @Override
+                public void visit(Node element, int x, int y, int z) {
+                    element.reset();
+                }
+            }
+        );
     }
 
     public final Node cachedPointAt(int x, int y, int z)
@@ -142,7 +150,7 @@ public final class NodeMap {
     }
 
     public final Node cachedPassiblePointNear(Vec3i coords, Vec3i origin) {
-        final SparseSpatialMap<Node> nodeMap = this.it;
+        final VoxelOctTreeMap<Node> nodeMap = this.it;
         final Node point0 = nodeMap.get(coords);
         Node point = point0;
 
