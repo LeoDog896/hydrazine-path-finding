@@ -12,8 +12,6 @@ import java.util.Random;
 import java.util.Set;
 
 import static com.extollit.gaming.ai.path.PassibilityHelpers.impedesMovement;
-import static com.extollit.num.FastMath.ceil;
-import static com.extollit.num.FastMath.floor;
 
 /**
  * This is the primary path-finding object and root instance for the library.  There is precisely one instance of this
@@ -393,9 +391,9 @@ public class HydrazinePathFinder {
                 dt = new com.extollit.linalg.mutable.Vec3d(this.target.key),
                 dd = new com.extollit.linalg.mutable.Vec3d(destinationPosition);
 
-        dd.x = floor(dd.x);
-        dd.y = ceil(dd.y);
-        dd.z = floor(dd.z);
+        dd.x = Math.floor(dd.x);
+        dd.y = Math.ceil(dd.y);
+        dd.z = Math.floor(dd.z);
 
         final Vec3i source = this.source.key;
         dt.sub(source);
@@ -454,11 +452,11 @@ public class HydrazinePathFinder {
                 destinationPosition = this.destinationPosition;
 
         updateFieldWindow(
-                floor(sourcePosition.x),
-                floor(sourcePosition.z),
+                (int) Math.floor(sourcePosition.x),
+                (int) Math.floor(sourcePosition.z),
 
-                floor(destinationPosition.x),
-                floor(destinationPosition.z), true
+                (int) Math.floor(destinationPosition.x),
+                (int) Math.floor(destinationPosition.z), true
         );
 
         applySubject();
@@ -651,7 +649,7 @@ public class HydrazinePathFinder {
 
         final IDynamicMovableObject destinationEntity = this.destinationEntity;
         final float entityWidth = this.subject.width();
-        int entitySize = ceil(
+        int entitySize = (int) Math.ceil(
                 destinationEntity != null ?
                         Math.max(entityWidth, destinationEntity.width()) :
                         entityWidth
@@ -668,9 +666,9 @@ public class HydrazinePathFinder {
 
     private Node edgeAtTarget(final double x, final double y, final double z) {
         final int
-                nx = floor(x),
-                ny = floor(y),
-                nz = floor(z);
+                nx = (int) Math.floor(x),
+                ny = (int) Math.floor(y),
+                nz = (int) Math.floor(z);
 
         final Node node;
 
@@ -703,9 +701,9 @@ public class HydrazinePathFinder {
     private Node pointAtSource() {
         final Vec3d sourcePosition = this.sourcePosition;
         final int
-                x = floor(sourcePosition.x),
-                y = floor(sourcePosition.y),
-                z = floor(sourcePosition.z);
+                x = (int) Math.floor(sourcePosition.x),
+                y = (int) Math.floor(sourcePosition.y),
+                z = (int) Math.floor(sourcePosition.z);
 
         Node candidate = cachedPassiblePointNear(x, y, z);
         if (impassible(candidate))
@@ -744,9 +742,9 @@ public class HydrazinePathFinder {
 
     private static boolean differs(final double x, final double y, final double z, Vec3d other) {
         return
-            floor(other.x) != floor(x) ||
-            floor(other.y) != floor(y) ||
-            floor(other.z) != floor(z);
+            Math.floor(other.x) != Math.floor(x) ||
+                    Math.floor(other.y) != Math.floor(y) ||
+                    Math.floor(other.z) != Math.floor(z);
     }
 
     private boolean reachedTarget() {
@@ -768,8 +766,8 @@ public class HydrazinePathFinder {
             this.sourcePosition = new Vec3d(coordinates.x, coordinates.y, coordinates.z);
 
         final int
-            x = floor(coordinates.x),
-            z = floor(coordinates.z);
+            x = (int) Math.floor(coordinates.x),
+            z = (int) Math.floor(coordinates.z);
 
         updateFieldWindow(x, z, x, z, false);
 
@@ -1057,9 +1055,9 @@ public class HydrazinePathFinder {
             return false;
 
         return
-            floor(target.x) == floor(dest.x) &&
-            floor(target.y) == floor(dest.y) &&
-            floor(target.z) == floor(dest.z);
+                Math.floor(target.x) == Math.floor(dest.x) &&
+                    Math.floor(target.y) == Math.floor(dest.y) &&
+                    Math.floor(target.z) == Math.floor(dest.z);
     }
 
     private float pathTimeAge() {
@@ -1070,8 +1068,8 @@ public class HydrazinePathFinder {
         updateSourcePosition();
 
         final int
-                x = floor(sourcePosition.x),
-                z = floor(sourcePosition.z);
+                x = (int) Math.floor(sourcePosition.x),
+                z = (int) Math.floor(sourcePosition.z);
 
         applySubject();
         updateFieldWindow(x, z, tx, tz, false);

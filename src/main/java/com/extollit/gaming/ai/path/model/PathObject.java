@@ -10,8 +10,6 @@ import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Random;
 
-import static com.extollit.num.FastMath.*;
-
 public final class PathObject implements IPath {
     private static final double PATHPOINT_SNAP_MARGIN_SQ = 0.25;
     private static FloatRange DIRECT_LINE_TIME_LIMIT = new FloatRange(1, 2);
@@ -230,8 +228,8 @@ public final class PathObject implements IPath {
     }
 
     private static float pointToPositionOffset(final float subjectWidth) {
-        final float dw = (float)(ceil(subjectWidth)) / 2;
-        return dw - floor(dw);
+        final float dw = (float)(Math.ceil(subjectWidth)) / 2;
+        return dw - (int) Math.floor(dw);
     }
 
     public float stagnantFor(IPathingEntity pathingEntity) { return this.lastMutationTime < 0 ? 0 : pathingEntity.age() * this.speed - this.lastMutationTime; }
@@ -329,9 +327,9 @@ public final class PathObject implements IPath {
             yi = 0,
             zi = 0,
 
-            axi00 = abs(xi00),
-            ayi00 = abs(yi00),
-            azi00 = abs(zi00);
+            axi00 = Math.abs(xi00),
+            ayi00 = Math.abs(yi00),
+            azi00 = Math.abs(zi00);
 
         ii = 0;
         p0 = nodes[i].key;
@@ -351,7 +349,7 @@ public final class PathObject implements IPath {
             yi += dy;
             zi += dz;
 
-            if (abs(xi0) > axi00 || abs(yi0) > ayi00 || abs(zi0) > azi00) {
+            if (Math.abs(xi0) > axi00 || Math.abs(yi0) > ayi00 || Math.abs(zi0) > azi00) {
                 --i;
                 break;
             }
@@ -370,9 +368,9 @@ public final class PathObject implements IPath {
                 yi00 = yis[ii];
                 zi00 = zis[ii];
 
-                axi00 = abs(xi00);
-                ayi00 = abs(yi00);
-                azi00 = abs(zi00);
+                axi00 = Math.abs(xi00);
+                ayi00 = Math.abs(yi00);
+                azi00 = Math.abs(zi00);
             }
 
             if (dx * xi00 < 0 || dy * yi00 < 0 || dz * zi00 < 0)
@@ -385,7 +383,7 @@ public final class PathObject implements IPath {
     }
 
     private int unlevelIndex(int from, com.extollit.linalg.immutable.Vec3d position) {
-        final int y0 = floor(position.y);
+        final int y0 = (int) Math.floor(position.y);
         final Node [] nodes = this.nodes;
         int levelIndex = length();
 

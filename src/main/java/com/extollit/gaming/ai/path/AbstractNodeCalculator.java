@@ -2,9 +2,6 @@ package com.extollit.gaming.ai.path;
 
 import com.extollit.gaming.ai.path.model.*;
 import com.extollit.linalg.immutable.Vec3i;
-import com.extollit.num.FastMath;
-
-import static com.extollit.num.FastMath.floor;
 
 abstract class AbstractNodeCalculator implements INodeCalculator {
     protected final IInstanceSpace instanceSpace;
@@ -23,8 +20,8 @@ abstract class AbstractNodeCalculator implements INodeCalculator {
     @Override
     public final void applySubject(IPathingEntity subject) {
         this.actualSize = subject.width();
-        this.discreteSize = FastMath.floor(subject.width() + 1);
-        this.tall = FastMath.floor(subject.height() + 1);
+        this.discreteSize = (int) Math.floor(subject.width() + 1);
+        this.tall = (int) Math.floor(subject.height() + 1);
         this.capabilities = subject.capabilities();
     }
 
@@ -35,7 +32,7 @@ abstract class AbstractNodeCalculator implements INodeCalculator {
                 yN = Math.max(y, y - d.y) + this.tall;
         int yt = y;
 
-        for (int yNa = yN + floor(partY);
+        for (int yNa = yN + (int) Math.floor(partY);
 
              yt < yNa && yt < yMax;
 
@@ -108,7 +105,7 @@ abstract class AbstractNodeCalculator implements INodeCalculator {
     protected final Passibility originHeadClearance(FlagSampler sampler, Passibility passibility, Vec3i origin, int minY, float minPartY) {
         final int
                 yN = minY + this.tall,
-                yNa = yN + floor(minPartY);
+                yNa = yN + (int) Math.floor(minPartY);
 
         for (int x = origin.x, xN = origin.x + this.discreteSize; x < xN; ++x)
             for (int z = origin.z, zN = origin.z + this.discreteSize; z < zN; ++z)
