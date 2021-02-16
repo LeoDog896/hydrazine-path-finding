@@ -2,6 +2,8 @@ package com.extollit.gaming.ai.path.model;
 
 import com.extollit.linalg.immutable.VertexOffset;
 
+import java.util.Arrays;
+
 public class OcclusionField implements IOcclusionProvider {
     public enum AreaInit {
         north   (0, -1),
@@ -135,7 +137,7 @@ public class OcclusionField implements IOcclusionProvider {
                         compress &= (lastFlags == flags) || (i == LAST_INDEX && b == WORD_LAST_OFFSET);
                         lastFlags = flags;
                         word <<= (1 << ELEMENT_LENGTH_SHL);
-                        word |= (long)flags;
+                        word |= flags;
 
                         if (blockDescription.isFenceLike() && y < yNi) {
                             final int indexUp = i + (DIMENSION_SQUARE_SIZE >> COORDINATE_TO_INDEX_SHR);
@@ -159,8 +161,7 @@ public class OcclusionField implements IOcclusionProvider {
     private void decompress() {
         long word = singletonWord();
         final long[] words = this.words = new long[DIMENSION_SQUARE_SIZE * DIMENSION_SIZE * ELEMENT_LENGTH / WORD_LENGTH];
-        for (int i = 0; i < words.length; ++i)
-            words[i] = word;
+        Arrays.fill(words, word);
 
         this.singleton = 0;
     }

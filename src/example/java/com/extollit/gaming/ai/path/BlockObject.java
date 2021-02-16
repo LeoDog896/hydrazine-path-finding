@@ -1,6 +1,5 @@
 package com.extollit.gaming.ai.path;
 
-import com.extollit.gaming.ai.path.model.IBlockDescription;
 import com.extollit.gaming.ai.path.model.IBlockObject;
 import com.extollit.linalg.immutable.AxisAlignedBBox;
 

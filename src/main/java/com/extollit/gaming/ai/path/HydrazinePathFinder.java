@@ -1033,7 +1033,7 @@ public class HydrazinePathFinder {
 
     protected final boolean unreachableFromSource(Vec3i current, Vec3i target) {
         final Vec3i sourcePoint = this.source.key;
-        return sourcePoint != null && current.equals(sourcePoint) && this.unreachableFromSource.contains(target);
+        return current.equals(sourcePoint) && this.unreachableFromSource.contains(target);
     }
 
     /**
@@ -1071,7 +1071,6 @@ public class HydrazinePathFinder {
 
         final int
                 x = floor(sourcePosition.x),
-                y = floor(sourcePosition.y),
                 z = floor(sourcePosition.z);
 
         applySubject();

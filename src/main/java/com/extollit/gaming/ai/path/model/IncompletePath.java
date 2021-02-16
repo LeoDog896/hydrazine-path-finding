@@ -99,6 +99,6 @@ public final class IncompletePath implements IPath {
 
     @Override
     public Iterator<INode> iterator() {
-        return Option.<INode>of(this.node).iterator();
+        return Option.of(this.node).iterator();
     }
 }

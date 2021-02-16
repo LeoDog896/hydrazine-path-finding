@@ -6,8 +6,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static com.extollit.gaming.ai.path.TestingBlocks.door;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DoorOcclusionFieldTests extends AbstractOcclusionFieldTesting {

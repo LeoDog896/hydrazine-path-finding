@@ -68,7 +68,7 @@ abstract class AbstractNodeCalculator implements INodeCalculator {
         return (float) block.bounds().min.y;
     }
 
-    private final Passibility clearance(byte flags) {
+    private Passibility clearance(byte flags) {
         return PassibilityHelpers.clearance(flags, this.capabilities);
     }
 

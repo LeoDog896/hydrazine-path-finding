@@ -403,13 +403,12 @@ public final class PathObject implements IPath {
 
     @Override
     public boolean sameAs(IPath other) {
-        final Node[] thisNodes = this.nodes;
         final int length = this.length;
 
         int c = 0;
         Iterator<INode> i = other.iterator();
         while (c < length && i.hasNext()) {
-            if (!thisNodes[c].key.equals(i.next().coordinates()))
+            if (!this.nodes[c].key.equals(i.next().coordinates()))
                 return false;
 
             c++;

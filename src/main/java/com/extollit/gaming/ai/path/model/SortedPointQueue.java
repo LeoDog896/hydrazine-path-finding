@@ -290,8 +290,7 @@ public final class SortedPointQueue {
 
         for (Node node : this.list) {
             final Node root = node.root();
-            if (!roots.contains(root))
-                roots.add(root);
+            roots.add(root);
         }
 
         return roots;

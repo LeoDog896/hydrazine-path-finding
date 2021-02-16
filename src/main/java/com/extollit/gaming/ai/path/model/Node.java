@@ -23,7 +23,7 @@ public class Node implements INode {
     public static final short MAX_PATH_DISTANCE = (1 << BitWidth_128) - 1;
 
     private static final int
-        Mask_128 = (int)MAX_PATH_DISTANCE,
+        Mask_128 = MAX_PATH_DISTANCE,
         Mask_512 = (1 << BitWidth_512) - 1;
 
     static final int MAX_INDICES = (1 << BitWidth_512) - 1;
@@ -216,10 +216,7 @@ public class Node implements INode {
         if (!length(parent.length() + delta))
             return false;
 
-        if (!remaining(remaining))
-            return false;
-
-        return true;
+        return remaining(remaining);
     }
 
     void bindParent(Node parent) {
