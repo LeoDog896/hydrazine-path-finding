@@ -20,6 +20,9 @@ public final class SortedPointQueue {
         return true;
     }
 
+    /**
+     * Removes all elements from this queue
+     */
     public final void clear() {
         for (Node point : this.list)
             point.unassign();
@@ -47,7 +50,7 @@ public final class SortedPointQueue {
             final Node head = i.next();
             Node point = head;
             while (!point.orphaned()) {
-                point = point.up();
+                point = point.parent();
                 path.push(point);
             }
             if (point == source) {
@@ -104,7 +107,7 @@ public final class SortedPointQueue {
             final Node head = i.next();
             Node point = head;
             while (!point.orphaned() && point != ancestor) {
-                point = point.up();
+                point = point.parent();
                 stack.push(point);
             }
             if (point != ancestor)

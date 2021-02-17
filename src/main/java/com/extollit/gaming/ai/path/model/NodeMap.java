@@ -54,7 +54,7 @@ public final class NodeMap {
             return;
 
         final Node
-                parent = node.up();
+                parent = node.parent();
 
         queue.cullBranch(node);
         if (parent != null && !parent.assigned()) {

@@ -68,14 +68,25 @@ public class Node implements INode {
     public final byte journey() {
         return (byte)(length() + remaining());
     }
-    public final Node up() {
+
+    /**
+     * Gets the previous node of this node, or its "parent"
+     *
+     * @return The parent of the node.
+     */
+    public final Node parent() {
         return this.previous;
     }
 
+    /**
+     * Goes through all parents of this node to find the oldest relative of this Node.
+     *
+     * @return The highest up node in this Node family tree.
+     */
     public Node root() {
         Node node = this;
         while (!node.orphaned())
-            node = node.up();
+            node = node.parent();
 
         return node;
     }
@@ -84,19 +95,23 @@ public class Node implements INode {
     public final Passibility passibility() {
         return Passibility.values()[this.word & Mask_Passibility];
     }
+
     public final void passibility(Passibility passibility) {
-        final Node previous = up();
+        final Node previous = parent();
         if (previous != null)
             passibility = passibility.between(previous.passibility());
         this.word = (this.word & ~Mask_Passibility) | passibility.ordinal();
     }
+
     @Override
     public final Gravitation gravitation() {
         return Gravitation.values()[(this.word >> Gravitation_BitOffs) & Mask_Gravitation];
     }
+
     public final void gravitation(Gravitation gravitation) {
         this.word = (this.word & ~(Mask_Gravitation << Gravitation_BitOffs)) | (gravitation.ordinal() << Gravitation_BitOffs);
     }
+
     public final boolean length(int length) {
         if (length > Mask_128 || length < 0)
             return false;
@@ -127,6 +142,7 @@ public class Node implements INode {
         short index = (short) ((this.word >> Index_BitOffs) & Mask_512);
         return index == Mask_512 ? -1 : index;
     }
+
     final boolean index(int index) {
         if (index >= Mask_512 || index < -1)
             return false;
@@ -134,19 +150,25 @@ public class Node implements INode {
         this.word = (this.word & ~(Mask_512 << Index_BitOffs)) | ((index & Mask_512) << Index_BitOffs);
         return true;
     }
+
     public final boolean dirty() { return ((this.word >> LengthDirty_BitOffs) & 1) == 1; }
+
     public final void dirty(boolean flag) {
         this.word = (this.word & ~(1 << LengthDirty_BitOffs)) | ((flag ? 1 << LengthDirty_BitOffs : 0));
     }
+
     public final boolean visited() {
         return ((this.word >> Visited_BitOffs) & 1) == 1;
     }
+
     public final void visited(boolean flag) {
         this.word = (this.word & ~(1 << Visited_BitOffs)) | ((flag ? 1 << Visited_BitOffs : 0));
     }
+
     public final boolean volatile_() {
         return ((this.word >> Volatile_BitOffs) & 1) == 1;
     }
+
     public final void volatile_(boolean flag) {
         this.word = (this.word & ~(1 << Volatile_BitOffs)) | ((flag ? 1 << Volatile_BitOffs : 0));
     }
@@ -174,9 +196,16 @@ public class Node implements INode {
 
         return false;
     }
+
+    /**
+     * Checks if the node has any parent.
+     *
+     * @return True if this node has no parents
+     */
     public boolean orphaned() {
-        return up() == null;
+        return parent() == null;
     }
+
     public void orphan() {
         if (this.previous != null)
             this.previous.removeChild(this);
@@ -239,6 +268,11 @@ public class Node implements INode {
         assert NodeLinkedList.contains(this.children, child);
     }
 
+    /**
+     * Get all the children of this Node.
+     *
+     * @return All children of this node.
+     */
     Iterable<Node> children() { return this.children == null ? Collections.<Node>emptyList() : this.children; }
 
     public static int squareDelta(Node left, Node right) {
@@ -263,11 +297,18 @@ public class Node implements INode {
             if (p == this || p.key.equals(this.key))
                 return true;
             else
-                p = p.up();
+                p = p.parent();
 
         return false;
     }
 
+    /**
+     * Checks if the node paramater is not blocked, and has less risk than this node.
+     *
+     * @param node The node to check
+     *
+     * @return If an entity can go from this node to that node without any horrible risk changes.
+     */
     public static boolean passible(Node node) {
         return node != null && node.passibility().betterThan(Passibility.impassible);
     }

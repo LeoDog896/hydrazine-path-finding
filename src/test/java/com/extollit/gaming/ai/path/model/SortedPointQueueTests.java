@@ -246,8 +246,8 @@ public class SortedPointQueueTests {
         );
 
         assertEquals(3, test.length());
-        assertEquals(2, test.up().length());
-        assertEquals(1, test.up().up().length());
+        assertEquals(2, test.parent().length());
+        assertEquals(1, test.parent().parent().length());
         assertEquals(3, another.length());
         assertEquals(1, pivot.length());
     }

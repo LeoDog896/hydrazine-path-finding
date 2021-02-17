@@ -46,14 +46,14 @@ public final class PathObject implements IPath {
     public static IPath fromHead(float speed, Random random, Node head) {
         int i = 1;
 
-        for (Node p = head; p.up() != null; p = p.up())
+        for (Node p = head; p.parent() != null; p = p.parent())
             ++i;
 
         final Node[] result = new Node[i];
         result[--i] = head;
 
-        for (Node p = head; p.up() != null; result[--i] = p)
-            p = p.up();
+        for (Node p = head; p.parent() != null; result[--i] = p)
+            p = p.parent();
 
         if (result.length <= 1)
             return new IncompletePath(result[0]);

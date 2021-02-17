@@ -47,8 +47,8 @@ public class NodeTests {
         alphaChild.appendTo(this.root, 0, 0);
         betaChild.appendTo(this.root, 0, 0);
 
-        assertSame(this.root, alphaChild.up());
-        assertSame(this.root, betaChild.up());
+        assertSame(this.root, alphaChild.parent());
+        assertSame(this.root, betaChild.parent());
 
         assertFalse(alphaChild.orphaned());
         assertFalse(betaChild.orphaned());
@@ -66,13 +66,13 @@ public class NodeTests {
 
         child.appendTo(this.root, 0, 0);
 
-        assertSame(this.root, child.up());
+        assertSame(this.root, child.parent());
         assertFalse(child.orphaned());
 
         child.orphan();
 
         assertTrue(child.orphaned());
-        assertNull(child.up());
+        assertNull(child.parent());
         assertTrue(this.root.infecund());
     }
 

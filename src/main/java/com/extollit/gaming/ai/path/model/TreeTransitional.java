@@ -26,11 +26,11 @@ final class TreeTransitional {
 
     public TreeTransitional(Node nextRoot) {
         final Deque<RotateNodeOp> dq = new LinkedList<>();
-        Node curr = (this.nextRoot = nextRoot).up();
+        Node curr = (this.nextRoot = nextRoot).parent();
         int length = nextRoot.length(),
             newLength0 = 0;
         while (curr != null) {
-            final Node up = curr.up();
+            final Node up = curr.parent();
             final int length0 = length;
             length = curr.length();
             curr.orphan();
@@ -66,10 +66,10 @@ final class TreeTransitional {
                 if (head.dirty())
                     queue.addLength(head, op.diff);
 
-                Node curr = head.up();
+                Node curr = head.parent();
                 while (curr != null && curr != next && curr.dirty()) {
                     curr.addLength(op.diff);
-                    curr = curr.up();
+                    curr = curr.parent();
                 }
 
                 if (next.dirty())
