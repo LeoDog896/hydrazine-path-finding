@@ -6,17 +6,20 @@ import java.util.*;
 
 import static com.extollit.gaming.ai.path.model.Node.squareDelta;
 
-public final class SortedPointQueue {
+/**
+ * A queue of Points, or Nodes
+ */
+public final class SortedNodeQueue {
     private static final float CULL_THRESHOLD = 0.1f;
 
     private final ArrayList<Node> list = new ArrayList<>(8);
 
-    boolean fastAdd(Node point) {
-        if (!point.index(this.list.size()))
+    boolean fastAdd(Node node) {
+        if (!node.index(this.list.size()))
             return false;
 
-        this.list.add(point);
-        sortBack(point.index());
+        this.list.add(node);
+        sortBack(node.index());
         return true;
     }
 
@@ -24,8 +27,8 @@ public final class SortedPointQueue {
      * Removes all elements from this queue
      */
     public final void clear() {
-        for (Node point : this.list)
-            point.unassign();
+        for (Node node : this.list)
+            node.unassign();
         this.list.clear();
     }
 
@@ -102,7 +105,7 @@ public final class SortedPointQueue {
         final Stack<Node> stack = new Stack<>();
 
         ListIterator<Node> i = list.listIterator();
-        final List<Node> culled = new LinkedList<Node>();
+        final List<Node> culled = new LinkedList<>();
         while (i.hasNext()) {
             final Node head = i.next();
             Node point = head;
@@ -129,9 +132,15 @@ public final class SortedPointQueue {
 
     public List<Node> view() { return Collections.unmodifiableList(this.list); }
 
+    /**
+     * Gets the node on the top of this stack
+     *
+     * @return The node at the top of the stack.
+     */
     public Node top() {
         return this.list.get(0);
     }
+
     public Node dequeue() {
         final ArrayList<Node> list = this.list;
         final Node point;
@@ -309,7 +318,7 @@ public final class SortedPointQueue {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SortedPointQueue that = (SortedPointQueue) o;
+        SortedNodeQueue that = (SortedNodeQueue) o;
 
         return list.equals(that.list);
     }

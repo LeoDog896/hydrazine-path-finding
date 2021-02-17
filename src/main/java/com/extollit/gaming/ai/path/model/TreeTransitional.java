@@ -55,7 +55,7 @@ final class TreeTransitional {
         return false;
     }
 
-    public void finish(SortedPointQueue queue) {
+    public void finish(SortedNodeQueue queue) {
         final Deque<RotateNodeOp> dq = this.dq;
         Node prev = this.nextRoot;
         while (!dq.isEmpty()) {

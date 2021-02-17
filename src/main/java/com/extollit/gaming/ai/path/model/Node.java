@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Objects;
 
 public class Node implements INode {
+
     /** Magic Bytes. No idea. */
     private static final byte
         BitWidth_512 = 9,

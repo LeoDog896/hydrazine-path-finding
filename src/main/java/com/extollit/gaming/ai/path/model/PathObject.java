@@ -80,6 +80,7 @@ public final class PathObject implements IPath {
     public Iterator<INode> iterator() {
         return new ArrayIterable.Iter<INode>(this.nodes, this.length);
     }
+
     @Override
     public final int length() { return this.length; }
 

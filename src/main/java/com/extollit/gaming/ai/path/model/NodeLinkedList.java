@@ -3,6 +3,7 @@ package com.extollit.gaming.ai.path.model;
 import com.extollit.collect.CollectionsExt;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 public final class NodeLinkedList implements Iterable<Node> {
     public final Node self;
@@ -54,7 +55,7 @@ public final class NodeLinkedList implements Iterable<Node> {
 
         NodeLinkedList nodes = (NodeLinkedList) o;
 
-        if (next != null ? !next.equals(nodes.next) : nodes.next != null) return false;
+        if (!Objects.equals(next, nodes.next)) return false;
         return self.equals(nodes.self);
     }
 

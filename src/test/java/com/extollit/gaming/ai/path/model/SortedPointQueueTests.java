@@ -21,7 +21,7 @@ public class SortedPointQueueTests {
     @Mock private INodeCalculator calculator;
     @Mock private IOcclusionProvider occlusionProvider;
 
-    private SortedPointQueue q;
+    private SortedNodeQueue q;
     private NodeMap graph;
     private Node
         target,
@@ -30,7 +30,7 @@ public class SortedPointQueueTests {
     @Before
     public void setup() {
         when(occlusionProviderFactory.fromInstanceSpace(any(), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(occlusionProvider);
-        this.q = new SortedPointQueue();
+        this.q = new SortedNodeQueue();
         this.graph = new NodeMap(instanceSpace, new TestNodeCalculatorDecorator(this.calculator), occlusionProviderFactory);
         this.target = this.graph.cachedPointAt(0, 0, 7);
         (this.source = visited(0, 0, 0)).target(this.target.key);

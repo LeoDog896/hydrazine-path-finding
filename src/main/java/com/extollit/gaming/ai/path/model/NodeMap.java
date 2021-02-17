@@ -7,7 +7,7 @@ import com.extollit.linalg.immutable.Vec3i;
 import java.util.Collection;
 
 public final class NodeMap {
-    private final SparseSpatialMap<Node> it = new SparseSpatialMap<>(3);
+    private final SparseSpatialMap<Node> internalMap = new SparseSpatialMap<>(3);
     private final IInstanceSpace instanceSpace;
     private final IOcclusionProviderFactory occlusionProviderFactory;
 
@@ -39,16 +39,16 @@ public final class NodeMap {
         clear();
     }
 
-    public final void reset(SortedPointQueue queue) {
-        for (Node p : this.it.values())
+    public final void reset(SortedNodeQueue queue) {
+        for (Node p : this.internalMap.values())
             p.rollback();
 
         queue.clear();
     }
 
-    public final void cullBranchAt(Vec3i coords, SortedPointQueue queue) {
+    public final void cullBranchAt(Vec3i coordinates, SortedNodeQueue queue) {
         final Node
-                node = this.it.get(coords);
+                node = this.internalMap.get(coordinates);
 
         if (node == null)
             return;
@@ -62,7 +62,7 @@ public final class NodeMap {
             queue.add(parent);
         }
 
-        this.it.remove(coords);
+        this.internalMap.remove(coordinates);
     }
 
     public final void reset() {
@@ -71,7 +71,7 @@ public final class NodeMap {
     }
 
     public final void clear() {
-        this.it.clear();
+        this.internalMap.clear();
     }
 
     public boolean needsOcclusionProvider() {
@@ -110,11 +110,11 @@ public final class NodeMap {
     }
 
     public Collection<Node> all() {
-        return this.it.values();
+        return this.internalMap.values();
     }
 
     public final void cullOutside(int x0, int z0, int xN, int zN) {
-        for (Node p : this.it.cullOutside(new IntAxisAlignedBox(x0, Integer.MIN_VALUE, z0, xN, Integer.MAX_VALUE, zN)))
+        for (Node p : this.internalMap.cullOutside(new IntAxisAlignedBox(x0, Integer.MIN_VALUE, z0, xN, Integer.MAX_VALUE, zN)))
             p.rollback();
     }
 
@@ -125,14 +125,14 @@ public final class NodeMap {
     }
 
     public final Node cachedPointAt(Vec3i coords) {
-        Node point = this.it.get(coords);
+        Node point = this.internalMap.get(coords);
 
         if (point == null) {
             point = passibleNodeNear(coords, null);
             if (!point.key.equals(coords))
                 point = new Node(coords, Passibility.impassible, false);
 
-            this.it.put(coords, point);
+            this.internalMap.put(coords, point);
         }
 
         return point;
@@ -148,7 +148,7 @@ public final class NodeMap {
     }
 
     public final Node cachedPassiblePointNear(Vec3i coords, Vec3i origin) {
-        final SparseSpatialMap<Node> nodeMap = this.it;
+        final SparseSpatialMap<Node> nodeMap = this.internalMap;
         final Node point0 = nodeMap.get(coords);
         Node point = point0;
 
@@ -178,8 +178,8 @@ public final class NodeMap {
         return point;
     }
 
-    private Node passibleNodeNear(Vec3i coords, Vec3i origin) {
-        final Node node = this.calculator.passibleNodeNear(coords, origin, new FlagSampler(this.occlusionProvider));
+    private Node passibleNodeNear(Vec3i coordinates, Vec3i origin) {
+        final Node node = this.calculator.passibleNodeNear(coordinates, origin, new FlagSampler(this.occlusionProvider));
         final IGraphNodeFilter filter = this.filter;
         if (filter != null) {
             final Passibility newPassibility = filter.mapPassibility(node);
@@ -194,8 +194,8 @@ public final class NodeMap {
         return remove(new Vec3i(x, y, z));
     }
 
-    public boolean remove(Vec3i coords) {
-        final Node existing = this.it.remove(coords);
+    public boolean remove(Vec3i coordinates) {
+        final Node existing = this.internalMap.remove(coordinates);
         if (existing != null) {
             existing.rollback();
             return true;
@@ -206,21 +206,21 @@ public final class NodeMap {
 
     @Override
     public String toString() {
-        return this.it.toString();
+        return this.internalMap.toString();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
 
-        NodeMap nodeMap = (NodeMap) o;
+        NodeMap nodeMap = (NodeMap) object;
 
-        return it.equals(nodeMap.it);
+        return internalMap.equals(nodeMap.internalMap);
     }
 
     @Override
     public int hashCode() {
-        return it.hashCode();
+        return internalMap.hashCode();
     }
 }

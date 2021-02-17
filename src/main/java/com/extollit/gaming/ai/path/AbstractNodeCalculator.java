@@ -25,11 +25,18 @@ abstract class AbstractNodeCalculator implements INodeCalculator {
         this.capabilities = subject.capabilities();
     }
 
-    protected final Passibility verticalClearanceAt(FlagSampler sampler, int max, byte flags, Passibility passibility, Vec3i d, int x, int y, int z, float partY) {
+    protected final Passibility verticalClearanceAt(
+            FlagSampler sampler,
+            int max, byte flags,
+            Passibility passibility,
+            Vec3i delta,
+            int x, int y, int z,
+            float partY
+    ) {
         byte clearanceFlags = flags;
         final int
                 yMax = y + max,
-                yN = Math.max(y, y - d.y) + this.tall;
+                yN = Math.max(y, y - delta.y) + this.tall;
         int yt = y;
 
         for (int yNa = yN + (int) Math.floor(partY);

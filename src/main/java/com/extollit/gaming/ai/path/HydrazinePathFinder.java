@@ -35,7 +35,7 @@ public class HydrazinePathFinder {
     private static byte FAULT_COUNT_THRESHOLD = 3;
     private static int FAULT_LIMIT = 23;
 
-    final SortedPointQueue queue = new SortedPointQueue();
+    final SortedNodeQueue queue = new SortedNodeQueue();
     final NodeMap nodeMap;
 
     private final Set<Vec3i> unreachableFromSource = new HashSet<>(3);
@@ -836,7 +836,7 @@ public class HydrazinePathFinder {
 
     private IPath triage(int iterations) {
         final IPath currentPath = this.currentPath;
-        final SortedPointQueue queue = this.queue;
+        final SortedNodeQueue queue = this.queue;
 
         if (queue.isEmpty())
             if (currentPath == null)

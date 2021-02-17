@@ -60,7 +60,7 @@ public enum Element {
 
     public static final int MASK = 4 - 1;
 
-    public final byte mask = (byte)ordinal();
+    public final byte mask = (byte) ordinal();
 
     /**
      * Helper function for determining whether this element is represented by the specified nibble.  The nibble may
