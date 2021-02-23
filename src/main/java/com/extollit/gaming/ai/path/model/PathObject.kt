@@ -55,7 +55,7 @@ import com.extollit.linalg.immutable.Vec3d
 import com.extollit.linalg.immutable.Vec3i
 import java.util.*
 
-class PathObject protected constructor(speed: Float, random: Random?, vararg nodes: Node) : IPath {
+class PathObject protected constructor(speed: Float, random: Random?, vararg nodes: Node?) : IPath {
     @kotlin.jvm.JvmField
     val nodes: Array<Node>
     private val speed: Float
@@ -68,7 +68,7 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
     private var nextDirectLineTimeout: Float
     private var lastMutationTime = -1f
 
-    internal constructor(speed: Float, vararg nodes: Node?) : this(speed, Random(), *nodes) {}
+    internal constructor(speed: Float, vararg nodes: Node?) : this(speed, Random(), *nodes)
 
     override fun truncateTo(length: Int) {
         if (length < 0 || length >= nodes.size) throw ArrayIndexOutOfBoundsException(
@@ -131,14 +131,14 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
             val adjacentIndex = adjacentIndex
             var targetIndex = i
             if (minDistanceSquared <= PATHPOINT_SNAP_MARGIN_SQ) {
-                var advanceTargetIndex: Int
+                var advanceTargetIndex: Int? = null
                 targetIndex = adjacentIndex
                 if (targetIndex >= taxiUntil && directLine(
                         targetIndex,
                         unlevelIndex,
                         grounded
                     ).also { advanceTargetIndex = it } > targetIndex
-                ) targetIndex = advanceTargetIndex else targetIndex = adjacentIndex + 1
+                ) targetIndex = advanceTargetIndex!! else targetIndex = adjacentIndex + 1
             } else if (minDistanceSquared > 0.5 || targetIndex < taxiUntil) targetIndex = adjacentIndex
             mutated = adjacentIndex > adjacentIndex0
             this.adjacentIndex = adjacentIndex
@@ -209,7 +209,7 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
     }
 
     override fun stagnantFor(pathingEntity: IPathingEntity): Float {
-        return if (lastMutationTime < 0) 0 else pathingEntity.age() * speed - lastMutationTime
+        return if (lastMutationTime < 0) 0f else pathingEntity.age() * speed - lastMutationTime
     }
 
     fun directLine(from: Int, until: Int, grounded: Boolean): Int {
@@ -233,7 +233,7 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
         while (i++ < n) {
             val node = nodes[i]
             val p = node.key
-            val dx = p!!.x - p0!!.x
+            val dx = p.x - p0.x
             val dy = p.y - p0.y
             val dz = p.z - p0.z
             if (grounded && dy != 0) return i - 1
@@ -287,7 +287,7 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
         while (i++ < n) {
             val node = nodes[i]
             val p = node.key
-            val dx = p!!.x - p0!!.x
+            val dx = p.x - p0.x
             val dy = p.y - p0.y
             val dz = p.z - p0.z
             val xi0 = xi
@@ -386,11 +386,11 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
         while (++c < length) {
             val node: INode = nodes[c]
             val p = node.coordinates()
-            if (p == lastPointVisited!!.coordinates()) {
+            if (p == lastPointVisited.coordinates()) {
                 i = c
                 break
             }
-            val dx = p!!.x - x + pointOffset
+            val dx = p.x - x + pointOffset
             val dy = p.y - y
             val dz = p.z - z + pointOffset
             val squareDelta = dx * dx + dy * dy + dz * dz
@@ -409,7 +409,7 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
 
     companion object {
         private const val PATHPOINT_SNAP_MARGIN_SQ = 0.25
-        private var DIRECT_LINE_TIME_LIMIT: FloatRange? = FloatRange(1, 2)
+        private var DIRECT_LINE_TIME_LIMIT: FloatRange? = FloatRange(1f, 2f)
         fun configureFrom(configModel: IConfigModel) {
             DIRECT_LINE_TIME_LIMIT = configModel.directLineTimeLimit()
         }
@@ -455,7 +455,8 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
     }
 
     init {
-        this.nodes = nodes
+        // TODO NULL AAAAA
+        this.nodes = nodes as Array<Node>
         length = nodes.size
         this.speed = speed
         this.random = random

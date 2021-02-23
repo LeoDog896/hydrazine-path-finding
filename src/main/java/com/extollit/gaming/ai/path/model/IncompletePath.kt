@@ -81,7 +81,7 @@ class IncompletePath(node: INode?) : IPath {
         return node
     }
 
-    override fun last(): INode? {
+    override fun last(): INode {
         return node
     }
 
@@ -101,7 +101,7 @@ class IncompletePath(node: INode?) : IPath {
     }
 
     override fun stagnantFor(subject: IPathingEntity): Float {
-        return 0
+        return 0f
     }
 
     override fun update(pathingEntity: IPathingEntity) {}

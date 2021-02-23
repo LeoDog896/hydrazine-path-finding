@@ -75,7 +75,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
                                 x - delta.x,
                                 y++,
                                 z - delta.z
-                            ) while (climbsLadders && Logic.Companion.climbable(flags))
+                            ) while (climbsLadders && Logic.climbable(flags))
                         }
                         if (PassibilityHelpers.impedesMovement(
                                 flagSampler.flagsAt(x, --y, z).also { flags = it },
@@ -172,7 +172,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
     }
 
     private fun swimable(flags: Byte): Boolean {
-        return capabilities!!.swimmer() && AbstractNodeCalculator.Companion.swimmingRequiredFor(flags) && (Element.water.`in`(
+        return capabilities!!.swimmer() && swimmingRequiredFor(flags) && (Element.water.`in`(
             flags
         ) || capabilities!!.fireResistant())
     }

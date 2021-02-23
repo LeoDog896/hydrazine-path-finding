@@ -1,62 +1,12 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.gaming.ai.path.model.INode
-import com.extollit.gaming.ai.path.model.NodeLinkedList
 import kotlin.jvm.JvmOverloads
-import com.extollit.gaming.ai.path.model.Passibility
-import com.extollit.gaming.ai.path.model.Gravitation
 import java.lang.StringBuilder
 import java.text.MessageFormat
-import java.util.Objects
-import com.extollit.gaming.ai.path.model.IPath
-import com.extollit.gaming.ai.path.model.IPathingEntity
-import com.extollit.gaming.ai.path.model.Logic
-import com.extollit.gaming.ai.path.model.IInstanceSpace
-import com.extollit.gaming.ai.path.model.INodeCalculator
-import com.extollit.gaming.ai.path.model.IOcclusionProviderFactory
-import com.extollit.collect.SparseSpatialMap
-import com.extollit.gaming.ai.path.model.IGraphNodeFilter
-import com.extollit.gaming.ai.path.model.IOcclusionProvider
-import com.extollit.gaming.ai.path.model.SortedNodeQueue
-import com.extollit.linalg.immutable.IntAxisAlignedBox
-import com.extollit.gaming.ai.path.model.FlagSampler
-import java.lang.ArrayIndexOutOfBoundsException
-import com.extollit.collect.ArrayIterable
-import com.extollit.gaming.ai.path.model.PathObject
-import com.extollit.num.FloatRange
-import com.extollit.gaming.ai.path.IConfigModel
-import com.extollit.gaming.ai.path.model.IncompletePath
-import com.extollit.gaming.ai.path.model.IBlockDescription
-import com.extollit.gaming.ai.path.model.ColumnarOcclusionFieldList
-import com.extollit.gaming.ai.path.model.IBlockObject
-import com.extollit.gaming.ai.path.model.IColumnarSpace
-import com.extollit.gaming.ai.path.model.IDynamicMovableObject
-import java.lang.NullPointerException
-import java.lang.UnsupportedOperationException
-import com.extollit.collect.CollectionsExt
-import com.extollit.linalg.immutable.VertexOffset
-import com.extollit.gaming.ai.path.model.OcclusionField.AreaInit
-import com.extollit.gaming.ai.path.model.OcclusionField
-import com.extollit.gaming.ai.path.model.TreeTransitional
-import java.util.LinkedList
-import java.util.Collections
-import java.lang.IllegalStateException
-import java.util.HashSet
-import java.util.Deque
-import com.extollit.gaming.ai.path.model.TreeTransitional.RotateNodeOp
-import com.extollit.gaming.ai.path.SchedulingPriority
-import com.extollit.gaming.ai.path.IConfigModel.Schedule
-import com.extollit.gaming.ai.path.PassibilityHelpers
-import java.lang.IllegalArgumentException
-import com.extollit.gaming.ai.path.model.IPathProcessor
-import com.extollit.gaming.ai.path.AreaOcclusionProviderFactory
-import com.extollit.gaming.ai.path.HydrazinePathFinder
-import com.extollit.gaming.ai.path.FluidicNodeCalculator
-import com.extollit.gaming.ai.path.GroundNodeCalculator
-import com.extollit.gaming.ai.path.AbstractNodeCalculator
 import java.lang.Math
-import com.extollit.gaming.ai.path.model.AreaOcclusionProvider
 import com.extollit.linalg.immutable.Vec3i
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 class Node : INode {
     @kotlin.jvm.JvmField
@@ -112,7 +62,7 @@ class Node : INode {
      *
      * @return The highest up node in this Node family tree.
      */
-    fun root(): Node? {
+    fun root(): Node {
         var node: Node? = this
         while (!node!!.orphaned()) node = node.parent()
         return node
@@ -123,10 +73,10 @@ class Node : INode {
     }
 
     fun passibility(passibility: Passibility?) {
-        var passibility = passibility
+        var mutablePassibility = passibility
         val previous = parent()
-        if (previous != null) passibility = passibility!!.between(previous.passibility())
-        word = word and Mask_Passibility.inv() or passibility!!.ordinal
+        if (previous != null) mutablePassibility = mutablePassibility!!.between(previous.passibility())
+        word = word and Mask_Passibility.inv().toInt() or mutablePassibility!!.ordinal
     }
 
     override fun gravitation(): Gravitation {
@@ -135,7 +85,7 @@ class Node : INode {
 
     fun gravitation(gravitation: Gravitation?) {
         word =
-            word and (Mask_Gravitation shl Gravitation_BitOffs).inv() or (gravitation!!.ordinal shl Gravitation_BitOffs.toInt())
+            word and (Mask_Gravitation shl Gravitation_BitOffs).toInt().inv() or (gravitation!!.ordinal shl Gravitation_BitOffs.toInt())
     }
 
     fun length(length: Int): Boolean {
@@ -211,10 +161,10 @@ class Node : INode {
     }
 
     operator fun contains(node: Node?): Boolean {
-        var curr = this
+        var curr: Node? = this
         do {
             if (curr === node) return true
-        } while (curr.previous.also { curr = it!! } != null)
+        } while (curr?.previous.also { curr = it } != null)
         return false
     }
 
@@ -253,7 +203,7 @@ class Node : INode {
 
     private fun removeChild(child: Node) {
         if (children != null) children = children!!.remove(child)
-        assert(!NodeLinkedList.Companion.contains(children, child))
+        assert(!NodeLinkedList.contains(children, child))
     }
 
     fun unassign() {
@@ -275,7 +225,7 @@ class Node : INode {
 
     private fun addChild(child: Node) {
         if (children == null) children = NodeLinkedList(child) else children!!.add(child)
-        assert(NodeLinkedList.Companion.contains(children, child))
+        assert(NodeLinkedList.contains(children, child))
     }
 
     /**
@@ -284,7 +234,7 @@ class Node : INode {
      * @return All children of this node.
      */
     fun children(): Iterable<Node> {
-        return if (children == null) emptyList() else children
+        return children ?: emptyList()
     }
 
     private fun cyclic(parent: Node?): Boolean {
@@ -301,6 +251,7 @@ class Node : INode {
         when (gravitation()) {
             Gravitation.airborne -> sb.append('^')
             Gravitation.buoyant -> sb.append('~')
+            else -> Unit
         }
         if (index.toInt() == -1) sb.append(" (unassigned)") else {
             sb.append(" @ ")
@@ -350,7 +301,7 @@ class Node : INode {
         private const val Mask_512 = (1 shl BitWidth_512.toInt()) - 1
         const val MAX_INDICES = (1 shl BitWidth_512.toInt()) - 1
         private fun wordReset(copy: Node): Int {
-            return copy.word and (Mask_Passibility or (1 shl Volatile_BitOffs.toInt()) or (Mask_Gravitation shl Gravitation_BitOffs)) or (Mask_512 shl Index_BitOffs.toInt() or (1 shl LengthDirty_BitOffs.toInt()))
+            return copy.word and ((Mask_Passibility or ((1 shl Volatile_BitOffs.toInt()).toByte()) or (Mask_Gravitation shl Gravitation_BitOffs)).toInt()) or (Mask_512 shl Index_BitOffs.toInt() or (1 shl LengthDirty_BitOffs.toInt()))
         }
 
         fun squareDelta(left: Node?, right: Node?): Int {

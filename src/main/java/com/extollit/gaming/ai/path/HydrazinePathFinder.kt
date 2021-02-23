@@ -1,30 +1,7 @@
 package com.extollit.gaming.ai.path
 
 import kotlin.jvm.JvmOverloads
-import java.lang.StringBuilder
-import java.text.MessageFormat
-import com.extollit.collect.SparseSpatialMap
-import com.extollit.linalg.immutable.IntAxisAlignedBox
-import java.lang.ArrayIndexOutOfBoundsException
-import com.extollit.collect.ArrayIterable
 import com.extollit.num.FloatRange
-import com.extollit.gaming.ai.path.IConfigModel
-import java.lang.NullPointerException
-import java.lang.UnsupportedOperationException
-import com.extollit.collect.CollectionsExt
-import com.extollit.linalg.immutable.VertexOffset
-import com.extollit.gaming.ai.path.model.OcclusionField.AreaInit
-import java.lang.IllegalStateException
-import com.extollit.gaming.ai.path.model.TreeTransitional.RotateNodeOp
-import com.extollit.gaming.ai.path.SchedulingPriority
-import com.extollit.gaming.ai.path.IConfigModel.Schedule
-import com.extollit.gaming.ai.path.PassibilityHelpers
-import java.lang.IllegalArgumentException
-import com.extollit.gaming.ai.path.AreaOcclusionProviderFactory
-import com.extollit.gaming.ai.path.HydrazinePathFinder
-import com.extollit.gaming.ai.path.FluidicNodeCalculator
-import com.extollit.gaming.ai.path.GroundNodeCalculator
-import com.extollit.gaming.ai.path.AbstractNodeCalculator
 import com.extollit.gaming.ai.path.model.*
 import com.extollit.linalg.immutable.Vec3i
 import com.extollit.linalg.mutable.AxisAlignedBBox
@@ -32,6 +9,8 @@ import com.extollit.linalg.mutable.Vec3d
 import com.extollit.tuple.Pair
 import java.lang.Math
 import java.util.*
+import kotlin.math.ceil
+import kotlin.math.max
 
 /**
  * This is the primary path-finding object and root instance for the library.  There is precisely one instance of this
@@ -92,7 +71,7 @@ class HydrazinePathFinder internal constructor(
     constructor(entity: IPathingEntity, instanceSpace: IInstanceSpace) : this(
         entity,
         instanceSpace,
-        AreaOcclusionProviderFactory.Companion.INSTANCE
+        AreaOcclusionProviderFactory.INSTANCE
     ) {
     }
 
@@ -241,19 +220,6 @@ class HydrazinePathFinder internal constructor(
      * algorithm is not used then this is more likely to return immediately with null if it is determined the
      * destination is unreachable.
      */
-    /**
-     * Starts path-finding to the specified destination using the best-effort algorithm.
-     *
-     * After an initial call to this method, the caller should make subsequent calls to
-     * [.updatePathFor] until path-finding is completed or exhausted.
-     *
-     * @param x x-coordinate of the destination
-     * @param y y-coordinate of the destination
-     * @param z z-coordinate of the destination
-     * @return the best path available toward the destination, the complete path to the destination, or null if a path
-     * cannot be computed at all from the current location
-     * @see .initiatePathTo
-     */
     @JvmOverloads
     fun initiatePathTo(x: Double, y: Double, z: Double, bestEffort: Boolean = true): IPath? {
         this.bestEffort = bestEffort
@@ -372,7 +338,7 @@ class HydrazinePathFinder internal constructor(
 
     private fun triageTimeout(): Boolean {
         val currentPath = currentPath
-        val status = PathObject.Companion.active(currentPath) && currentPath!!.length() > 0 && currentPath.stagnantFor(
+        val status = PathObject.active(currentPath) && currentPath!!.length() > 0 && currentPath.stagnantFor(
             subject
         ) > passiblePointPathTimeLimit
         if (status) {
@@ -380,7 +346,7 @@ class HydrazinePathFinder internal constructor(
                 random
             )
             val culprit = currentPath!!.current()
-            nodeMap.cullBranchAt(culprit!!.coordinates(), queue)
+            nodeMap.cullBranchAt(culprit.coordinates(), queue)
             passiblePointPathTimeLimit += PASSIBLE_POINT_TIME_LIMIT!!.next(random)
         }
         return status
@@ -430,12 +396,12 @@ class HydrazinePathFinder internal constructor(
         unreachableFromSource.clear()
         if (!fuzzyPassibility(sourcePoint!!.x, sourcePoint.y, sourcePoint.z)) return false
         val blockObject = instanceSpace.blockObjectAt(sourcePoint.x, sourcePoint.y, sourcePoint.z)
-        if (!blockObject!!.isImpeding) return false
+        if (!blockObject.isImpeding) return false
         val bounds = blockObject.bounds()
         val c = Vec3d(subject.coordinates())
         c.sub(sourcePoint)
         val delta = com.extollit.linalg.immutable.Vec3d(c)
-        c.sub(bounds!!.center())
+        c.sub(bounds.center())
         var mutated = false
         if (delta.z >= bounds.min.z && delta.z <= bounds.max.z) {
             val x = sourcePoint.x + if (c.x < 0) +1 else -1
@@ -485,7 +451,7 @@ class HydrazinePathFinder internal constructor(
     private fun setTargetFor(source: Node?): Boolean {
         val destinationPosition = destinationPosition
         if (null == edgeAtDestination().also { target = it }) return false else if (bestEffort) {
-            var distance: Int = Node.Companion.MAX_PATH_DISTANCE.toInt()
+            var distance: Int = Node.MAX_PATH_DISTANCE.toInt()
             while (distance > 0 && !source!!.target(target!!.key)) {
                 val v = Vec3d(destinationPosition)
                 val init = Vec3d(source.key)
@@ -511,7 +477,7 @@ class HydrazinePathFinder internal constructor(
 
     private fun updateFieldWindow(path: IPath) {
         var node: INode? = path.last() ?: return
-        var pp = node.coordinates()
+        var pp = node?.coordinates()
         val min = com.extollit.linalg.mutable.Vec3i(pp!!.x, pp.y, pp.z)
         val max = com.extollit.linalg.mutable.Vec3i(pp.x, pp.y, pp.z)
         if (!path.done()) for (c in path.cursor() until path.length()) {
@@ -548,9 +514,11 @@ class HydrazinePathFinder internal constructor(
         }
         val destinationEntity = destinationEntity
         val entityWidth = subject.width()
-        val entitySize = Math.ceil(
-            if (destinationEntity != null) Math.max(entityWidth, destinationEntity.width()) else entityWidth
-                .toDouble()
+        val entitySize = ceil(
+            if (destinationEntity != null)
+                max(entityWidth, destinationEntity.width()).toDouble()
+            else
+                entityWidth.toDouble()
         ).toInt()
         val searchAreaRange = subject.searchRange()
         x0 -= (searchAreaRange + entitySize).toInt()
@@ -670,24 +638,24 @@ class HydrazinePathFinder internal constructor(
         nextGraphCacheReset = 0f
     }
 
-    private fun updatePath(newPath: IPath?): IPath {
-        var newPath = newPath
-        if (newPath == null) return null.also { currentPath = it }!!
+    private fun updatePath(newPath: IPath?): IPath? {
+        var mutableNewPath = newPath
+        if (mutableNewPath == null) return null.also { currentPath = it }
         val currentPath = currentPath
         if (currentPath != null) {
-            if (currentPath.sameAs(newPath)) newPath =
-                currentPath else if (!currentPath.done() && newPath is PathObject) newPath.adjustPathPosition(
+            if (currentPath.sameAs(mutableNewPath)) mutableNewPath =
+                currentPath else if (!currentPath.done() && mutableNewPath is PathObject) mutableNewPath.adjustPathPosition(
                 currentPath,
                 subject
             )
         }
-        if (nodeMap.needsOcclusionProvider()) updateFieldWindow(newPath)
-        if (newPath.done()) {
-            var last = newPath.last()
+        if (nodeMap.needsOcclusionProvider()) updateFieldWindow(mutableNewPath)
+        if (mutableNewPath.done()) {
+            var last = mutableNewPath.last()
             if (last == null) last = pointAtSource()
             return IncompletePath(last).also { this.currentPath = it }
         }
-        return newPath.also { this.currentPath = it }
+        return mutableNewPath.also { this.currentPath = it }
     }
 
     private fun triage(iterations: Int): IPath? {
@@ -712,11 +680,11 @@ class HydrazinePathFinder internal constructor(
             val current = queue.dequeue()
             val closest = closest
             if (closest == null || closest.orphaned()
-                || Node.Companion.squareDelta(current, target) < Node.Companion.squareDelta(closest, target)
+                || Node.squareDelta(current, target) < Node.squareDelta(closest, target)
             ) this.closest = current
             if (current === target) {
                 nextPath = createPath(current)
-                if (PathObject.Companion.active(nextPath)) {
+                if (PathObject.active(nextPath)) {
                     this.queue.clear()
                     break
                 }
@@ -732,9 +700,9 @@ class HydrazinePathFinder internal constructor(
         return updatePath(nextPath)
     }
 
-    private fun createPath(head: Node?): IPath {
+    private fun createPath(head: Node): IPath {
         val capabilities = capabilities
-        val path: IPath = PathObject.Companion.fromHead(capabilities!!.speed(), random, head)
+        val path: IPath = PathObject.fromHead(capabilities!!.speed(), random, head)
         if (pathProcessor != null) pathProcessor!!.processPath(path)
         return path
     }
@@ -742,7 +710,7 @@ class HydrazinePathFinder internal constructor(
     private fun processNode(current: Node?) {
         current!!.visited(true)
         val coords = current.key
-        val west = cachedPassiblePointNear(coords!!.x - 1, coords.y, coords.z, coords)
+        val west = cachedPassiblePointNear(coords.x - 1, coords.y, coords.z, coords)
         val east = cachedPassiblePointNear(coords.x + 1, coords.y, coords.z, coords)
         val north = cachedPassiblePointNear(coords.x, coords.y, coords.z - 1, coords)
         val south = cachedPassiblePointNear(coords.x, coords.y, coords.z + 1, coords)
@@ -756,7 +724,7 @@ class HydrazinePathFinder internal constructor(
             down = null
             up = down
         }
-        val found = applyPointOptions(current, up!!, down!!, west!!, east!!, north!!, south!!)
+        val found = applyPointOptions(current, up, down, west, east, north, south)
         if (!found) {
             val southBounds = blockBounds(coords, 0, 0, +1)
             val northBounds = blockBounds(coords, 0, 0, -1)
@@ -823,7 +791,7 @@ class HydrazinePathFinder internal constructor(
         val flags = nodeMap.flagsAt(x, y, z)
         bounds = if (fuzzyPassibility(flags)) {
             val block = instanceSpace.blockObjectAt(x, y, z)
-            if (!block!!.isImpeding) return null
+            if (!block.isImpeding) return null
             block.bounds()
         } else if (PassibilityHelpers.impedesMovement(
                 flags,
@@ -835,17 +803,19 @@ class HydrazinePathFinder internal constructor(
         return result
     }
 
-    fun applyPointOptions(current: Node?, vararg pointOptions: Node): Boolean {
+    fun applyPointOptions(current: Node?, vararg pointOptions: Node?): Boolean {
         var found = false
         for (alternative in pointOptions) {
-            if (impassible(alternative) || alternative.visited() || Node.Companion.squareDelta(
+            if (impassible(alternative) || alternative?.visited() == true || Node.squareDelta(
                     alternative,
                     target
                 ) >= searchRangeSquared
             ) continue
             found = true
-            alternative.sterilize()
-            queue.appendTo(alternative, current, target!!.key)
+            alternative?.sterilize()
+            if (alternative != null) {
+                queue.appendTo(alternative, current, target!!.key)
+            }
         }
         return found
     }
@@ -857,7 +827,7 @@ class HydrazinePathFinder internal constructor(
     private fun cachedPassiblePointNear(x0: Int, y0: Int, z0: Int, origin: Vec3i? = null): Node? {
         val coords0 = Vec3i(x0, y0, z0)
         val result = nodeMap.cachedPassiblePointNear(coords0, origin)
-        return if (Node.Companion.passible(result) && origin != null && unreachableFromSource(
+        return if (Node.passible(result) && origin != null && unreachableFromSource(
                 origin,
                 coords0
             )
@@ -913,10 +883,10 @@ class HydrazinePathFinder internal constructor(
     }
 
     companion object {
-        private val FULL_BOUNDS = com.extollit.linalg.immutable.AxisAlignedBBox(0, 0, 0, 1, 1, 1)
+        private val FULL_BOUNDS = com.extollit.linalg.immutable.AxisAlignedBBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
         private var DOT_THRESHOLD = 0.6
-        private var PROBATIONARY_TIME_LIMIT: FloatRange? = FloatRange(36, 64)
-        private var PASSIBLE_POINT_TIME_LIMIT: FloatRange? = FloatRange(24, 48)
+        private var PROBATIONARY_TIME_LIMIT: FloatRange? = FloatRange(36f, 64f)
+        private var PASSIBLE_POINT_TIME_LIMIT: FloatRange? = FloatRange(24f, 48f)
         private var FAULT_COUNT_THRESHOLD: Byte = 3
         private var FAULT_LIMIT = 23
 
@@ -931,7 +901,7 @@ class HydrazinePathFinder internal constructor(
             PROBATIONARY_TIME_LIMIT = configModel.probationaryTimeLimit()
             PASSIBLE_POINT_TIME_LIMIT = configModel.passiblePointTimeLimit()
             DOT_THRESHOLD = configModel.dotThreshold().toDouble()
-            GroundNodeCalculator.Companion.configureFrom(configModel)
+            GroundNodeCalculator.configureFrom(configModel)
         }
 
         private fun differs(a: com.extollit.linalg.immutable.Vec3d?, b: Vec3d?): Boolean {

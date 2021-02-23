@@ -60,7 +60,7 @@ internal object PassibilityHelpers {
     @kotlin.jvm.JvmStatic
     fun passibilityFrom(flags: Byte, capabilities: IPathingEntity.Capabilities?): Passibility {
         if (impassibleDoorway(flags, capabilities)) return Passibility.impassible
-        val kind: Element = Element.Companion.of(flags)
+        val kind: Element = Element.of(flags)
         return when (kind) {
             Element.earth -> if (Logic.ladder.`in`(flags) || passibleDoorway(
                     flags,

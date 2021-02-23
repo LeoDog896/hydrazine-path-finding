@@ -82,7 +82,7 @@ open class ColumnarOcclusionFieldList
      */
     val container: IColumnarSpace
 ) {
-    private var fields: Array<OcclusionField?>?
+    private var fields: Array<OcclusionField?>? = null
 
     /**
      * Completely erases all data in this object, this must be called by the implementor prior to loading a chunk or
@@ -114,7 +114,7 @@ open class ColumnarOcclusionFieldList
     }
 
     fun occlusionFieldAt(cx: Int, cy: Int, cz: Int): OcclusionField {
-        if (fields == null) fields = arrayOfNulls(OcclusionField.Companion.DIMENSION_SIZE)
+        if (fields == null) fields = arrayOfNulls(OcclusionField.DIMENSION_SIZE)
         val result = fields!![cy]
         return if (result != null) {
             result

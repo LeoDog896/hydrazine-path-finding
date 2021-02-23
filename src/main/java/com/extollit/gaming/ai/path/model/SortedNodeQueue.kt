@@ -53,6 +53,7 @@ import java.lang.Math
 import com.extollit.gaming.ai.path.model.AreaOcclusionProvider
 import com.extollit.linalg.immutable.Vec3i
 import java.util.*
+import kotlin.math.sqrt
 
 /**
  * A queue of Points, or Nodes
@@ -77,10 +78,10 @@ class SortedNodeQueue {
     val isEmpty: Boolean
         get() = list.isEmpty()
 
-    fun trimFrom(source: Node): Node? {
+    fun trimFrom(source: Node): Node {
         if (source.orphaned()) return source
         val root0 = source.root()
-        val dd = source.key.subOf(root0!!.key)
+        val dd = source.key.subOf(root0.key)
         val list: MutableList<Node?> = list
         val length0 = source.length()
         val path = Stack<Node?>()
@@ -153,7 +154,7 @@ class SortedNodeQueue {
         }
     }
 
-    fun view(): List<Node> {
+    fun view(): List<Node?> {
         return Collections.unmodifiableList(list)
     }
 
@@ -166,7 +167,7 @@ class SortedNodeQueue {
         return list[0]
     }
 
-    fun dequeue(): Node? {
+    fun dequeue(): Node {
         val list = list
         val point: Node?
         if (list.size == 1) point = list.removeAt(0) else {
@@ -191,7 +192,7 @@ class SortedNodeQueue {
             val i = index - 1 shr 1
             val point = list[i]
             val passibility = point!!.passibility()
-            if (distanceRemaining >= point.journey() && originalPassibility == passibility || originalPassibility!!.worseThan(
+            if (distanceRemaining >= point.journey() && originalPassibility == passibility || originalPassibility.worseThan(
                     passibility
                 )
             ) break
@@ -229,10 +230,10 @@ class SortedNodeQueue {
                 passibilityBeta = pointBeta.passibility()
             }
             if (distAlpha < distBeta && passibilityAlpha == passibilityBeta
-                || passibilityAlpha!!.betterThan(passibilityBeta)
+                || passibilityAlpha.betterThan(passibilityBeta)
             ) {
                 if (distAlpha >= distanceRemaining && passibilityAlpha == originalPassibility
-                    || passibilityAlpha!!.worseThan(originalPassibility)
+                    || passibilityAlpha.worseThan(originalPassibility)
                 ) break
                 list[index] = pointAlpha
                 pointAlpha.index(index)
@@ -252,13 +253,13 @@ class SortedNodeQueue {
 
     fun appendTo(point: Node, parent: Node?, targetPoint: Vec3i?): Boolean {
         return appendTo(
-            point, parent, Math.sqrt(Node.Companion.squareDelta(point, targetPoint).toDouble())
+            point, parent, sqrt(Node.squareDelta(point, targetPoint).toDouble())
                 .toInt()
         )
     }
 
     fun appendTo(point: Node, parent: Node?, remaining: Int): Boolean {
-        val squareDelta: Int = Node.Companion.squareDelta(parent, point)
+        val squareDelta: Int = Node.squareDelta(parent, point)
         val length = point.length()
         if (!point.assigned() || parent!!.length() + squareDelta < length * length && !point.passibility().betterThan(
                 parent.passibility()

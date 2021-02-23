@@ -1,61 +1,10 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.gaming.ai.path.model.INode
-import com.extollit.gaming.ai.path.model.NodeLinkedList
-import kotlin.jvm.JvmOverloads
-import com.extollit.gaming.ai.path.model.Passibility
-import com.extollit.gaming.ai.path.model.Gravitation
-import java.lang.StringBuilder
-import java.text.MessageFormat
-import java.util.Objects
-import com.extollit.gaming.ai.path.model.IPath
-import com.extollit.gaming.ai.path.model.IPathingEntity
-import com.extollit.gaming.ai.path.model.Logic
-import com.extollit.gaming.ai.path.model.IInstanceSpace
-import com.extollit.gaming.ai.path.model.INodeCalculator
-import com.extollit.gaming.ai.path.model.IOcclusionProviderFactory
-import com.extollit.collect.SparseSpatialMap
-import com.extollit.gaming.ai.path.model.IGraphNodeFilter
-import com.extollit.gaming.ai.path.model.IOcclusionProvider
-import com.extollit.gaming.ai.path.model.SortedNodeQueue
-import com.extollit.linalg.immutable.IntAxisAlignedBox
-import com.extollit.gaming.ai.path.model.FlagSampler
-import java.lang.ArrayIndexOutOfBoundsException
-import com.extollit.collect.ArrayIterable
-import com.extollit.gaming.ai.path.model.PathObject
-import com.extollit.num.FloatRange
-import com.extollit.gaming.ai.path.IConfigModel
-import com.extollit.gaming.ai.path.model.IncompletePath
-import com.extollit.gaming.ai.path.model.IBlockDescription
-import com.extollit.gaming.ai.path.model.ColumnarOcclusionFieldList
-import com.extollit.gaming.ai.path.model.IBlockObject
-import com.extollit.gaming.ai.path.model.IColumnarSpace
-import com.extollit.gaming.ai.path.model.IDynamicMovableObject
-import java.lang.NullPointerException
-import java.lang.UnsupportedOperationException
-import com.extollit.collect.CollectionsExt
-import com.extollit.linalg.immutable.VertexOffset
-import com.extollit.gaming.ai.path.model.OcclusionField.AreaInit
-import com.extollit.gaming.ai.path.model.OcclusionField
-import com.extollit.gaming.ai.path.model.TreeTransitional
-import java.util.LinkedList
-import java.util.Collections
-import java.lang.IllegalStateException
-import java.util.HashSet
-import java.util.Deque
-import com.extollit.gaming.ai.path.model.TreeTransitional.RotateNodeOp
-import com.extollit.gaming.ai.path.SchedulingPriority
-import com.extollit.gaming.ai.path.IConfigModel.Schedule
-import com.extollit.gaming.ai.path.PassibilityHelpers
-import java.lang.IllegalArgumentException
-import com.extollit.gaming.ai.path.model.IPathProcessor
-import com.extollit.gaming.ai.path.AreaOcclusionProviderFactory
-import com.extollit.gaming.ai.path.HydrazinePathFinder
-import com.extollit.gaming.ai.path.FluidicNodeCalculator
-import com.extollit.gaming.ai.path.GroundNodeCalculator
-import com.extollit.gaming.ai.path.AbstractNodeCalculator
-import java.lang.Math
 import com.extollit.gaming.ai.path.model.AreaOcclusionProvider
+import kotlin.experimental.and
+import kotlin.experimental.or
+
+infix fun Byte.shl(that: Byte): Byte = this.toInt().shl(that.toInt()).toByte()
 
 /**
  * Passibility of blocks is stored in nibbles by an occlusion field.  The higher two bits of this nibble supplement
@@ -112,32 +61,6 @@ enum class Logic {
      */
     doorway;
 
-    @kotlin.jvm.JvmField
-    val mask = (ordinal shl BIT_OFFSET).toByte()
-
-    /**
-     * Helper function for determining whether this logic indicator is represented by the specified nibble.
-     * The nibble may contain [Element] flags in the low two bits, these will be ignored.
-     *
-     * @param flags A four-bit nibble containing a higher two-bit logic representation
-     *
-     * @return true if the higher two bits map to this logic indicator
-     */
-    fun `in`(flags: Byte): Boolean {
-        return flags and (MASK shl BIT_OFFSET) == mask.toInt()
-    }
-
-    /**
-     * Helper function for setting the higher two bits of the specified nibble to represent this logic indicator.
-     * The nibble may contain [Element] flags in the low two bits, these bits will not be affected.
-     *
-     * @param flags A four-bit nibble that will be modified to represent this logic indicator
-     * @return the passed-in flags modified to represent this logic indicator
-     */
-    fun to(flags: Byte): Byte {
-        return (flags and (MASK shl BIT_OFFSET).inv() or mask)
-    }
-
     companion object {
         const val BIT_OFFSET = 2
         const val MASK = 4 - 1
@@ -151,7 +74,7 @@ enum class Logic {
          * @return the logic indicator represented by the nibble
          */
         fun of(flags: Byte): Logic {
-            return values()[flags and (MASK shl BIT_OFFSET) shr BIT_OFFSET]
+            return values()[(flags and ((MASK shl BIT_OFFSET).toByte())).toInt() shr BIT_OFFSET]
         }
 
         /**
@@ -166,5 +89,32 @@ enum class Logic {
         fun climbable(flags: Byte): Boolean {
             return ladder.`in`(flags) && Element.earth.`in`(flags)
         }
+    }
+
+    // TODO Unexpected const error?
+    @JvmField
+    val mask = (ordinal shl 2).toByte()
+
+    /**
+     * Helper function for determining whether this logic indicator is represented by the specified nibble.
+     * The nibble may contain [Element] flags in the low two bits, these will be ignored.
+     *
+     * @param flags A four-bit nibble containing a higher two-bit logic representation
+     *
+     * @return true if the higher two bits map to this logic indicator
+     */
+    fun `in`(flags: Byte): Boolean {
+        return flags and ((MASK shl BIT_OFFSET).toByte()) == mask
+    }
+
+    /**
+     * Helper function for setting the higher two bits of the specified nibble to represent this logic indicator.
+     * The nibble may contain [Element] flags in the low two bits, these bits will not be affected.
+     *
+     * @param flags A four-bit nibble that will be modified to represent this logic indicator
+     * @return the passed-in flags modified to represent this logic indicator
+     */
+    fun to(flags: Byte): Byte {
+        return (flags and (MASK shl BIT_OFFSET).inv().toByte() or mask)
     }
 }

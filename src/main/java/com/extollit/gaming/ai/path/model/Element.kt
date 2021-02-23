@@ -56,6 +56,8 @@ import com.extollit.gaming.ai.path.GroundNodeCalculator
 import com.extollit.gaming.ai.path.AbstractNodeCalculator
 import java.lang.Math
 import com.extollit.gaming.ai.path.model.AreaOcclusionProvider
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 /**
  * Passibility of blocks is stored in nibbles by an occlusion field.  The lower two bits of this nibble indicates
@@ -128,7 +130,7 @@ enum class Element {
      * @return true if the lower two bits map to this element
      */
     fun `in`(flags: Byte): Boolean {
-        return flags and MASK == mask.toInt()
+        return flags and MASK.toByte() == mask
     }
 
     /**
@@ -139,7 +141,7 @@ enum class Element {
      * @return the passed-in flags modified to represent this element
      */
     fun to(flags: Byte): Byte {
-        return (flags and MASK.inv() or mask)
+        return (flags and MASK.inv().toByte() or mask)
     }
 
     companion object {
@@ -154,7 +156,7 @@ enum class Element {
          * @return the element represented by the nibble
          */
         fun of(flags: Byte): Element {
-            return values()[flags and MASK]
+            return values()[(flags and MASK.toByte()).toInt()]
         }
     }
 }

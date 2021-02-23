@@ -52,6 +52,8 @@ import com.extollit.gaming.ai.path.AbstractNodeCalculator
 import java.lang.Math
 import com.extollit.gaming.ai.path.model.AreaOcclusionProvider
 import java.util.*
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 open class OcclusionField : IOcclusionProvider {
     enum class AreaInit {
@@ -74,11 +76,11 @@ open class OcclusionField : IOcclusionProvider {
         }
 
         fun `in`(flags: Short): Boolean {
-            return flags and mask != 0
+            return flags and mask != 0.toShort()
         }
 
         fun to(flags: Short): Short {
-            return (flags or mask) as Short
+            return (flags or mask)
         }
 
         companion object {
@@ -90,7 +92,7 @@ open class OcclusionField : IOcclusionProvider {
         }
     }
 
-    private var words: LongArray?
+    private var words: LongArray? = null
     private var singleton: Byte = 0
     private var areaInit: Short = 0
     fun areaInitFull(): Boolean {
@@ -515,11 +517,11 @@ open class OcclusionField : IOcclusionProvider {
         westFlags: Byte
     ): Byte {
         var centerFlags = centerFlags
-        val northElem: Element = Element.Companion.of(northFlags)
-        val southElem: Element = Element.Companion.of(southFlags)
-        val westElem: Element = Element.Companion.of(westFlags)
-        val eastElem: Element = Element.Companion.of(eastFlags)
-        val centerElem: Element = Element.Companion.of(centerFlags)
+        val northElem: Element = Element.of(northFlags)
+        val southElem: Element = Element.of(southFlags)
+        val westElem: Element = Element.of(westFlags)
+        val eastElem: Element = Element.of(eastFlags)
+        val centerElem: Element = Element.of(centerFlags)
         if (Logic.ladder.`in`(centerFlags) && (northElem == Element.earth || eastElem == Element.earth || southElem == Element.earth || westElem == Element.earth)) centerFlags =
             Element.earth.to(centerFlags) else if (centerElem == Element.air && Logic.nothing.`in`(centerFlags)
             && (fuzziable(centerElem, northFlags) ||
@@ -561,7 +563,7 @@ open class OcclusionField : IOcclusionProvider {
     }
 
     private fun fuzziable(centerElem: Element, otherFlags: Byte): Boolean {
-        val otherElement: Element = Element.Companion.of(otherFlags)
+        val otherElement: Element = Element.of(otherFlags)
         return centerElem != otherElement && !(otherElement == Element.earth && Logic.fuzzy.`in`(otherFlags))
     }
 
@@ -677,27 +679,27 @@ open class OcclusionField : IOcclusionProvider {
         val cy = y shr DIMENSION_ORDER.toInt()
         val cz = z shr DIMENSION_ORDER.toInt()
         val instance = columnarSpace.instance()
-        val center: OcclusionField = ColumnarOcclusionFieldList.Companion.optionalOcclusionFieldAt(instance, cx, cy, cz)
+        val center: OcclusionField = ColumnarOcclusionFieldList.optionalOcclusionFieldAt(instance, cx, cy, cz)
             ?: return
-        val north: OcclusionField = ColumnarOcclusionFieldList.Companion.optionalOcclusionFieldAt(
+        val north = ColumnarOcclusionFieldList.optionalOcclusionFieldAt(
             instance,
             cx,
             cy,
             z - 1 shr DIMENSION_ORDER.toInt()
         )
-        val east: OcclusionField = ColumnarOcclusionFieldList.Companion.optionalOcclusionFieldAt(
+        val east = ColumnarOcclusionFieldList.optionalOcclusionFieldAt(
             instance,
             x + 1 shr DIMENSION_ORDER.toInt(),
             cy,
             cz
         )
-        val south: OcclusionField = ColumnarOcclusionFieldList.Companion.optionalOcclusionFieldAt(
+        val south = ColumnarOcclusionFieldList.optionalOcclusionFieldAt(
             instance,
             cx,
             cy,
             z + 1 shr DIMENSION_ORDER.toInt()
         )
-        val west: OcclusionField = ColumnarOcclusionFieldList.Companion.optionalOcclusionFieldAt(
+        val west = ColumnarOcclusionFieldList.optionalOcclusionFieldAt(
             instance,
             x - 1 shr DIMENSION_ORDER.toInt(),
             cy,
@@ -726,15 +728,15 @@ open class OcclusionField : IOcclusionProvider {
         val cy = y shr DIMENSION_ORDER.toInt()
         val cz = z shr DIMENSION_ORDER.toInt()
         val instance = columnarSpace.instance()
-        val center: OcclusionField = ColumnarOcclusionFieldList.Companion.optionalOcclusionFieldAt(instance, cx, cy, cz)
+        val center: OcclusionField = ColumnarOcclusionFieldList.optionalOcclusionFieldAt(instance, cx, cy, cz)
             ?: return
-        val up: OcclusionField = ColumnarOcclusionFieldList.Companion.optionalOcclusionFieldAt(
+        val up: OcclusionField? = ColumnarOcclusionFieldList.optionalOcclusionFieldAt(
             instance,
             cx,
             y + 1 shr DIMENSION_ORDER.toInt(),
             cz
         )
-        val down: OcclusionField = ColumnarOcclusionFieldList.Companion.optionalOcclusionFieldAt(
+        val down: OcclusionField? = ColumnarOcclusionFieldList.optionalOcclusionFieldAt(
             instance,
             cx,
             y - 1 shr DIMENSION_ORDER.toInt(),
@@ -760,7 +762,7 @@ open class OcclusionField : IOcclusionProvider {
     private fun elementAt(word: Long, offset: Int): Byte {
         var element: Byte
         element = (word shr (offset shl ELEMENT_LENGTH_SHL.toInt())).toByte()
-        element = element and ELEMENT_MASK
+        element = element and ELEMENT_MASK.toByte()
         return element
     }
 
@@ -813,9 +815,9 @@ open class OcclusionField : IOcclusionProvider {
                 for (x in x0 until xN) {
                     val ch: Char
                     val flags = provider.elementAt(x, dy, z)
-                    ch = when (Element.Companion.of(flags)) {
+                    ch = when (Element.of(flags)) {
                         Element.air -> if (Logic.fuzzy.`in`(flags)) '░' else ' '
-                        Element.earth -> if (Logic.Companion.climbable(flags)) '#' else if (Logic.fuzzy.`in`(
+                        Element.earth -> if (Logic.climbable(flags)) '#' else if (Logic.fuzzy.`in`(
                                 flags
                             )
                         ) '▄' else '█'

@@ -75,14 +75,14 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
 
     private fun bottomOffsetAt(flags: Byte, x: Int, y: Int, z: Int): Float {
         if (Element.air.`in`(flags)
-            || Logic.Companion.climbable(flags)
+            || Logic.climbable(flags)
             || Element.earth.`in`(flags) && Logic.nothing.`in`(flags) || swimmingRequiredFor(flags)
-        ) return 0
+        ) return 0f
         val block = instanceSpace.blockObjectAt(x, y, z)
-        return if (!block!!.isImpeding) 0 else block.bounds().min.y.toFloat()
+        return if (!block.isImpeding) 0f else block.bounds().min.y.toFloat()
     }
 
-    private fun clearance(flags: Byte): Passibility? {
+    private fun clearance(flags: Byte): Passibility {
         return PassibilityHelpers.clearance(flags, capabilities)
     }
 
@@ -92,21 +92,21 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
 
     protected fun topOffsetAt(flags: Byte, x: Int, y: Int, z: Int): Float {
         if (Element.air.`in`(flags)
-            || Logic.Companion.climbable(flags)
+            || Logic.climbable(flags)
             || Element.earth.`in`(flags) && Logic.nothing.`in`(flags) || Element.water.`in`(flags) && (capabilities!!.aquatic() || !capabilities!!.swimmer())
-        ) return 0
+        ) return 0f
         if (swimmingRequiredFor(flags)) return -0.5f
         val block = instanceSpace.blockObjectAt(x, y, z)
-        if (!block!!.isImpeding) {
+        if (!block.isImpeding) {
             if (Element.earth.`in`(flags)) {
                 val blockBelow = instanceSpace.blockObjectAt(x, y - 1, z)
-                if (!blockBelow!!.isFullyBounded) {
+                if (!blockBelow.isFullyBounded) {
                     var offset = blockBelow.bounds().max.y.toFloat() - 2
                     if (offset < -1) offset = 0f
                     return offset
                 }
             }
-            return 0
+            return 0f
         }
         return block.bounds().max.y.toFloat() - 1
     }
@@ -128,7 +128,7 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
             val zN = origin.z + discreteSize
             while (z < zN) {
                 for (y in origin.y + tall until yNa) passibility =
-                    passibility!!.between(clearance(sampler.flagsAt(x, y, z)))
+                    passibility?.between(clearance(sampler.flagsAt(x, y, z)))
                 ++z
             }
             ++x
@@ -142,7 +142,7 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
                 while (z < zN) {
                     val flags = sampler.flagsAt(x, yNa, z)
                     if (insufficientHeadClearance(flags, minPartY, x, yNa, z)) passibility =
-                        passibility!!.between(clearance(flags))
+                        passibility?.between(clearance(flags))
                     ++z
                 }
                 ++x
@@ -152,6 +152,7 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
     }
 
     companion object {
+        @JvmStatic
         protected fun swimmingRequiredFor(flags: Byte): Boolean {
             return Element.water.`in`(flags) || Element.fire.`in`(flags) && !Logic.fuzzy.`in`(flags)
         }

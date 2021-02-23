@@ -165,7 +165,7 @@ class NodeMap(
         return cachedPointAt(coords)
     }
 
-    fun cachedPointAt(coords: Vec3i): Node? {
+    fun cachedPointAt(coords: Vec3i): Node {
         var point = internalMap[coords]
         if (point == null) {
             point = passibleNodeNear(coords, null)
@@ -184,7 +184,7 @@ class NodeMap(
         return cachedPassiblePointNear(coords0, origin)
     }
 
-    fun cachedPassiblePointNear(coords: Vec3i, origin: Vec3i?): Node? {
+    fun cachedPassiblePointNear(coords: Vec3i, origin: Vec3i?): Node {
         val nodeMap = internalMap
         val point0 = nodeMap[coords]
         var point = point0
@@ -204,12 +204,12 @@ class NodeMap(
         return point
     }
 
-    private fun passibleNodeNear(coordinates: Vec3i, origin: Vec3i?): Node? {
+    private fun passibleNodeNear(coordinates: Vec3i, origin: Vec3i?): Node {
         val node = calculator!!.passibleNodeNear(coordinates, origin, FlagSampler(occlusionProvider))
         val filter = filter
         if (filter != null) {
             val newPassibility = filter.mapPassibility(node)
-            if (newPassibility != null) node!!.passibility(newPassibility)
+            if (newPassibility != null) node.passibility(newPassibility)
         }
         return node
     }

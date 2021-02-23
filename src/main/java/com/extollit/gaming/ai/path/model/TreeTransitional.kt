@@ -58,14 +58,14 @@ import java.lang.Math
 import com.extollit.gaming.ai.path.model.AreaOcclusionProvider
 
 internal class TreeTransitional(nextRoot: Node) {
-    private class RotateNodeOp(val root: Node, val diff: Int) {
+    class RotateNodeOp(val root: Node, val diff: Int) {
         val heads: MutableList<Node?> = LinkedList()
         override fun toString(): String {
             return diff.toString() + ": " + this.root
         }
     }
 
-    private val nextRoot: Node? = null
+    private var nextRoot: Node? = null
     private val dq: Deque<RotateNodeOp>
     fun queue(head: Node?, root: Node?): Boolean {
         for (op in dq) {

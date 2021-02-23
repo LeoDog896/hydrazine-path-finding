@@ -62,24 +62,24 @@ class AreaOcclusionProvider(
     private val cx0: Int,
     private val cz0: Int
 ) : IOcclusionProvider {
-    private val cxN: Int
-    private val czN: Int
+    private val cxN: Int = columnarSpaces[0].size + cx0 - 1
+    private val czN: Int = columnarSpaces.size + cz0 - 1
     override fun elementAt(x: Int, y: Int, z: Int): Byte {
         val columnarSpaces = columnarSpaces
         val cx = x shr 4
         val cz = z shr 4
         val cy = y shr 4
-        if (cx >= cx0 && cx <= cxN && cz >= cz0 && cz <= czN && cy >= 0 && cy < OcclusionField.Companion.DIMENSION_SIZE) {
+        if (cx in cx0..cxN && cz >= cz0 && cz <= czN && cy >= 0 && cy < OcclusionField.DIMENSION_SIZE) {
             val czz = cz - cz0
             val cxx = cx - cx0
             val columnarSpace = columnarSpaces[czz][cxx]
             if (columnarSpace != null) {
                 val field = columnarSpace.occlusionFields().occlusionFieldAt(cx, cy, cz)
-                if (!field!!.areaInitFull()) areaInit(field, x, y, z)
+                if (!field.areaInitFull()) areaInit(field, x, y, z)
                 return field.elementAt(
-                    x and OcclusionField.Companion.DIMENSION_MASK,
-                    y and OcclusionField.Companion.DIMENSION_MASK,
-                    z and OcclusionField.Companion.DIMENSION_MASK
+                    x and OcclusionField.DIMENSION_MASK,
+                    y and OcclusionField.DIMENSION_MASK,
+                    z and OcclusionField.DIMENSION_MASK
                 )
             }
         }
@@ -91,13 +91,13 @@ class AreaOcclusionProvider(
         val cx = x shr 4
         val cy = y shr 4
         val cz = z shr 4
-        val cxN: Int = columnarSpaces[0].length - 1
+        val cxN: Int = columnarSpaces[0].size - 1
         val czN = columnarSpaces.size - 1
         val czz = cz - cz0
         val cxx = cx - cx0
-        val xx = x and OcclusionField.Companion.DIMENSION_MASK
-        val yy = y and OcclusionField.Companion.DIMENSION_MASK
-        val zz = z and OcclusionField.Companion.DIMENSION_MASK
+        val xx = x and OcclusionField.DIMENSION_MASK
+        val yy = y and OcclusionField.DIMENSION_MASK
+        val zz = z and OcclusionField.DIMENSION_MASK
         val centerColumnarSpace = columnarSpaces[czz][cxx]
         if (xx == 0 && zz == 0 && !field!!.areaInitAt(AreaInit.northWest) && cxx > 0 && czz > 0) {
             val westColumnarSpace = columnarSpaces[czz - 1][cxx]
@@ -106,21 +106,21 @@ class AreaOcclusionProvider(
                 northColumnarSpace.occlusionFields().occlusionFieldAt(cx - 1, cy, cz),
                 westColumnarSpace.occlusionFields().occlusionFieldAt(cx, cy, cz - 1)
             )
-        } else if (xx == OcclusionField.Companion.DIMENSION_EXTENT && zz == 0 && !field!!.areaInitAt(AreaInit.northEast) && cxx < cxN && czz > 0) {
+        } else if (xx == OcclusionField.DIMENSION_EXTENT && zz == 0 && !field!!.areaInitAt(AreaInit.northEast) && cxx < cxN && czz > 0) {
             val westColumnarSpace = columnarSpaces[czz - 1][cxx]
             val eastColumnarSpace = columnarSpaces[czz][cxx + 1]
             if (eastColumnarSpace != null && westColumnarSpace != null) field.areaInitNorthEast(
                 eastColumnarSpace.occlusionFields().occlusionFieldAt(cx + 1, cy, cz),
                 westColumnarSpace.occlusionFields().occlusionFieldAt(cx, cy, cz - 1)
             )
-        } else if (xx == 0 && zz == OcclusionField.Companion.DIMENSION_EXTENT && !field!!.areaInitAt(AreaInit.southWest) && cxx > 0 && czz < czN) {
+        } else if (xx == 0 && zz == OcclusionField.DIMENSION_EXTENT && !field!!.areaInitAt(AreaInit.southWest) && cxx > 0 && czz < czN) {
             val northColumnarSpace = columnarSpaces[czz][cxx - 1]
             val southColumnarSpace = columnarSpaces[czz + 1][cxx]
             if (northColumnarSpace != null && southColumnarSpace != null) field.areaInitSouthWest(
                 northColumnarSpace.occlusionFields().occlusionFieldAt(cx - 1, cy, cz),
                 southColumnarSpace.occlusionFields().occlusionFieldAt(cx, cy, cz + 1)
             )
-        } else if (xx == OcclusionField.Companion.DIMENSION_EXTENT && zz == OcclusionField.Companion.DIMENSION_EXTENT && !field!!.areaInitAt(
+        } else if (xx == OcclusionField.DIMENSION_EXTENT && zz == OcclusionField.DIMENSION_EXTENT && !field!!.areaInitAt(
                 AreaInit.southEast
             ) && cxx < cxN && czz < czN
         ) {
@@ -135,7 +135,7 @@ class AreaOcclusionProvider(
             if (northColumnarSpace != null) field.areaInitWest(
                 northColumnarSpace.occlusionFields().occlusionFieldAt(cx - 1, cy, cz)
             )
-        } else if (xx == OcclusionField.Companion.DIMENSION_EXTENT && !field!!.areaInitAt(AreaInit.east) && cxx < cxN) {
+        } else if (xx == OcclusionField.DIMENSION_EXTENT && !field!!.areaInitAt(AreaInit.east) && cxx < cxN) {
             val eastColumnarSpace = columnarSpaces[czz][cxx + 1]
             if (eastColumnarSpace != null) field.areaInitEast(
                 eastColumnarSpace.occlusionFields().occlusionFieldAt(cx + 1, cy, cz)
@@ -145,17 +145,17 @@ class AreaOcclusionProvider(
             if (westColumnarSpace != null) field.areaInitNorth(
                 westColumnarSpace.occlusionFields().occlusionFieldAt(cx, cy, cz - 1)
             )
-        } else if (zz == OcclusionField.Companion.DIMENSION_EXTENT && !field!!.areaInitAt(AreaInit.south) && czz < czN) {
+        } else if (zz == OcclusionField.DIMENSION_EXTENT && !field!!.areaInitAt(AreaInit.south) && czz < czN) {
             val southColumnarSpace = columnarSpaces[czz + 1][cxx]
             if (southColumnarSpace != null) field.areaInitSouth(
                 southColumnarSpace.occlusionFields().occlusionFieldAt(cx, cy, cz + 1)
             )
         }
-        if (yy == OcclusionField.Companion.DIMENSION_EXTENT && !field!!.areaInitAt(AreaInit.up)) {
+        if (yy == OcclusionField.DIMENSION_EXTENT && !field!!.areaInitAt(AreaInit.up)) {
             field.areaInitUp(
                 centerColumnarSpace,
                 cy,
-                if (cy < OcclusionField.Companion.DIMENSION_EXTENT) centerColumnarSpace!!.occlusionFields()
+                if (cy < OcclusionField.DIMENSION_EXTENT) centerColumnarSpace!!.occlusionFields()
                     .occlusionFieldAt(cx, cy + 1, cz) else null
             )
         } else if (yy == 0 && !field!!.areaInitAt(AreaInit.down)) {
@@ -168,11 +168,7 @@ class AreaOcclusionProvider(
     }
 
     override fun visualizeAt(y: Int): String {
-        return OcclusionField.Companion.visualizeAt(this, y, cx0 shl 4, cz0 shl 4, cxN + 1 shl 4, czN + 1 shl 4)
+        return OcclusionField.visualizeAt(this, y, cx0 shl 4, cz0 shl 4, cxN + 1 shl 4, czN + 1 shl 4)
     }
 
-    init {
-        cxN = columnarSpaces[0].length + cx0 - 1
-        czN = columnarSpaces.size + cz0 - 1
-    }
 }
