@@ -1,6 +1,5 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.gaming.ai.path.model.AreaOcclusionProvider
 import kotlin.experimental.and
 import kotlin.experimental.or
 

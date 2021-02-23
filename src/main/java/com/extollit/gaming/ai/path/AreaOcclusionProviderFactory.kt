@@ -5,7 +5,7 @@ import com.extollit.gaming.ai.path.model.IColumnarSpace
 import com.extollit.gaming.ai.path.model.IInstanceSpace
 import com.extollit.gaming.ai.path.model.IOcclusionProviderFactory
 
-internal class AreaOcclusionProviderFactory private constructor() : IOcclusionProviderFactory {
+internal object AreaOcclusionProviderFactory : IOcclusionProviderFactory {
     override fun fromInstanceSpace(
         instance: IInstanceSpace,
         cx0: Int,
@@ -19,9 +19,5 @@ internal class AreaOcclusionProviderFactory private constructor() : IOcclusionPr
             if (columnarSpace != null) array[cz - cz0][cx - cx0] = columnarSpace
         }
         return AreaOcclusionProvider(array, cx0, cz0)
-    }
-
-    companion object {
-        val INSTANCE = AreaOcclusionProviderFactory()
     }
 }

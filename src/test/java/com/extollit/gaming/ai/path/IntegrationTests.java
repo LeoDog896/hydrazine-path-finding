@@ -149,12 +149,12 @@ public class IntegrationTests extends AbstractHydrazinePathFinderTests {
 
         path.update(super.pathingEntity);
 
-        assertEquals(0, path.i);
+        assertEquals(0, path.index);
 
         pos(super.pathingEntity, 0.5, 1, 0.5);
         path.update(super.pathingEntity);
 
-        assertEquals(3, path.i);
+        assertEquals(3, path.index);
     }
 
     @Test
@@ -216,19 +216,19 @@ public class IntegrationTests extends AbstractHydrazinePathFinderTests {
         );
 
         path.update(pathingEntity);
-        assertEquals(1, path.i);
+        assertEquals(1, path.index);
 
         pos(super.pathingEntity, -0.9, 0.5, 0.2);
         path.update(pathingEntity);
-        assertEquals(2, path.i);
+        assertEquals(2, path.index);
 
         pos(super.pathingEntity, -0.9, 0.5, 1.1);
         path.update(pathingEntity);
-        assertEquals(3, path.i);
+        assertEquals(3, path.index);
 
         pos(super.pathingEntity, -0.9, 1, 1.9);
         path.update(pathingEntity);
-        assertEquals(4, path.i);
+        assertEquals(4, path.index);
 
         pos(super.pathingEntity, -0.05, 1, 3.1);
         path.update(pathingEntity);

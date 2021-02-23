@@ -1,10 +1,7 @@
 package com.extollit.gaming.ai.path.model
 
-import kotlin.jvm.JvmOverloads
-import java.lang.StringBuilder
-import java.text.MessageFormat
-import java.lang.Math
 import com.extollit.linalg.immutable.Vec3i
+import java.text.MessageFormat
 import kotlin.experimental.inv
 import kotlin.experimental.or
 
@@ -36,26 +33,18 @@ class Node : INode {
         return key
     }
 
-    fun length(): Byte {
-        return (word shr Length_BitOffs.toInt() and Mask_128).toByte()
-    }
+    fun length(): Byte = (word shr Length_BitOffs.toInt() and Mask_128).toByte()
 
-    fun remaining(): Byte {
-        return (word shr Remain_BitOffs.toInt() and Mask_128).toByte()
-    }
+    fun remaining(): Byte = (word shr Remain_BitOffs.toInt() and Mask_128).toByte()
 
-    fun journey(): Byte {
-        return (length() + remaining()).toByte()
-    }
+    fun journey(): Byte = (length() + remaining()).toByte()
 
     /**
      * Gets the previous node of this node, or its "parent"
      *
      * @return The parent of the node.
      */
-    fun parent(): Node? {
-        return previous
-    }
+    fun parent(): Node? = previous
 
     /**
      * Goes through all parents of this node to find the oldest relative of this Node.
@@ -68,9 +57,7 @@ class Node : INode {
         return node
     }
 
-    override fun passibility(): Passibility {
-        return Passibility.values()[word and Mask_Passibility.toInt()]
-    }
+    override fun passibility() = Passibility.values()[word and Mask_Passibility.toInt()]
 
     fun passibility(passibility: Passibility?) {
         var mutablePassibility = passibility
@@ -79,9 +66,7 @@ class Node : INode {
         word = word and Mask_Passibility.inv().toInt() or mutablePassibility!!.ordinal
     }
 
-    override fun gravitation(): Gravitation {
-        return Gravitation.values()[word shr Gravitation_BitOffs.toInt() and Mask_Gravitation.toInt()]
-    }
+    override fun gravitation() = Gravitation.values()[word shr Gravitation_BitOffs.toInt() and Mask_Gravitation.toInt()]
 
     fun gravitation(gravitation: Gravitation?) {
         word =
@@ -95,9 +80,7 @@ class Node : INode {
         return true
     }
 
-    fun addLength(dl: Int) {
-        length(length() + dl)
-    }
+    fun addLength(dl: Int): Boolean = length(length() + dl)
 
     fun remaining(delta: Int): Boolean {
         if (delta > Mask_128 || delta < 0) return false
@@ -109,9 +92,7 @@ class Node : INode {
         word = wordReset(this)
     }
 
-    fun rollback() {
-        reset()
-    }
+    fun rollback() = reset()
 
     fun index(): Short {
         val index = (word shr Index_BitOffs.toInt() and Mask_512).toShort()
@@ -124,33 +105,25 @@ class Node : INode {
         return true
     }
 
-    fun dirty(): Boolean {
-        return word shr LengthDirty_BitOffs.toInt() and 1 == 1
-    }
+    fun dirty(): Boolean = word shr LengthDirty_BitOffs.toInt() and 1 == 1
 
     fun dirty(flag: Boolean) {
         word = word and (1 shl LengthDirty_BitOffs.toInt()).inv() or if (flag) 1 shl LengthDirty_BitOffs.toInt() else 0
     }
 
-    fun visited(): Boolean {
-        return word shr Visited_BitOffs.toInt() and 1 == 1
-    }
+    fun visited(): Boolean = word shr Visited_BitOffs.toInt() and 1 == 1
 
     fun visited(flag: Boolean) {
         word = word and (1 shl Visited_BitOffs.toInt()).inv() or if (flag) 1 shl Visited_BitOffs.toInt() else 0
     }
 
-    fun volatile_(): Boolean {
-        return word shr Volatile_BitOffs.toInt() and 1 == 1
-    }
+    fun volatile_(): Boolean = word shr Volatile_BitOffs.toInt() and 1 == 1
 
     fun volatile_(flag: Boolean) {
         word = word and (1 shl Volatile_BitOffs.toInt()).inv() or if (flag) 1 shl Volatile_BitOffs.toInt() else 0
     }
 
-    fun assigned(): Boolean {
-        return index().toInt() != -1
-    }
+    fun assigned(): Boolean = index().toInt() != -1
 
     fun target(targetPoint: Vec3i?): Boolean {
         val distance = Math.sqrt(squareDelta(this, targetPoint).toDouble())
@@ -197,18 +170,14 @@ class Node : INode {
         }
     }
 
-    fun infecund(): Boolean {
-        return children == null
-    }
+    fun infecund(): Boolean = children == null
 
     private fun removeChild(child: Node) {
         if (children != null) children = children!!.remove(child)
         assert(!NodeLinkedList.contains(children, child))
     }
 
-    fun unassign() {
-        index(-1)
-    }
+    fun unassign(): Boolean = index(-1)
 
     fun appendTo(parent: Node?, delta: Int, remaining: Int): Boolean {
         bindParent(parent)

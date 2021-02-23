@@ -73,7 +73,7 @@ public class PathObjectTests {
         when(pathingEntity.coordinates()).thenReturn(new Vec3d(0.5, 0, 0.5));
         when(pathingEntity.capabilities()).thenReturn(capabilities);
 
-        pathAlpha.i = pathBeta.i = 0;
+        pathAlpha.index = pathBeta.index = 0;
         this.time = 0;
     }
 
@@ -123,7 +123,7 @@ public class PathObjectTests {
         );
         pathObject.update(pathingEntity);
 
-        assertEquals(4, pathObject.i);
+        assertEquals(4, pathObject.index);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class PathObjectTests {
 
         pathObject.update(pathingEntity);
 
-        assertEquals(6, pathObject.i);
+        assertEquals(6, pathObject.index);
     }
 
     @Test
@@ -160,7 +160,7 @@ public class PathObjectTests {
 
         pathObject.update(pathingEntity);
 
-        assertEquals(3, pathObject.i);
+        assertEquals(3, pathObject.index);
     }
 
     @Test
@@ -251,7 +251,7 @@ public class PathObjectTests {
 
         pathObject.update(pathingEntity);
 
-        assertEquals(2, pathObject.i);
+        assertEquals(2, pathObject.index);
     }
 
     @Test
@@ -266,7 +266,7 @@ public class PathObjectTests {
         pos(3.5, 0, 0.5);
         pathObject.update(pathingEntity);
 
-        assertEquals(4, pathObject.i);
+        assertEquals(4, pathObject.index);
         verify(pathingEntity).moveTo(new Vec3d(5.5, 0, 0.5), Passibility.passible, Gravitation.grounded);
 
         tick(100);
@@ -274,7 +274,7 @@ public class PathObjectTests {
 
         pathObject.update(pathingEntity);
 
-        assertEquals(2, pathObject.i);
+        assertEquals(2, pathObject.index);
         verify(pathingEntity).moveTo(new Vec3d(3.5, 0, 0.5), Passibility.passible, Gravitation.grounded);
     }
 
@@ -296,10 +296,10 @@ public class PathObjectTests {
 
         pos(-1.5, 4, 11.5);
         path.update(pathingEntity);
-        final int first = path.i;
+        final int first = path.index;
 
         path.update(pathingEntity);
-        assertEquals(first, path.i);
+        assertEquals(first, path.index);
     }
 
     @Test
@@ -311,7 +311,7 @@ public class PathObjectTests {
         when(pathingEntity.coordinates()).thenReturn(new Vec3d(0.4, 0.5, 0.4));
 
         path.update(pathingEntity);
-        assertEquals(1, path.i);
+        assertEquals(1, path.index);
     }
 
     @Test
@@ -329,22 +329,22 @@ public class PathObjectTests {
         pos(11.4, 5, 7.3);
         path.update(pathingEntity);
 
-        assertEquals(4, path.i);
+        assertEquals(4, path.index);
     }
 
     @Test
     public void disparatePathAdjustment() {
-        pathAlpha.i = 11;
+        pathAlpha.index = 11;
 
         pos(-9.5, 38.0, 1.5);
         pathBeta.adjustPathPosition(pathAlpha, pathingEntity);
 
-        assertEquals(10, pathBeta.i);
+        assertEquals(10, pathBeta.index);
     }
 
     @Test
     public void unreachablePath() {
-        pathAlpha.i = 11;
+        pathAlpha.index = 11;
         assertFalse(pathBeta.reachableFrom(pathAlpha));
     }
 
@@ -363,33 +363,33 @@ public class PathObjectTests {
 
         pos(2.1, 4, 0.5);
         path.update(pathingEntity);
-        assertEquals(1, path.i);
+        assertEquals(1, path.index);
 
         tick(1);
 
         pos(2.1, 4, 1.3);
         path.update(pathingEntity);
 
-        assertEquals(3, path.i);
+        assertEquals(3, path.index);
 
         tick(1);
 
         pos(2.1, 4, 0.9);
         path.update(pathingEntity);
-        assertEquals(1, path.i);
+        assertEquals(1, path.index);
 
         tick(1);
 
         pos(2.1, 4, 1.3);
         path.update(pathingEntity);
 
-        assertEquals(3, path.i);
+        assertEquals(3, path.index);
 
         tick(1);
 
         pos(2.1, 4, 0.9);
         path.update(pathingEntity);
-        assertEquals(1, path.i);
+        assertEquals(1, path.index);
 
         tick(1);
 
@@ -397,7 +397,7 @@ public class PathObjectTests {
         path.update(pathingEntity);
 
         assertTrue(path.taxiing());
-        assertEquals(2, path.i);
+        assertEquals(2, path.index);
     }
 
     @Test
@@ -414,6 +414,6 @@ public class PathObjectTests {
 
         pos(0.2, 0.2, 0.2);
         path.update(pathingEntity);
-        assertEquals(4, path.i);
+        assertEquals(4, path.index);
     }
 }

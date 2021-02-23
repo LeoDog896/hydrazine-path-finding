@@ -1,35 +1,6 @@
 package com.extollit.gaming.ai.path
 
-import kotlin.jvm.JvmOverloads
-import java.lang.StringBuilder
-import java.text.MessageFormat
-import java.util.Objects
-import com.extollit.collect.SparseSpatialMap
-import com.extollit.linalg.immutable.IntAxisAlignedBox
-import java.lang.ArrayIndexOutOfBoundsException
-import com.extollit.collect.ArrayIterable
-import com.extollit.num.FloatRange
-import com.extollit.gaming.ai.path.IConfigModel
-import java.lang.NullPointerException
-import java.lang.UnsupportedOperationException
-import com.extollit.collect.CollectionsExt
-import com.extollit.linalg.immutable.VertexOffset
-import com.extollit.gaming.ai.path.model.OcclusionField.AreaInit
-import java.util.LinkedList
-import java.util.Collections
-import java.lang.IllegalStateException
-import java.util.HashSet
-import java.util.Deque
-import com.extollit.gaming.ai.path.model.TreeTransitional.RotateNodeOp
-import com.extollit.gaming.ai.path.SchedulingPriority
-import com.extollit.gaming.ai.path.IConfigModel.Schedule
-import com.extollit.gaming.ai.path.PassibilityHelpers
-import java.lang.IllegalArgumentException
-import com.extollit.gaming.ai.path.AreaOcclusionProviderFactory
-import com.extollit.gaming.ai.path.HydrazinePathFinder
-import com.extollit.gaming.ai.path.FluidicNodeCalculator
-import com.extollit.gaming.ai.path.GroundNodeCalculator
-import com.extollit.gaming.ai.path.AbstractNodeCalculator
+
 import com.extollit.gaming.ai.path.model.*
 import java.lang.Math
 import com.extollit.linalg.immutable.Vec3i

@@ -1,15 +1,11 @@
 package com.extollit.gaming.ai.path.model
 
-import java.lang.UnsupportedOperationException
 import com.extollit.collect.CollectionsExt
 
-class NodeLinkedList private constructor(val self: Node, private var next: NodeLinkedList?) : Iterable<Node> {
-    constructor(self: Node) : this(self, null)
+class NodeLinkedList(val self: Node, private var next: NodeLinkedList? = null) : Iterable<Node> {
 
     private class Iter(private var head: NodeLinkedList?) : MutableIterator<Node> {
-        override fun hasNext(): Boolean {
-            return head != null
-        }
+        override fun hasNext() = head != null
 
         override fun next(): Node {
             val head = head
@@ -17,9 +13,7 @@ class NodeLinkedList private constructor(val self: Node, private var next: NodeL
             return head.self
         }
 
-        override fun remove() {
-            throw UnsupportedOperationException()
-        }
+        override fun remove() = throw UnsupportedOperationException()
     }
 
     override fun iterator(): MutableIterator<Node> {

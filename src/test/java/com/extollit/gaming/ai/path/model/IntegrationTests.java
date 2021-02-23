@@ -39,7 +39,7 @@ public class IntegrationTests {
         when(pathingEntity.coordinates()).thenReturn(new Vec3d(-0.5, 4, 10.5));
 
         path.update(pathingEntity);
-        assertEquals(1, path.i);
+        assertEquals(1, path.index);
 
         verify(pathingEntity).moveTo(new Vec3d(-1.5, 4, 11.5), Passibility.passible, Gravitation.grounded);
 
@@ -60,19 +60,19 @@ public class IntegrationTests {
         );
 
         path.update(pathingEntity);
-        assertEquals(3, path.i);
+        assertEquals(3, path.index);
 
         verify(pathingEntity).moveTo(new Vec3d(-3.5, 4, 11.5), Passibility.passible, Gravitation.grounded);
 
         when(pathingEntity.coordinates()).thenReturn(new Vec3d(-3.5, 4, 11.5));
         path.update(pathingEntity);
-        assertEquals(5, path.i);
+        assertEquals(5, path.index);
 
         verify(pathingEntity).moveTo(new Vec3d(-3.5, 4, 9.5), Passibility.passible, Gravitation.grounded);
 
         when(pathingEntity.coordinates()).thenReturn(new Vec3d(-3.5, 4, 9.5));
         path.update(pathingEntity);
-        assertEquals(10, path.i);
+        assertEquals(10, path.index);
     }
 
     @Test
@@ -90,14 +90,14 @@ public class IntegrationTests {
         path.taxiUntil(2);
 
         path.update(pathingEntity);
-        assertEquals(1, path.i);
+        assertEquals(1, path.index);
 
         when(pathingEntity.coordinates()).thenReturn(new Vec3d(0.4, 4.5, 3.4));
         path.update(pathingEntity);
-        assertEquals(2, path.i);
+        assertEquals(2, path.index);
 
         when(pathingEntity.coordinates()).thenReturn(new Vec3d(1.4, 4.5, 3.4));
         path.update(pathingEntity);
-        assertEquals(4, path.i);
+        assertEquals(4, path.index);
     }
 }

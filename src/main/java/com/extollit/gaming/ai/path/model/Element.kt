@@ -1,6 +1,7 @@
 package com.extollit.gaming.ai.path.model
 
 import kotlin.experimental.and
+import kotlin.experimental.inv
 import kotlin.experimental.or
 
 /**
@@ -74,7 +75,7 @@ enum class Element {
      * @return true if the lower two bits map to this element
      */
     fun `in`(flags: Byte): Boolean {
-        return flags and MASK.toByte() == mask
+        return flags and MASK == mask
     }
 
     /**
@@ -85,11 +86,12 @@ enum class Element {
      * @return the passed-in flags modified to represent this element
      */
     fun to(flags: Byte): Byte {
-        return (flags and MASK.inv().toByte() or mask)
+        return (flags and MASK.inv() or mask)
     }
 
     companion object {
-        const val MASK = 4 - 1
+        // TODO ?? figure out these magic values.
+        const val MASK: Byte = 4 - 1
 
         /**
          * Helper function for determining the element represented by the specified nibble.  The nibble may contain
@@ -100,7 +102,7 @@ enum class Element {
          * @return the element represented by the nibble
          */
         fun of(flags: Byte): Element {
-            return values()[(flags and MASK.toByte()).toInt()]
+            return values()[(flags and MASK).toInt()]
         }
     }
 }

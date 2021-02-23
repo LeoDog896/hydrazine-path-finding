@@ -1,56 +1,6 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.gaming.ai.path.model.INode
-import com.extollit.gaming.ai.path.model.NodeLinkedList
-import kotlin.jvm.JvmOverloads
-import com.extollit.gaming.ai.path.model.Passibility
-import com.extollit.gaming.ai.path.model.Gravitation
-import java.lang.StringBuilder
-import java.text.MessageFormat
-import com.extollit.gaming.ai.path.model.IPath
-import com.extollit.gaming.ai.path.model.IPathingEntity
-import com.extollit.gaming.ai.path.model.Logic
-import com.extollit.gaming.ai.path.model.IInstanceSpace
-import com.extollit.gaming.ai.path.model.INodeCalculator
-import com.extollit.gaming.ai.path.model.IOcclusionProviderFactory
-import com.extollit.collect.SparseSpatialMap
-import com.extollit.gaming.ai.path.model.IGraphNodeFilter
-import com.extollit.gaming.ai.path.model.IOcclusionProvider
-import com.extollit.gaming.ai.path.model.SortedNodeQueue
-import com.extollit.linalg.immutable.IntAxisAlignedBox
-import com.extollit.gaming.ai.path.model.FlagSampler
-import java.lang.ArrayIndexOutOfBoundsException
-import com.extollit.collect.ArrayIterable
-import com.extollit.gaming.ai.path.model.PathObject
-import com.extollit.num.FloatRange
-import com.extollit.gaming.ai.path.IConfigModel
-import com.extollit.gaming.ai.path.model.IncompletePath
-import com.extollit.gaming.ai.path.model.IBlockDescription
-import com.extollit.gaming.ai.path.model.ColumnarOcclusionFieldList
-import com.extollit.gaming.ai.path.model.IBlockObject
-import com.extollit.gaming.ai.path.model.IColumnarSpace
-import com.extollit.gaming.ai.path.model.IDynamicMovableObject
-import java.lang.NullPointerException
-import java.lang.UnsupportedOperationException
-import com.extollit.collect.CollectionsExt
 import com.extollit.linalg.immutable.VertexOffset
-import com.extollit.gaming.ai.path.model.OcclusionField.AreaInit
-import com.extollit.gaming.ai.path.model.OcclusionField
-import com.extollit.gaming.ai.path.model.TreeTransitional
-import java.lang.IllegalStateException
-import com.extollit.gaming.ai.path.model.TreeTransitional.RotateNodeOp
-import com.extollit.gaming.ai.path.SchedulingPriority
-import com.extollit.gaming.ai.path.IConfigModel.Schedule
-import com.extollit.gaming.ai.path.PassibilityHelpers
-import java.lang.IllegalArgumentException
-import com.extollit.gaming.ai.path.model.IPathProcessor
-import com.extollit.gaming.ai.path.AreaOcclusionProviderFactory
-import com.extollit.gaming.ai.path.HydrazinePathFinder
-import com.extollit.gaming.ai.path.FluidicNodeCalculator
-import com.extollit.gaming.ai.path.GroundNodeCalculator
-import com.extollit.gaming.ai.path.AbstractNodeCalculator
-import java.lang.Math
-import com.extollit.gaming.ai.path.model.AreaOcclusionProvider
 import java.util.*
 import kotlin.experimental.and
 import kotlin.experimental.or
@@ -759,12 +709,8 @@ open class OcclusionField : IOcclusionProvider {
         return element
     }
 
-    private fun elementAt(word: Long, offset: Int): Byte {
-        var element: Byte
-        element = (word shr (offset shl ELEMENT_LENGTH_SHL.toInt())).toByte()
-        element = element and ELEMENT_MASK.toByte()
-        return element
-    }
+    private fun elementAt(word: Long, offset: Int) =
+        ((word shr (offset shl ELEMENT_LENGTH_SHL.toInt())).toByte()) and ELEMENT_MASK.toByte()
 
     override fun visualizeAt(dy: Int): String {
         return visualizeAt(this, dy, 0, 0, DIMENSION_SIZE, DIMENSION_SIZE)

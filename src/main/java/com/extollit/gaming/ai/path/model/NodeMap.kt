@@ -1,61 +1,7 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.gaming.ai.path.model.INode
-import com.extollit.gaming.ai.path.model.NodeLinkedList
-import kotlin.jvm.JvmOverloads
-import com.extollit.gaming.ai.path.model.Passibility
-import com.extollit.gaming.ai.path.model.Gravitation
-import java.lang.StringBuilder
-import java.text.MessageFormat
-import java.util.Objects
-import com.extollit.gaming.ai.path.model.IPath
-import com.extollit.gaming.ai.path.model.IPathingEntity
-import com.extollit.gaming.ai.path.model.Logic
-import com.extollit.gaming.ai.path.model.IInstanceSpace
-import com.extollit.gaming.ai.path.model.INodeCalculator
-import com.extollit.gaming.ai.path.model.IOcclusionProviderFactory
 import com.extollit.collect.SparseSpatialMap
-import com.extollit.gaming.ai.path.model.IGraphNodeFilter
-import com.extollit.gaming.ai.path.model.IOcclusionProvider
-import com.extollit.gaming.ai.path.model.SortedNodeQueue
 import com.extollit.linalg.immutable.IntAxisAlignedBox
-import com.extollit.gaming.ai.path.model.FlagSampler
-import java.lang.ArrayIndexOutOfBoundsException
-import com.extollit.collect.ArrayIterable
-import com.extollit.gaming.ai.path.model.PathObject
-import com.extollit.num.FloatRange
-import com.extollit.gaming.ai.path.IConfigModel
-import com.extollit.gaming.ai.path.model.IncompletePath
-import com.extollit.gaming.ai.path.model.IBlockDescription
-import com.extollit.gaming.ai.path.model.ColumnarOcclusionFieldList
-import com.extollit.gaming.ai.path.model.IBlockObject
-import com.extollit.gaming.ai.path.model.IColumnarSpace
-import com.extollit.gaming.ai.path.model.IDynamicMovableObject
-import java.lang.NullPointerException
-import java.lang.UnsupportedOperationException
-import com.extollit.collect.CollectionsExt
-import com.extollit.linalg.immutable.VertexOffset
-import com.extollit.gaming.ai.path.model.OcclusionField.AreaInit
-import com.extollit.gaming.ai.path.model.OcclusionField
-import com.extollit.gaming.ai.path.model.TreeTransitional
-import java.util.LinkedList
-import java.util.Collections
-import java.lang.IllegalStateException
-import java.util.HashSet
-import java.util.Deque
-import com.extollit.gaming.ai.path.model.TreeTransitional.RotateNodeOp
-import com.extollit.gaming.ai.path.SchedulingPriority
-import com.extollit.gaming.ai.path.IConfigModel.Schedule
-import com.extollit.gaming.ai.path.PassibilityHelpers
-import java.lang.IllegalArgumentException
-import com.extollit.gaming.ai.path.model.IPathProcessor
-import com.extollit.gaming.ai.path.AreaOcclusionProviderFactory
-import com.extollit.gaming.ai.path.HydrazinePathFinder
-import com.extollit.gaming.ai.path.FluidicNodeCalculator
-import com.extollit.gaming.ai.path.GroundNodeCalculator
-import com.extollit.gaming.ai.path.AbstractNodeCalculator
-import java.lang.Math
-import com.extollit.gaming.ai.path.model.AreaOcclusionProvider
 import com.extollit.linalg.immutable.Vec3i
 
 class NodeMap(
@@ -81,9 +27,7 @@ class NodeMap(
         clear()
     }
 
-    fun filter(): IGraphNodeFilter? {
-        return filter
-    }
+    fun filter(): IGraphNodeFilter? = filter
 
     fun calculator(calculator: INodeCalculator?) {
         this.calculator = calculator
@@ -111,17 +55,11 @@ class NodeMap(
         occlusionProvider = null
     }
 
-    fun clear() {
-        internalMap.clear()
-    }
+    fun clear() = internalMap.clear()
 
-    fun needsOcclusionProvider(): Boolean {
-        return occlusionProvider == null
-    }
+    fun needsOcclusionProvider(): Boolean = occlusionProvider == null
 
-    fun flagsAt(x: Int, y: Int, z: Int): Byte {
-        return occlusionProvider!!.elementAt(x, y, z)
-    }
+    fun flagsAt(x: Int, y: Int, z: Int): Byte = occlusionProvider!!.elementAt(x, y, z)
 
     fun updateFieldWindow(x0: Int, z0: Int, xN: Int, zN: Int, cull: Boolean) {
         val cx0 = x0 shr 4
@@ -129,8 +67,7 @@ class NodeMap(
         val cxN = xN shr 4
         val czN = zN shr 4
         val aop = occlusionProvider
-        val windowTest: Boolean
-        windowTest =
+        val windowTest: Boolean =
             if (cull) cx0 != centerX0 || cz0 != centerZ0 || cxN != centerXN || czN != centerZN else cx0 < centerX0 || cz0 < centerZ0 || cxN > centerXN || czN > centerZN
         if (aop == null || windowTest) {
             occlusionProvider = occlusionProviderFactory.fromInstanceSpace(instanceSpace, cx0, cz0, cxN, czN)
@@ -174,7 +111,7 @@ class NodeMap(
         return point
     }
 
-    fun cachedPassiblePointNear(x: Int, y: Int, z: Int): Node? {
+    fun cachedPassiblePointNear(x: Int, y: Int, z: Int): Node {
         return cachedPassiblePointNear(x, y, z, null)
     }
 
@@ -230,10 +167,10 @@ class NodeMap(
         return internalMap.toString()
     }
 
-    override fun equals(`object`: Any?): Boolean {
-        if (this === `object`) return true
-        if (`object` == null || javaClass != `object`.javaClass) return false
-        val nodeMap = `object` as NodeMap
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val nodeMap = other as NodeMap
         return internalMap == nodeMap.internalMap
     }
 

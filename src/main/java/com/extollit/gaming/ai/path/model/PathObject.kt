@@ -1,71 +1,26 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.gaming.ai.path.model.INode
-import com.extollit.gaming.ai.path.model.NodeLinkedList
-import kotlin.jvm.JvmOverloads
-import com.extollit.gaming.ai.path.model.Passibility
-import com.extollit.gaming.ai.path.model.Gravitation
-import java.lang.StringBuilder
-import java.text.MessageFormat
-import com.extollit.gaming.ai.path.model.IPath
-import com.extollit.gaming.ai.path.model.IPathingEntity
-import com.extollit.gaming.ai.path.model.Logic
-import com.extollit.gaming.ai.path.model.IInstanceSpace
-import com.extollit.gaming.ai.path.model.INodeCalculator
-import com.extollit.gaming.ai.path.model.IOcclusionProviderFactory
-import com.extollit.collect.SparseSpatialMap
-import com.extollit.gaming.ai.path.model.IGraphNodeFilter
-import com.extollit.gaming.ai.path.model.IOcclusionProvider
-import com.extollit.gaming.ai.path.model.SortedNodeQueue
-import com.extollit.linalg.immutable.IntAxisAlignedBox
-import com.extollit.gaming.ai.path.model.FlagSampler
-import java.lang.ArrayIndexOutOfBoundsException
 import com.extollit.collect.ArrayIterable
-import com.extollit.gaming.ai.path.model.PathObject
-import com.extollit.num.FloatRange
 import com.extollit.gaming.ai.path.IConfigModel
-import com.extollit.gaming.ai.path.model.IncompletePath
-import com.extollit.gaming.ai.path.model.IBlockDescription
-import com.extollit.gaming.ai.path.model.ColumnarOcclusionFieldList
-import com.extollit.gaming.ai.path.model.IBlockObject
-import com.extollit.gaming.ai.path.model.IColumnarSpace
-import com.extollit.gaming.ai.path.model.IDynamicMovableObject
-import java.lang.NullPointerException
-import java.lang.UnsupportedOperationException
-import com.extollit.collect.CollectionsExt
-import com.extollit.linalg.immutable.VertexOffset
-import com.extollit.gaming.ai.path.model.OcclusionField.AreaInit
-import com.extollit.gaming.ai.path.model.OcclusionField
-import com.extollit.gaming.ai.path.model.TreeTransitional
-import java.lang.IllegalStateException
-import com.extollit.gaming.ai.path.model.TreeTransitional.RotateNodeOp
-import com.extollit.gaming.ai.path.SchedulingPriority
-import com.extollit.gaming.ai.path.IConfigModel.Schedule
-import com.extollit.gaming.ai.path.PassibilityHelpers
-import java.lang.IllegalArgumentException
-import com.extollit.gaming.ai.path.model.IPathProcessor
-import com.extollit.gaming.ai.path.AreaOcclusionProviderFactory
-import com.extollit.gaming.ai.path.HydrazinePathFinder
-import com.extollit.gaming.ai.path.FluidicNodeCalculator
-import com.extollit.gaming.ai.path.GroundNodeCalculator
-import com.extollit.gaming.ai.path.AbstractNodeCalculator
-import java.lang.Math
-import com.extollit.gaming.ai.path.model.AreaOcclusionProvider
 import com.extollit.linalg.immutable.Vec3d
 import com.extollit.linalg.immutable.Vec3i
+import com.extollit.num.FloatRange
+import java.text.MessageFormat
 import java.util.*
 
-class PathObject protected constructor(speed: Float, random: Random?, vararg nodes: Node?) : IPath {
+class PathObject protected constructor(
+    val speed: Float,
+    val random: Random?,
+    vararg nodes: Node?
+) : IPath {
     @kotlin.jvm.JvmField
-    val nodes: Array<Node>
-    private val speed: Float
-    private val random: Random?
+    val nodes: Array<Node> = nodes as Array<Node>
     @kotlin.jvm.JvmField
-    var i = 0
+    var index = 0
     private var taxiUntil = 0
     private var adjacentIndex = 0
     private var length: Int
-    private var nextDirectLineTimeout: Float
+    private var nextDirectLineTimeout: Float = DIRECT_LINE_TIME_LIMIT!!.next(random)
     private var lastMutationTime = -1f
 
     internal constructor(speed: Float, vararg nodes: Node?) : this(speed, Random(), *nodes)
@@ -85,21 +40,13 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
         return ArrayIterable.Iter<INode>(nodes, length)
     }
 
-    override fun length(): Int {
-        return length
-    }
+    override fun length() = length
 
-    override fun cursor(): Int {
-        return i
-    }
+    override fun cursor() = index
 
-    override fun at(i: Int): INode {
-        return nodes[i]
-    }
+    override fun at(i: Int) = nodes[i]
 
-    override fun current(): INode {
-        return nodes[i]
-    }
+    override fun current() = nodes[index]
 
     override fun last(): INode? {
         val nodes = nodes
@@ -107,9 +54,7 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
         return if (length > 0) nodes[length - 1] else null
     }
 
-    override fun done(): Boolean {
-        return i >= length
-    }
+    override fun done() = index >= length
 
     override fun update(subject: IPathingEntity) {
         var mutated = false
@@ -120,7 +65,7 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
             val grounded = !(capabilities!!.avian() || capabilities.aquatic() && capabilities.swimmer())
             val fy: Float
             if (grounded) {
-                unlevelIndex = unlevelIndex(i, subject.coordinates())
+                unlevelIndex = unlevelIndex(index, subject.coordinates())
                 fy = 0f
             } else {
                 unlevelIndex = length
@@ -129,7 +74,7 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
             val adjacentIndex0 = adjacentIndex
             val minDistanceSquared = updateNearestAdjacentIndex(subject, unlevelIndex, fy)
             val adjacentIndex = adjacentIndex
-            var targetIndex = i
+            var targetIndex = index
             if (minDistanceSquared <= PATHPOINT_SNAP_MARGIN_SQ) {
                 var advanceTargetIndex: Int? = null
                 targetIndex = adjacentIndex
@@ -142,7 +87,7 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
             } else if (minDistanceSquared > 0.5 || targetIndex < taxiUntil) targetIndex = adjacentIndex
             mutated = adjacentIndex > adjacentIndex0
             this.adjacentIndex = adjacentIndex
-            i = Math.max(adjacentIndex, targetIndex)
+            index = Math.max(adjacentIndex, targetIndex)
             if (stagnantFor(subject) > nextDirectLineTimeout) {
                 if (taxiUntil < adjacentIndex) taxiUntil = adjacentIndex + 1 else taxiUntil++
                 nextDirectLineTimeout += DIRECT_LINE_TIME_LIMIT!!.next(random)
@@ -208,8 +153,8 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
         taxiUntil = index
     }
 
-    override fun stagnantFor(pathingEntity: IPathingEntity): Float {
-        return if (lastMutationTime < 0) 0f else pathingEntity.age() * speed - lastMutationTime
+    override fun stagnantFor(subject: IPathingEntity): Float {
+        return if (lastMutationTime < 0) 0f else subject.age() * speed - lastMutationTime
     }
 
     fun directLine(from: Int, until: Int, grounded: Boolean): Int {
@@ -348,7 +293,7 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
         val that = o as PathObject
-        return i == that.i && sameAs(that)
+        return index == that.index && sameAs(that)
     }
 
     override fun hashCode(): Int {
@@ -358,12 +303,11 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
 
     override fun toString(): String {
         val sb = StringBuilder()
-        var index = 0
         sb.append("Last Mutation: ")
         sb.append(lastMutationTime)
         sb.append(System.lineSeparator())
-        for (pp in nodes) {
-            if (index++ == i) sb.append('*')
+        for ((index, pp) in nodes.withIndex()) {
+            if (index == this.index) sb.append('*')
             sb.append(pp.key)
             sb.append(System.lineSeparator())
         }
@@ -387,7 +331,7 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
             val node: INode = nodes[c]
             val p = node.coordinates()
             if (p == lastPointVisited.coordinates()) {
-                i = c
+                index = c
                 break
             }
             val dx = p.x - x + pointOffset
@@ -396,7 +340,7 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
             val squareDelta = dx * dx + dy * dy + dz * dz
             if (squareDelta < minSquareDistFromSource) {
                 minSquareDistFromSource = squareDelta
-                i = c
+                index = c
             }
         }
     }
@@ -414,10 +358,10 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
             DIRECT_LINE_TIME_LIMIT = configModel.directLineTimeLimit()
         }
 
-        fun fromHead(speed: Float, random: Random?, head: Node?): IPath {
+        fun fromHead(speed: Float, random: Random?, head: Node): IPath {
             var i = 1
             run {
-                var p = head
+                var p: Node? = head
                 while (p!!.parent() != null) {
                     ++i
                     p = p!!.parent()
@@ -425,12 +369,15 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
             }
             val result = arrayOfNulls<Node>(i)
             result[--i] = head
-            var p = head
+            var p: Node? = head
             while (p!!.parent() != null) {
                 p = p!!.parent()
                 result[--i] = p
             }
-            return if (result.size <= 1) IncompletePath(result[0]) else PathObject(speed, random, *result)
+            return if (result.size <= 1)
+                IncompletePath(result[0])
+            else
+                PathObject(speed, random, *result)
         }
 
         @kotlin.jvm.JvmStatic
@@ -456,10 +403,6 @@ class PathObject protected constructor(speed: Float, random: Random?, vararg nod
 
     init {
         // TODO NULL AAAAA
-        this.nodes = nodes as Array<Node>
         length = nodes.size
-        this.speed = speed
-        this.random = random
-        nextDirectLineTimeout = DIRECT_LINE_TIME_LIMIT!!.next(random)
     }
 }
