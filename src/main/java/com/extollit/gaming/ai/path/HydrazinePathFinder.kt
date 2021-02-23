@@ -10,6 +10,7 @@ import com.extollit.tuple.Pair
 import java.lang.Math
 import java.util.*
 import kotlin.math.ceil
+import kotlin.math.floor
 import kotlin.math.max
 
 /**
@@ -72,8 +73,7 @@ class HydrazinePathFinder internal constructor(
         entity,
         instanceSpace,
         AreaOcclusionProviderFactory.INSTANCE
-    ) {
-    }
+    )
 
     /**
      * Apply a random number generator to this object, it is used for various fuzzy-logic operations during path-finding
@@ -372,10 +372,10 @@ class HydrazinePathFinder internal constructor(
         val sourcePosition = sourcePosition
         val destinationPosition = destinationPosition
         updateFieldWindow(
-            Math.floor(sourcePosition!!.x).toInt(),
-            Math.floor(sourcePosition.z).toInt(),
-            Math.floor(destinationPosition!!.x).toInt(),
-            Math.floor(destinationPosition.z).toInt(), true
+            floor(sourcePosition!!.x).toInt(),
+            floor(sourcePosition.z).toInt(),
+            floor(destinationPosition!!.x).toInt(),
+            floor(destinationPosition.z).toInt(), true
         )
         applySubject()
         source = pointAtSource()
@@ -535,7 +535,7 @@ class HydrazinePathFinder internal constructor(
         val node: Node?
         if (bestEffort) {
             node = nodeMap.cachedPointAt(nx, ny, nz)
-            if (node!!.passibility() == Passibility.impassible) node.passibility(Passibility.dangerous)
+            if (node.passibility() == Passibility.impassible) node.passibility(Passibility.dangerous)
         } else {
             node = nodeMap.cachedPassiblePointNear(nx, ny, nz)
             if (impassible(node)) return null

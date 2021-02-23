@@ -74,8 +74,7 @@ class NodeMap(
     constructor(
         instanceSpace: IInstanceSpace,
         occlusionProviderFactory: IOcclusionProviderFactory
-    ) : this(instanceSpace, null, occlusionProviderFactory) {
-    }
+    ) : this(instanceSpace, null, occlusionProviderFactory)
 
     fun filter(filter: IGraphNodeFilter?) {
         this.filter = filter
@@ -160,7 +159,7 @@ class NodeMap(
         )) p!!.rollback()
     }
 
-    fun cachedPointAt(x: Int, y: Int, z: Int): Node? {
+    fun cachedPointAt(x: Int, y: Int, z: Int): Node {
         val coords = Vec3i(x, y, z)
         return cachedPointAt(coords)
     }
@@ -169,7 +168,7 @@ class NodeMap(
         var point = internalMap[coords]
         if (point == null) {
             point = passibleNodeNear(coords, null)
-            if (point!!.key != coords) point = Node(coords, Passibility.impassible, false)
+            if (point.key != coords) point = Node(coords, Passibility.impassible, false)
             internalMap[coords] = point
         }
         return point
@@ -179,7 +178,7 @@ class NodeMap(
         return cachedPassiblePointNear(x, y, z, null)
     }
 
-    fun cachedPassiblePointNear(x0: Int, y0: Int, z0: Int, origin: Vec3i?): Node? {
+    fun cachedPassiblePointNear(x0: Int, y0: Int, z0: Int, origin: Vec3i?): Node {
         val coords0 = Vec3i(x0, y0, z0)
         return cachedPassiblePointNear(coords0, origin)
     }
@@ -190,13 +189,13 @@ class NodeMap(
         var point = point0
         if (point == null) point = passibleNodeNear(coords, origin) else if (point.volatile_()) {
             point = passibleNodeNear(coords, origin)
-            if (point!!.key == point0!!.key) {
+            if (point.key == point0!!.key) {
                 point0.passibility(point.passibility())
                 point0.volatile_(point.volatile_())
                 point = point0
             } else point0.isolate()
         }
-        if (coords != point!!.key) {
+        if (coords != point.key) {
             val existing = nodeMap[point.key]
             if (existing == null) nodeMap[point.key] = point else point = existing
         }

@@ -53,6 +53,7 @@ import java.lang.Math
 import com.extollit.gaming.ai.path.model.AreaOcclusionProvider
 import com.extollit.linalg.immutable.Vec3i
 import java.util.*
+import kotlin.math.ceil
 import kotlin.math.sqrt
 
 /**
@@ -289,13 +290,13 @@ class SortedNodeQueue {
         return false
     }
 
-    fun add(point: Node?) {
-        check(!point!!.assigned()) { "Point is already assigned" }
+    fun add(point: Node) {
+        check(!point.assigned()) { "Point is already assigned" }
         if (fastAdd(point)) return
         val list = list
         val size = size()
         val i = list.listIterator(size)
-        var amount = Math.ceil((size.toFloat() * CULL_THRESHOLD).toDouble())
+        var amount = ceil((size.toFloat() * CULL_THRESHOLD).toDouble())
             .toInt()
         while (amount > 0 && i.hasPrevious()) {
             i.previous()!!.unassign()
