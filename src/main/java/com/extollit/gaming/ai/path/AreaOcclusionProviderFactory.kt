@@ -7,33 +7,33 @@ import com.extollit.gaming.ai.path.model.IOcclusionProviderFactory
 
 internal object AreaOcclusionProviderFactory : IOcclusionProviderFactory {
 
-    /**
-     * Creates an [AreaOcclusionProvider] from an instance space.
-     *
-     * @param instance The instance where it will grab columnar spaces from.
-     *
-     * TODO figure out what c(x/z)(0/N) is
-     */
     override fun fromInstanceSpace(
         instance: IInstanceSpace,
-        cx0: Int,
-        cz0: Int,
-        cxN: Int,
-        czN: Int
+        centerXFrom: Int,
+        centerZFrom: Int,
+        centerXTo: Int,
+        centerZTo: Int
     ): AreaOcclusionProvider {
-        // Creates a 2d array with X and Z coordinates with regular (16x16) chunk sizes
-        val array = Array(czN - cz0 + 1) { arrayOfNulls<IColumnarSpace>(cxN - cx0 + 1) }
-        for (cz in cz0..czN) {
-            for (cx in cx0..cxN) {
+
+        /*
+        Creates a 2d array with X and Z coordinates with regular (16x16) chunk sizes
+        It grabs the delta from centerFrom and centerTo + 1 to make up for arrays starting at 0
+         */
+        val array = Array(centerZTo - centerZFrom + 1) { arrayOfNulls<IColumnarSpace>(centerXTo - centerXFrom + 1) }
+
+        // Loop through every single X and Z.
+        for (centerZ in centerZFrom..centerZTo) {
+            for (centerX in centerXFrom..centerXTo) {
+
                 // Creates "columnar" spaces representing a 16x16x256 chunk area.
-                val columnarSpace = instance.columnarSpaceAt(cx, cz)
+                val columnarSpace = instance.columnarSpaceAt(centerX, centerZ)
 
                 // If its not null (aka successful), set it in the array
-                if (columnarSpace != null) array[cz - cz0][cx - cx0] = columnarSpace
+                if (columnarSpace != null) array[centerZ - centerZFrom][centerX - centerXFrom] = columnarSpace
             }
         }
 
-
-        return AreaOcclusionProvider(array, cx0, cz0)
+        // Creates the OcclusionProvider, providing data about everything in this instance space.
+        return AreaOcclusionProvider(array, centerXFrom, centerZFrom)
     }
 }

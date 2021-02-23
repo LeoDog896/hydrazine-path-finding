@@ -2,7 +2,10 @@ package com.extollit.gaming.ai.path.model
 
 import com.extollit.collect.CollectionsExt
 
-class NodeLinkedList(val self: Node, private var next: NodeLinkedList? = null) : Iterable<Node> {
+class NodeLinkedList(
+    val self: Node,
+    private var next: NodeLinkedList? = null
+) : Iterable<Node> {
 
     private class Iter(private var head: NodeLinkedList?) : MutableIterator<Node> {
         override fun hasNext() = head != null
@@ -18,10 +21,10 @@ class NodeLinkedList(val self: Node, private var next: NodeLinkedList? = null) :
 
     override fun iterator(): MutableIterator<Node> = Iter(this)
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val nodes = o as NodeLinkedList
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val nodes = other as NodeLinkedList
         return if (next != nodes.next) false else self == nodes.self
     }
 

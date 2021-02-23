@@ -7,6 +7,7 @@ import kotlin.experimental.or
 import kotlin.math.sqrt
 
 class Node : INode {
+
     @kotlin.jvm.JvmField
     val key: Vec3i
     private var word = 0
@@ -221,9 +222,9 @@ class Node : INode {
             sb.append(" @ ")
             sb.append(index.toInt())
         }
-        var length = length().toString()
+        var length = "${length()}"
         if (dirty()) length += '*'
-        return sb.toString() + MessageFormat.format(
+        return "$sb" + MessageFormat.format(
             " ({0}) : length={1}, remaining={2}, journey={3}",
             passibility(),
             length,

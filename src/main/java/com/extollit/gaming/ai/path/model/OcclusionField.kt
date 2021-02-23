@@ -688,17 +688,16 @@ open class OcclusionField : IOcclusionProvider {
     }
 
     override fun elementAt(x: Int, y: Int, z: Int): Byte {
-        val element: Byte = if (words != null) {
+        return if (words != null) {
             val word = words!![index(x, y, z)]
             elementAt(word, x % ELEMENTS_PER_WORD)
         } else singleton
-        return element
     }
 
     private fun elementAt(word: Long, offset: Int) =
         ((word shr (offset shl ELEMENT_LENGTH_SHL.toInt())).toByte()) and ELEMENT_MASK.toByte()
 
-    override fun visualizeAt(dy: Int): String = visualizeAt(this, dy, 0, 0, DIMENSION_SIZE, DIMENSION_SIZE)
+    override fun visualizeAt(y: Int): String = visualizeAt(this, y, 0, 0, DIMENSION_SIZE, DIMENSION_SIZE)
 
     private fun flagsFor(columnarSpace: IColumnarSpace, x: Int, y: Int, z: Int, block: IBlockDescription?): Byte {
         var flags: Byte = 0

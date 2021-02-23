@@ -61,21 +61,32 @@ class NodeMap(
 
     fun flagsAt(x: Int, y: Int, z: Int): Byte = occlusionProvider!!.elementAt(x, y, z)
 
-    fun updateFieldWindow(x0: Int, z0: Int, xN: Int, zN: Int, cull: Boolean) {
-        val cx0 = x0 shr 4
-        val cz0 = z0 shr 4
-        val cxN = xN shr 4
-        val czN = zN shr 4
+    fun updateFieldWindow(xFrom: Int, zFrom: Int, xTo: Int, zTo: Int, cull: Boolean) {
+        val cx0 = xFrom shr 4
+        val cz0 = zFrom shr 4
+        val cxN = xTo shr 4
+        val czN = zTo shr 4
         val aop = occlusionProvider
+
         val windowTest: Boolean =
-            if (cull) cx0 != centerX0 || cz0 != centerZ0 || cxN != centerXN || czN != centerZN else cx0 < centerX0 || cz0 < centerZ0 || cxN > centerXN || czN > centerZN
+            if (cull)
+                cx0 != centerX0
+                        || cz0 != centerZ0
+                        || cxN != centerXN
+                        || czN != centerZN
+            else
+                cx0 < centerX0
+                        || cz0 < centerZ0
+                        || cxN > centerXN
+                        || czN > centerZN
+
         if (aop == null || windowTest) {
             occlusionProvider = occlusionProviderFactory.fromInstanceSpace(instanceSpace, cx0, cz0, cxN, czN)
             centerX0 = cx0
             centerZ0 = cz0
             centerXN = cxN
             centerZN = czN
-            if (cull) cullOutside(x0, z0, xN, zN)
+            if (cull) cullOutside(xFrom, zFrom, xTo, zTo)
         }
     }
 

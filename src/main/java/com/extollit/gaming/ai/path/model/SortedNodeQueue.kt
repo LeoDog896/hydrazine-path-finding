@@ -6,7 +6,7 @@ import kotlin.math.ceil
 import kotlin.math.sqrt
 
 /**
- * A queue of Points, or Nodes
+ * A queue of [Node]s
  */
 class SortedNodeQueue {
     private val list = ArrayList<Node?>(8)
@@ -282,10 +282,7 @@ class SortedNodeQueue {
 
     fun size(): Int = list.size
 
-    fun roots(): Set<Node?> {
-        val roots: MutableSet<Node?> = list.mapTo(HashSet(1)) { it!!.root() }
-        return roots
-    }
+    fun roots(): Set<Node?> = list.mapTo<Node?, Node, HashSet<Node?>>(HashSet(1)) { it!!.root() }
 
     override fun toString(): String = list.toString()
 

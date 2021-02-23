@@ -605,7 +605,6 @@ class HydrazinePathFinder internal constructor(
     }
 
     private fun resetFaultTimings() {
-        val random = random
         faultCount = 0
         nextGraphResetFailureCount = FAULT_COUNT_THRESHOLD.toInt()
         passiblePointPathTimeLimit = PASSIBLE_POINT_TIME_LIMIT!!.next(random)
@@ -614,8 +613,10 @@ class HydrazinePathFinder internal constructor(
 
     private fun updatePath(newPath: IPath?): IPath? {
         var mutableNewPath = newPath
-        if (mutableNewPath == null) return null.apply { currentPath = this }
+        if (mutableNewPath == null) return null.also { currentPath = it }
+
         val currentPath = currentPath
+
         if (currentPath != null) {
             if (currentPath.sameAs(mutableNewPath)) mutableNewPath =
                 currentPath else if (!currentPath.done() && mutableNewPath is PathObject) mutableNewPath.adjustPathPosition(
@@ -627,11 +628,11 @@ class HydrazinePathFinder internal constructor(
         if (mutableNewPath.done()) {
             var last = mutableNewPath.last()
             if (last == null) last = pointAtSource()
-            return last?.let { lastElement -> IncompletePath(lastElement).apply { this@HydrazinePathFinder.currentPath =
-                this
+            return last?.let { lastElement -> IncompletePath(lastElement).also { this.currentPath =
+                it
             } }
         }
-        return mutableNewPath.apply { this@HydrazinePathFinder.currentPath = this }
+        return mutableNewPath.also { this.currentPath = it }
     }
 
     private fun triage(iterations: Int): IPath? {
