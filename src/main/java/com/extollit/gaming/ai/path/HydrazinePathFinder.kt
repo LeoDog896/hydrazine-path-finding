@@ -805,12 +805,12 @@ class HydrazinePathFinder internal constructor(
     private fun impassible(alternative: Node?): Boolean =
         alternative == null || alternative.passibility().impassible(capabilities)
 
-    private fun cachedPassiblePointNear(x0: Int, y0: Int, z0: Int, origin: Vec3i? = null): Node? {
-        val coords0 = Vec3i(x0, y0, z0)
-        val result = nodeMap.cachedPassiblePointNear(coords0, origin)
+    private fun cachedPassiblePointNear(xOrigin: Int, yOrigin: Int, zOrigin: Int, origin: Vec3i? = null): Node? {
+        val coordsFrom = Vec3i(xOrigin, yOrigin, zOrigin)
+        val result = nodeMap.cachedPassiblePointNear(coordsFrom, origin)
         return if (Node.passible(result) && origin != null && unreachableFromSource(
                 origin,
-                coords0
+                coordsFrom
             )
         ) null else result
     }
