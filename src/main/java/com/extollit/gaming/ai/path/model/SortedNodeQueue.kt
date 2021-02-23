@@ -9,7 +9,7 @@ import kotlin.math.sqrt
  * A queue of [Node]s
  */
 class SortedNodeQueue {
-    private val list = ArrayList<Node?>(8)
+    private val list = ArrayList<Node>(8)
 
     /**
      * Adds a node to this sorted queue without the overhead of checks.
@@ -43,7 +43,7 @@ class SortedNodeQueue {
         var amount = ceil((size.toFloat() * CULL_THRESHOLD).toDouble())
             .toInt()
         while (amount > 0 && i.hasPrevious()) {
-            i.previous()!!.unassign()
+            i.previous().unassign()
             i.remove()
             --amount
         }
@@ -55,7 +55,7 @@ class SortedNodeQueue {
      * Removes all elements from this queue
      */
     fun clear() {
-        for (node in list) node!!.unassign()
+        for (node in list) node.unassign()
         list.clear()
     }
 
@@ -69,7 +69,7 @@ class SortedNodeQueue {
         if (source.orphaned()) return source
         val root0 = source.root()
         val dd = source.coordinates.subOf(root0.coordinates)
-        val list: MutableList<Node?> = list
+        val list: MutableList<Node> = list
         val length0 = source.length()
         val path = Stack<Node?>()
         val treeTransitional = TreeTransitional(source)
@@ -77,22 +77,26 @@ class SortedNodeQueue {
         while (i.hasNext()) {
             val head = i.next()
             var point = head
-            while (!point!!.orphaned()) {
-                point = point.parent
+
+            while (!point.orphaned()) {
+                // Safe to call -- parent is not an orphan.
+                point = point.parent!!
                 path.push(point)
             }
+
             if (point === source) {
                 while (!path.isEmpty()) {
-                    point = path.pop()
-                    val length = point!!.length() - length0
+                    // TODO check if safe
+                    point = path.pop()!!
+                    val length = point.length() - length0
                     point.length(length)
                 }
-                val length = head!!.length() - length0
+                val length = head.length() - length0
                 head.length(length)
                 head.index(i.previousIndex())
             } else {
                 val root: Node? = if (path.isEmpty()) head else path.pop()
-                if (head === point || head!!.coordinates.subOf(point.coordinates).dot(dd) <= 0) {
+                if (head === point || head.coordinates.subOf(point.coordinates).dot(dd) <= 0) {
                     head.dirty(true)
                     while (!path.isEmpty()) path.pop()!!.dirty(true)
                     treeTransitional.queue(head, root)
@@ -115,20 +119,21 @@ class SortedNodeQueue {
     }
 
     fun cullBranch(ancestor: Node) {
-        val list: MutableList<Node?> = list
+        val list: MutableList<Node> = list
         val stack = Stack<Node?>()
         val i = list.listIterator()
         val culled: MutableList<Node?> = LinkedList()
         while (i.hasNext()) {
             val head = i.next()
             var point = head
-            while (!point!!.orphaned() && point !== ancestor) {
-                point = point.parent
+            while (!point.orphaned() && point !== ancestor) {
+                // Safe to call -- the point has a parent, its not an orphan.
+                point = point.parent!!
                 stack.push(point)
             }
-            if (point !== ancestor) head!!.index(i.previousIndex()) else {
+            if (point !== ancestor) head.index(i.previousIndex()) else {
                 i.remove()
-                head!!.unassign()
+                head.unassign()
                 culled.add(head)
                 culled.addAll(stack)
             }
@@ -167,23 +172,23 @@ class SortedNodeQueue {
             point = list.set(0, list.removeAt(list.size - 1))
             sortForward(0)
         }
-        point!!.unassign()
+        point.unassign()
         return point
     }
 
     fun nextContains(ancestor: Node?): Boolean =
-        list[0]!!.contains(ancestor)
+        list[0].contains(ancestor)
 
     private fun sortBack(index: Int) {
         var mutableIndex = index
         val list = list
         val originalPoint = list[mutableIndex]
-        val distanceRemaining = originalPoint!!.journey().toInt()
+        val distanceRemaining = originalPoint.journey().toInt()
         val originalPassibility = originalPoint.passibility()
         while (mutableIndex > 0) {
             val i = mutableIndex - 1 shr 1
             val point = list[i]
-            val passibility = point!!.passibility()
+            val passibility = point.passibility()
             if (distanceRemaining >= point.journey() && originalPassibility == passibility || originalPassibility.worseThan(
                     passibility
                 )
@@ -200,14 +205,14 @@ class SortedNodeQueue {
         var mutableIndex = index
         val list = list
         val originalPoint = list[mutableIndex]
-        val distanceRemaining = originalPoint!!.journey().toInt()
+        val distanceRemaining = originalPoint.journey().toInt()
         val originalPassibility = originalPoint.passibility()
         do {
             val i = 1 + (mutableIndex shl 1)
             val j = i + 1
             if (i >= list.size) break
             val pointAlpha = list[i]
-            val distAlpha = pointAlpha!!.journey().toInt()
+            val distAlpha = pointAlpha.journey().toInt()
             val passibilityAlpha = pointAlpha.passibility()
             val pointBeta: Node?
             val distBeta: Int
@@ -218,7 +223,7 @@ class SortedNodeQueue {
                 passibilityBeta = Passibility.Passible
             } else {
                 pointBeta = list[j]
-                distBeta = pointBeta!!.journey().toInt()
+                distBeta = pointBeta.journey().toInt()
                 passibilityBeta = pointBeta.passibility()
             }
             if (distAlpha < distBeta && passibilityAlpha == passibilityBeta

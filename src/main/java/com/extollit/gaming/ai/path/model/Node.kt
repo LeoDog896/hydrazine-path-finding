@@ -185,7 +185,7 @@ class Node : INode {
 
     private fun removeChild(child: Node) {
         if (children != null) children = children!!.remove(child)
-        assert(child !in children!!)
+        assert(children == null || child !in children!!)
     }
 
     fun unassign(): Boolean = index(-1)
