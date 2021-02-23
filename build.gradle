@@ -4,12 +4,14 @@ repositories {
         url = "https://repo1.maven.org/maven2/"
     }
     maven { url 'https://jitpack.io' }
+    mavenCentral()
 }
 
 group 'com.extollit.gaming'
 version '1.5.3'
 
 apply plugin: 'java'
+apply plugin: 'kotlin'
 
 compileJava {
     sourceCompatibility = '1.7'
@@ -36,4 +38,27 @@ dependencies {
     testCompile group: "org.mockito", name: "mockito-core", version: "1.10.19"
 
     compile group: 'com.github.MadMartian', name: 'data-structures', version: '2.9'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    // https://mvnrepository.com/artifact/it.unimi.dsi/fastutil
+    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.2'
+}
+buildscript {
+    ext.kotlin_version = '1.4.30'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }

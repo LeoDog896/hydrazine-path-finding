@@ -224,7 +224,7 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
     @Test
     public void tooLow() {
         areaOcclusionProvider.elementAt(5, 0, 5);
-        final OcclusionField bottomField = centerSpace.occlusionFields().optOcclusionFieldAt(0);
+        final OcclusionField bottomField = centerSpace.occlusionFields().optionalOcclusionFieldAt(0);
         assertNotNull(bottomField);
         assertTrue(bottomField.areaInitAt(OcclusionField.AreaInit.down));
     }
@@ -232,7 +232,7 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
     @Test
     public void tooHigh() {
         areaOcclusionProvider.elementAt(5, 255, 5);
-        final OcclusionField topField = centerSpace.occlusionFields().optOcclusionFieldAt(15);
+        final OcclusionField topField = centerSpace.occlusionFields().optionalOcclusionFieldAt(15);
         assertNotNull(topField);
         assertTrue(topField.areaInitAt(OcclusionField.AreaInit.up));
     }
