@@ -817,7 +817,7 @@ class HydrazinePathFinder internal constructor(
         return PassibilityHelpers.impedesMovement(
             flags,
             capabilities
-        ) && (Logic.fuzzy.`in`(flags) || Logic.doorway.`in`(flags))
+        ) && (Logic.fuzzy.flagsIn(flags) || Logic.doorway.flagsIn(flags))
     }
 
     fun unreachableFromSource(current: Vec3i, target: Vec3i): Boolean {

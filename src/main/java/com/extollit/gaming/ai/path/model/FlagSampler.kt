@@ -10,5 +10,5 @@ class FlagSampler(private val occlusionProvider: IOcclusionProvider?) {
         return flags
     }
 
-    private fun volatileIn(flags: Byte): Boolean = Logic.doorway.`in`(flags)
+    private fun volatileIn(flags: Byte): Boolean = Logic.doorway.flagsIn(flags)
 }

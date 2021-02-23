@@ -206,7 +206,7 @@ public class AreaSetOcclusionFieldTests extends AbstractAreaInitOcclusionFieldTe
 
         final byte top = areaOcclusionProvider.elementAt(5, 64, 5);
 
-        assertTrue(Element.earth.flagsIn(top) && Logic.fuzzy.in(top));
+        assertTrue(Element.earth.flagsIn(top) && Logic.fuzzy.flagsIn(top));
     }
 
     @Test
@@ -215,7 +215,7 @@ public class AreaSetOcclusionFieldTests extends AbstractAreaInitOcclusionFieldTe
         centerField().loadFrom(centerSpace, 0, 3, 0);
 
         final byte pre = areaOcclusionProvider.elementAt(5, 64, 5);
-        assertTrue(Element.earth.flagsIn(pre) && Logic.fuzzy.in(pre));
+        assertTrue(Element.earth.flagsIn(pre) && Logic.fuzzy.flagsIn(pre));
 
         set(5, 63, 5, air);
 
@@ -223,7 +223,7 @@ public class AreaSetOcclusionFieldTests extends AbstractAreaInitOcclusionFieldTe
 
         final byte top = areaOcclusionProvider.elementAt(5, 64, 5);
 
-        assertFalse(Element.earth.flagsIn(top) || Logic.fuzzy.in(top));
+        assertFalse(Element.earth.flagsIn(top) || Logic.fuzzy.flagsIn(top));
     }
 
     @Test
@@ -234,7 +234,7 @@ public class AreaSetOcclusionFieldTests extends AbstractAreaInitOcclusionFieldTe
 
         final byte top = areaOcclusionProvider.elementAt(5, 49, 5);
 
-        assertTrue(Element.earth.flagsIn(top) && Logic.fuzzy.in(top));
+        assertTrue(Element.earth.flagsIn(top) && Logic.fuzzy.flagsIn(top));
     }
 
     @Test
@@ -244,13 +244,13 @@ public class AreaSetOcclusionFieldTests extends AbstractAreaInitOcclusionFieldTe
         centerField().loadFrom(centerSpace, 0, 3, 0);
 
         final byte pre = areaOcclusionProvider.elementAt(5, 49, 5);
-        assertTrue(Element.earth.flagsIn(pre) && Logic.fuzzy.in(pre));
+        assertTrue(Element.earth.flagsIn(pre) && Logic.fuzzy.flagsIn(pre));
 
         set(5, 48, 5, air);
 
         final byte top = areaOcclusionProvider.elementAt(5, 49, 5);
 
-        assertFalse(Element.earth.flagsIn(top) || Logic.fuzzy.in(top));
+        assertFalse(Element.earth.flagsIn(top) || Logic.fuzzy.flagsIn(top));
     }
 
     @Test
@@ -266,14 +266,14 @@ public class AreaSetOcclusionFieldTests extends AbstractAreaInitOcclusionFieldTe
     }
 
     private void assertNeighborhood(final int dx, final int dy, final int dz) {
-        assertTrue(Logic.fuzzy.in(areaOcclusionProvider.elementAt((dx - 1), dy, dz)));
-        assertTrue(Logic.fuzzy.in(areaOcclusionProvider.elementAt((dx + 1), dy, dz)));
-        assertTrue(Logic.fuzzy.in(areaOcclusionProvider.elementAt(dx, dy, (dz - 1))));
-        assertTrue(Logic.fuzzy.in(areaOcclusionProvider.elementAt(dx, dy, (dz + 1))));
-        assertFalse(Logic.fuzzy.in(areaOcclusionProvider.elementAt((dx + 1), dy, (dz + 1))));
-        assertFalse(Logic.fuzzy.in(areaOcclusionProvider.elementAt((dx - 1), dy, (dz - 1))));
-        assertFalse(Logic.fuzzy.in(areaOcclusionProvider.elementAt((dx - 1), dy, (dz + 1))));
-        assertFalse(Logic.fuzzy.in(areaOcclusionProvider.elementAt((dx + 1), dy, (dz - 1))));
+        assertTrue(Logic.fuzzy.flagsIn(areaOcclusionProvider.elementAt((dx - 1), dy, dz)));
+        assertTrue(Logic.fuzzy.flagsIn(areaOcclusionProvider.elementAt((dx + 1), dy, dz)));
+        assertTrue(Logic.fuzzy.flagsIn(areaOcclusionProvider.elementAt(dx, dy, (dz - 1))));
+        assertTrue(Logic.fuzzy.flagsIn(areaOcclusionProvider.elementAt(dx, dy, (dz + 1))));
+        assertFalse(Logic.fuzzy.flagsIn(areaOcclusionProvider.elementAt((dx + 1), dy, (dz + 1))));
+        assertFalse(Logic.fuzzy.flagsIn(areaOcclusionProvider.elementAt((dx - 1), dy, (dz - 1))));
+        assertFalse(Logic.fuzzy.flagsIn(areaOcclusionProvider.elementAt((dx - 1), dy, (dz + 1))));
+        assertFalse(Logic.fuzzy.flagsIn(areaOcclusionProvider.elementAt((dx + 1), dy, (dz - 1))));
     }
 
     @Test

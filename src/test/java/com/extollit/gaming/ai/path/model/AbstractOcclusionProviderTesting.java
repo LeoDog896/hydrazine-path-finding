@@ -18,8 +18,8 @@ public class AbstractOcclusionProviderTesting {
                 bottom = occlusionProvider.elementAt(x, y, z),
                 top = occlusionProvider.elementAt(x, y + 1, z);
 
-        assertTrue(Logic.doorway.in(top));
-        assertTrue(Logic.doorway.in(bottom));
+        assertTrue(Logic.doorway.flagsIn(top));
+        assertTrue(Logic.doorway.flagsIn(bottom));
         final Element expectedElement = open ? Element.air : Element.earth;
         assertTrue(expectedElement.flagsIn(top));
         assertTrue(expectedElement.flagsIn(bottom));

@@ -11,7 +11,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
         val y0 = coordinates0.y
         val z0 = coordinates0.z
         val delta: Vec3i = if (origin != null) coordinates0.subOf(origin) else Vec3i.ZERO
-        val hasOrigin = delta !== Vec3i.ZERO && delta != Vec3i.ZERO
+        val hasOrigin = delta != Vec3i.ZERO
         val climbsLadders = this.capabilities!!.climber()
         var passibility: Passibility? = Passibility.passible
         var minY = Int.MIN_VALUE
@@ -162,7 +162,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
         }
 
         private fun unstable(flags: Byte): Boolean {
-            return !Element.earth.flagsIn(flags) || Logic.ladder.`in`(flags)
+            return !Element.earth.flagsIn(flags) || Logic.ladder.flagsIn(flags)
         }
     }
 }

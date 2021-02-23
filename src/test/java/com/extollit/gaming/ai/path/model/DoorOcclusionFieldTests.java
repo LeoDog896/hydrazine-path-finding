@@ -20,7 +20,7 @@ public class DoorOcclusionFieldTests extends AbstractOcclusionFieldTesting {
         occlusionField.set(centerSpace, x, y, z, door);
         final byte element = occlusionField.elementAt(dx, dy, dz);
 
-        assertTrue(Logic.doorway.in(element));
+        assertTrue(Logic.doorway.flagsIn(element));
     }
 
     @Test

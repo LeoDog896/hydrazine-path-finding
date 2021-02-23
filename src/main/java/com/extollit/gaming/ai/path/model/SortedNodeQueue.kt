@@ -1,6 +1,5 @@
 package com.extollit.gaming.ai.path.model
 
-import java.lang.Math
 import com.extollit.linalg.immutable.Vec3i
 import java.util.*
 import kotlin.math.ceil
@@ -11,11 +10,45 @@ import kotlin.math.sqrt
  */
 class SortedNodeQueue {
     private val list = ArrayList<Node?>(8)
-    fun fastAdd(node: Node?): Boolean {
-        if (!node!!.index(list.size)) return false
+
+    /**
+     * Adds a node to this sorted queue without the overhead of checks.
+     *
+     * @param node The [Node] to add to this list
+     *
+     * @return If adding this node to this sorted queue was successful
+     */
+    fun fastAdd(node: Node): Boolean {
+        if (!node.index(list.size)) return false
         list.add(node)
         sortBack(node.index().toInt())
         return true
+    }
+
+    /**
+     * Adds a node to this sorted queue/
+     *
+     * @param node The [Node] to add to this list
+     *
+     * @return If adding this node was successful
+     *
+     * @see [fastAdd] for adding nodes without the extra conditional overhead.
+     */
+    fun add(point: Node): Boolean {
+        check(!point.assigned()) { "Point is already assigned" }
+        if (fastAdd(point)) return true
+        val list = list
+        val size = size()
+        val i = list.listIterator(size)
+        var amount = ceil((size.toFloat() * CULL_THRESHOLD).toDouble())
+            .toInt()
+        while (amount > 0 && i.hasPrevious()) {
+            i.previous()!!.unassign()
+            i.remove()
+            --amount
+        }
+
+        return fastAdd(point)
     }
 
     /**
@@ -26,6 +59,9 @@ class SortedNodeQueue {
         list.clear()
     }
 
+    /**
+     * Checks if this queue is empty.
+     */
     val isEmpty: Boolean
         get() = list.isEmpty()
 
@@ -105,19 +141,26 @@ class SortedNodeQueue {
         }
     }
 
-    fun view(): List<Node?> {
-        return Collections.unmodifiableList(list)
-    }
+    /**
+     * Gets an Unmodifiable List of all nodes in this queue.
+     *
+     * @return unmodifiable list of all nodes in this sorted queue.
+     */
+    fun view(): List<Node?> = Collections.unmodifiableList(list)
 
     /**
-     * Gets the node on the top of this stack
+     * Gets the node on the top of this stack.
+     * This node was also the first to enter this stack out of every other stack.
      *
      * @return The node at the top of the stack.
      */
-    fun top(): Node? {
-        return list[0]
-    }
+    fun top(): Node? = list[0]
 
+    /**
+     * Removes and returns the oldest element in this stack.
+     *
+     * @return The oldest element (most waiting element) in this stack.
+     */
     fun dequeue(): Node {
         val list = list
         val point: Node?
@@ -129,40 +172,39 @@ class SortedNodeQueue {
         return point
     }
 
-    fun nextContains(ancestor: Node?): Boolean {
-        return list[0]!!.contains(ancestor)
-    }
+    fun nextContains(ancestor: Node?): Boolean =
+        list[0]!!.contains(ancestor)
 
     private fun sortBack(index: Int) {
-        var index = index
+        var mutableIndex = index
         val list = list
-        val originalPoint = list[index]
+        val originalPoint = list[mutableIndex]
         val distanceRemaining = originalPoint!!.journey().toInt()
         val originalPassibility = originalPoint.passibility()
-        while (index > 0) {
-            val i = index - 1 shr 1
+        while (mutableIndex > 0) {
+            val i = mutableIndex - 1 shr 1
             val point = list[i]
             val passibility = point!!.passibility()
             if (distanceRemaining >= point.journey() && originalPassibility == passibility || originalPassibility.worseThan(
                     passibility
                 )
             ) break
-            list[index] = point
-            point.index(index)
-            index = i
+            list[mutableIndex] = point
+            point.index(mutableIndex)
+            mutableIndex = i
         }
-        list[index] = originalPoint
-        originalPoint.index(index)
+        list[mutableIndex] = originalPoint
+        originalPoint.index(mutableIndex)
     }
 
     private fun sortForward(index: Int) {
-        var index = index
+        var mutableIndex = index
         val list = list
-        val originalPoint = list[index]
+        val originalPoint = list[mutableIndex]
         val distanceRemaining = originalPoint!!.journey().toInt()
         val originalPassibility = originalPoint.passibility()
         do {
-            val i = 1 + (index shl 1)
+            val i = 1 + (mutableIndex shl 1)
             val j = i + 1
             if (i >= list.size) break
             val pointAlpha = list[i]
@@ -186,20 +228,20 @@ class SortedNodeQueue {
                 if (distAlpha >= distanceRemaining && passibilityAlpha == originalPassibility
                     || passibilityAlpha.worseThan(originalPassibility)
                 ) break
-                list[index] = pointAlpha
-                pointAlpha.index(index)
-                index = i
+                list[mutableIndex] = pointAlpha
+                pointAlpha.index(mutableIndex)
+                mutableIndex = i
             } else {
                 if (pointBeta == null || distBeta >= distanceRemaining && passibilityAlpha == originalPassibility
                     || passibilityBeta.worseThan(originalPassibility)
                 ) break
-                list[index] = pointBeta
-                pointBeta.index(index)
-                index = j
+                list[mutableIndex] = pointBeta
+                pointBeta.index(mutableIndex)
+                mutableIndex = j
             }
         } while (true)
-        list[index] = originalPoint
-        originalPoint.index(index)
+        list[mutableIndex] = originalPoint
+        originalPoint.index(mutableIndex)
     }
 
     fun appendTo(point: Node, parent: Node?, targetPoint: Vec3i?): Boolean {
@@ -238,22 +280,6 @@ class SortedNodeQueue {
             return true
         } else add(point)
         return false
-    }
-
-    fun add(point: Node) {
-        check(!point.assigned()) { "Point is already assigned" }
-        if (fastAdd(point)) return
-        val list = list
-        val size = size()
-        val i = list.listIterator(size)
-        var amount = ceil((size.toFloat() * CULL_THRESHOLD).toDouble())
-            .toInt()
-        while (amount > 0 && i.hasPrevious()) {
-            i.previous()!!.unassign()
-            i.remove()
-            --amount
-        }
-        fastAdd(point)
     }
 
     fun size(): Int {

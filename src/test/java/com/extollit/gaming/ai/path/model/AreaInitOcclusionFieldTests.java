@@ -24,15 +24,15 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
         final OcclusionField main = centerField();
         main.loadFrom(columnarSpace, 0, 0, 0);
 
-        assertFalse(Logic.fuzzy.in(main.elementAt(5, 5, 5)));
-        assertTrue(Logic.fuzzy.in(main.elementAt(6, 5, 5)));
-        assertTrue(Logic.fuzzy.in(main.elementAt(4, 5, 5)));
-        assertTrue(Logic.fuzzy.in(main.elementAt(5, 5, 6)));
-        assertTrue(Logic.fuzzy.in(main.elementAt(5, 5, 4)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(6, 5, 6)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(4, 5, 4)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(4, 5, 6)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(6, 5, 4)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(5, 5, 5)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(6, 5, 5)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(4, 5, 5)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(5, 5, 6)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(5, 5, 4)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(6, 5, 6)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(4, 5, 4)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(4, 5, 6)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(6, 5, 4)));
     }
 
     @Test
@@ -41,10 +41,10 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
         final OcclusionField field = centerField();
         field.areaInitWest(field(OcclusionField.AreaInit.west));
 
-        assertTrue(Logic.fuzzy.in(field.elementAt(0, 5, 5)));
-        assertFalse(Logic.fuzzy.in(field.elementAt(0, 5, 4)));
-        assertFalse(Logic.fuzzy.in(field.elementAt(0, 5, 6)));
-        assertFalse(Logic.fuzzy.in(field.elementAt(1, 5, 5)));
+        assertTrue(Logic.fuzzy.flagsIn(field.elementAt(0, 5, 5)));
+        assertFalse(Logic.fuzzy.flagsIn(field.elementAt(0, 5, 4)));
+        assertFalse(Logic.fuzzy.flagsIn(field.elementAt(0, 5, 6)));
+        assertFalse(Logic.fuzzy.flagsIn(field.elementAt(1, 5, 5)));
     }
 
     @Test
@@ -53,10 +53,10 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
         final OcclusionField field = centerField();
         field.areaInitNorth(field(OcclusionField.AreaInit.north));
 
-        assertTrue(Logic.fuzzy.in(field.elementAt(5, 5, 0)));
-        assertFalse(Logic.fuzzy.in(field.elementAt(4, 5, 0)));
-        assertFalse(Logic.fuzzy.in(field.elementAt(6, 5, 0)));
-        assertFalse(Logic.fuzzy.in(field.elementAt(5, 5, 1)));
+        assertTrue(Logic.fuzzy.flagsIn(field.elementAt(5, 5, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(field.elementAt(4, 5, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(field.elementAt(6, 5, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(field.elementAt(5, 5, 1)));
     }
 
     @Test
@@ -65,10 +65,10 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
         final OcclusionField main = centerField();
         main.areaInitEast(field(OcclusionField.AreaInit.east));
 
-        assertTrue(Logic.fuzzy.in(main.elementAt(15, 5, 5)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(15, 5, 4)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(15, 5, 6)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(14, 5, 5)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(15, 5, 5)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(15, 5, 4)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(15, 5, 6)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(14, 5, 5)));
     }
 
     @Test
@@ -77,10 +77,10 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
         final OcclusionField main = centerField();
         main.areaInitSouth(field(OcclusionField.AreaInit.south));
 
-        assertTrue(Logic.fuzzy.in(main.elementAt(5, 5, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(4, 5, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(6, 5, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(5, 5, 14)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(5, 5, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(4, 5, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(6, 5, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(5, 5, 14)));
     }
 
     @Test
@@ -92,17 +92,17 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
         final OcclusionField main = centerField();
         main.areaInitNorthWest(field(OcclusionField.AreaInit.west), field(OcclusionField.AreaInit.north));
 
-        assertTrue(Logic.fuzzy.in(main.elementAt(0, 5, 0)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(1, 5, 0)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(0, 5, 1)));
-        assertTrue(Logic.fuzzy.in(main.elementAt(0, 6, 0)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(1, 6, 0)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(0, 6, 1)));
-        assertTrue(Logic.fuzzy.in(main.elementAt(0, 7, 0)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(1, 7, 0)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(0, 7, 1)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(0, 5, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(1, 5, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(0, 5, 1)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(0, 6, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(1, 6, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(0, 6, 1)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(0, 7, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(1, 7, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(0, 7, 1)));
 
-        assertFalse(Logic.fuzzy.in(main.elementAt(0, 8, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(0, 8, 0)));
     }
 
     @Test
@@ -114,17 +114,17 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
         final OcclusionField main = centerField();
         main.areaInitNorthEast(field(OcclusionField.AreaInit.east), field(OcclusionField.AreaInit.north));
 
-        assertTrue(Logic.fuzzy.in(main.elementAt(15, 5, 0)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(14, 5, 0)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(15, 5, 1)));
-        assertTrue(Logic.fuzzy.in(main.elementAt(15, 6, 0)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(14, 6, 0)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(15, 6, 1)));
-        assertTrue(Logic.fuzzy.in(main.elementAt(15, 7, 0)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(14, 7, 0)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(15, 7, 1)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(15, 5, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(14, 5, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(15, 5, 1)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(15, 6, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(14, 6, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(15, 6, 1)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(15, 7, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(14, 7, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(15, 7, 1)));
 
-        assertFalse(Logic.fuzzy.in(main.elementAt(15, 8, 0)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(15, 8, 0)));
     }
 
     @Test
@@ -136,17 +136,17 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
         final OcclusionField main = centerField();
         main.areaInitSouthWest(field(OcclusionField.AreaInit.west), field(OcclusionField.AreaInit.south));
 
-        assertTrue(Logic.fuzzy.in(main.elementAt(0, 5, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(1, 5, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(0, 5, 14)));
-        assertTrue(Logic.fuzzy.in(main.elementAt(0, 6, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(1, 6, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(0, 6, 14)));
-        assertTrue(Logic.fuzzy.in(main.elementAt(0, 7, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(1, 7, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(0, 7, 14)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(0, 5, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(1, 5, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(0, 5, 14)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(0, 6, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(1, 6, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(0, 6, 14)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(0, 7, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(1, 7, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(0, 7, 14)));
 
-        assertFalse(Logic.fuzzy.in(main.elementAt(0, 8, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(0, 8, 15)));
     }
 
     @Test
@@ -158,17 +158,17 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
         final OcclusionField main = centerField();
         main.areaInitSouthEast(field(OcclusionField.AreaInit.east), field(OcclusionField.AreaInit.south));
 
-        assertTrue(Logic.fuzzy.in(main.elementAt(15, 5, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(14, 5, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(15, 5, 14)));
-        assertTrue(Logic.fuzzy.in(main.elementAt(15, 6, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(14, 6, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(15, 6, 14)));
-        assertTrue(Logic.fuzzy.in(main.elementAt(15, 7, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(14, 7, 15)));
-        assertFalse(Logic.fuzzy.in(main.elementAt(15, 7, 14)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(15, 5, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(14, 5, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(15, 5, 14)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(15, 6, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(14, 6, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(15, 6, 14)));
+        assertTrue(Logic.fuzzy.flagsIn(main.elementAt(15, 7, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(14, 7, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(15, 7, 14)));
 
-        assertFalse(Logic.fuzzy.in(main.elementAt(15, 8, 15)));
+        assertFalse(Logic.fuzzy.flagsIn(main.elementAt(15, 8, 15)));
     }
 
     @Test
@@ -191,8 +191,8 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
 
         assertTrue(Element.earth.flagsIn(wall[0]));
         assertTrue(Element.earth.flagsIn(wall[1]));
-        assertTrue(Logic.fuzzy.in(wall[0]));
-        assertTrue(Logic.fuzzy.in(wall[1]));
+        assertTrue(Logic.fuzzy.flagsIn(wall[0]));
+        assertTrue(Logic.fuzzy.flagsIn(wall[1]));
         assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5, 62, 5)));
         assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5, 65, 5)));
         assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5 + 1, 63, 5)));
@@ -218,7 +218,7 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
         main.loadFrom(centerSpace, 0, 3, 0);
 
         final byte flags = areaOcclusionProvider.elementAt(5, 64, 5);
-        assertTrue(Element.earth.flagsIn(flags) && Logic.fuzzy.in(flags));
+        assertTrue(Element.earth.flagsIn(flags) && Logic.fuzzy.flagsIn(flags));
     }
 
     @Test
@@ -278,6 +278,6 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
 
         final byte lava = main.elementAt(1, 1, 1);
         assertTrue(Element.fire.flagsIn(lava));
-        assertFalse(Logic.fuzzy.in(lava));
+        assertFalse(Logic.fuzzy.flagsIn(lava));
     }
 }

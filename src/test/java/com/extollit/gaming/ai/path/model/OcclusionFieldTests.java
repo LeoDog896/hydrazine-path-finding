@@ -119,8 +119,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
         };
         assertTrue(Element.earth.flagsIn(wall[0]));
         assertTrue(Element.earth.flagsIn(wall[1]));
-        assertTrue(Logic.fuzzy.in(wall[0]));
-        assertTrue(Logic.fuzzy.in(wall[1]));
+        assertTrue(Logic.fuzzy.flagsIn(wall[0]));
+        assertTrue(Logic.fuzzy.flagsIn(wall[1]));
         assertFalse(Element.earth.flagsIn(occlusionField.elementAt(5, 4, 5)));
         assertFalse(Element.earth.flagsIn(occlusionField.elementAt(5, 7, 5)));
         for (int y = 5; y <= 6; ++y) {
@@ -144,8 +144,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.earth.flagsIn(bottom));
         assertTrue(Element.earth.flagsIn(top));
-        assertTrue(Logic.doorway.in(bottom));
-        assertTrue(Logic.doorway.in(top));
+        assertTrue(Logic.doorway.flagsIn(bottom));
+        assertTrue(Logic.doorway.flagsIn(top));
     }
 
     @Test
@@ -158,8 +158,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.earth.flagsIn(bottom));
         assertTrue(Element.earth.flagsIn(top));
-        assertTrue(Logic.doorway.in(bottom));
-        assertTrue(Logic.doorway.in(top));
+        assertTrue(Logic.doorway.flagsIn(bottom));
+        assertTrue(Logic.doorway.flagsIn(top));
 
         when(centerSpace.blockAt(5, 5, 5)).thenReturn(air);
         occlusionField.set(centerSpace, 5, 5, 5, air);
@@ -169,8 +169,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.air.flagsIn(bottom));
         assertTrue(Element.air.flagsIn(top));
-        assertTrue(Logic.nothing.in(bottom));
-        assertTrue(Logic.nothing.in(top));
+        assertTrue(Logic.nothing.flagsIn(bottom));
+        assertTrue(Logic.nothing.flagsIn(top));
     }
 
     @Test
@@ -184,8 +184,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.earth.flagsIn(bottom));
         assertTrue(Element.earth.flagsIn(top));
-        assertTrue(Logic.doorway.in(bottom));
-        assertTrue(Logic.doorway.in(top));
+        assertTrue(Logic.doorway.flagsIn(bottom));
+        assertTrue(Logic.doorway.flagsIn(top));
 
         fenceGate(true, 5, 5, 5);
         occlusionField.set(centerSpace, 5, 5, 5, fenceGate);
@@ -195,8 +195,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.air.flagsIn(bottom));
         assertTrue(Element.air.flagsIn(top));
-        assertTrue(Logic.doorway.in(bottom));
-        assertTrue(Logic.doorway.in(top));
+        assertTrue(Logic.doorway.flagsIn(bottom));
+        assertTrue(Logic.doorway.flagsIn(top));
     }
 
     @Test
@@ -210,8 +210,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.air.flagsIn(bottom));
         assertTrue(Element.air.flagsIn(top));
-        assertTrue(Logic.doorway.in(bottom));
-        assertTrue(Logic.doorway.in(top));
+        assertTrue(Logic.doorway.flagsIn(bottom));
+        assertTrue(Logic.doorway.flagsIn(top));
 
         fenceGate.open = false;
         occlusionField.set(centerSpace, 5, 5, 5, fenceGate);
@@ -221,8 +221,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.earth.flagsIn(bottom));
         assertTrue(Element.earth.flagsIn(top));
-        assertTrue(Logic.doorway.in(bottom));
-        assertTrue(Logic.doorway.in(top));
+        assertTrue(Logic.doorway.flagsIn(bottom));
+        assertTrue(Logic.doorway.flagsIn(top));
     }
 
     @Test
@@ -244,8 +244,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.air.flagsIn(bottom));
         assertTrue(Element.earth.flagsIn(top));
-        assertTrue(Logic.doorway.in(bottom));
-        assertTrue(Logic.nothing.in(top));
+        assertTrue(Logic.doorway.flagsIn(bottom));
+        assertTrue(Logic.nothing.flagsIn(top));
     }
 
     @Test
@@ -267,8 +267,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.earth.flagsIn(bottom));
         assertTrue(Element.earth.flagsIn(top));
-        assertTrue(Logic.doorway.in(bottom));
-        assertTrue(Logic.nothing.in(top));
+        assertTrue(Logic.doorway.flagsIn(bottom));
+        assertTrue(Logic.nothing.flagsIn(top));
     }
 
     @Test
@@ -288,8 +288,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.air.flagsIn(bottom));
         assertTrue(Element.earth.flagsIn(top));
-        assertTrue(Logic.nothing.in(bottom));
-        assertTrue(Logic.nothing.in(top));
+        assertTrue(Logic.nothing.flagsIn(bottom));
+        assertTrue(Logic.nothing.flagsIn(top));
     }
 
     @Test
@@ -308,8 +308,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.earth.flagsIn(bottom));
         assertTrue(Element.earth.flagsIn(top));
-        assertTrue(Logic.doorway.in(bottom));
-        assertTrue(Logic.nothing.in(top));
+        assertTrue(Logic.doorway.flagsIn(bottom));
+        assertTrue(Logic.nothing.flagsIn(top));
     }
 
     @Test
@@ -326,8 +326,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.earth.flagsIn(bottom));
         assertTrue(Element.earth.flagsIn(top));
-        assertTrue(Logic.fuzzy.in(bottom));
-        assertTrue(Logic.fuzzy.in(top));
+        assertTrue(Logic.fuzzy.flagsIn(bottom));
+        assertTrue(Logic.fuzzy.flagsIn(top));
     }
 
     @Test
@@ -344,8 +344,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         assertTrue(Element.earth.flagsIn(bottom));
         assertTrue(Element.earth.flagsIn(top));
-        assertTrue(Logic.doorway.in(bottom));
-        assertTrue(Logic.doorway.in(top));
+        assertTrue(Logic.doorway.flagsIn(bottom));
+        assertTrue(Logic.doorway.flagsIn(top));
     }
 
     @Test

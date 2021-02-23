@@ -86,7 +86,7 @@ enum class Logic {
          */
         @kotlin.jvm.JvmStatic
         fun climbable(flags: Byte): Boolean {
-            return ladder.`in`(flags) && Element.earth.flagsIn(flags)
+            return ladder.flagsIn(flags) && Element.earth.flagsIn(flags)
         }
     }
 
@@ -102,7 +102,7 @@ enum class Logic {
      *
      * @return true if the higher two bits map to this logic indicator
      */
-    fun `in`(flags: Byte): Boolean {
+    fun flagsIn(flags: Byte): Boolean {
         return flags and ((MASK shl BIT_OFFSET).toByte()) == mask
     }
 

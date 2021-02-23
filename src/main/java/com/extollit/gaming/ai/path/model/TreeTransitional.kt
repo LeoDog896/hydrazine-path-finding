@@ -1,20 +1,22 @@
 package com.extollit.gaming.ai.path.model
 
-import java.util.LinkedList
-import java.util.Deque
+import java.util.*
 
 internal class TreeTransitional(nextRoot: Node) {
+
     class RotateNodeOp(val root: Node, val diff: Int) {
+
         val heads: MutableList<Node?> = LinkedList()
-        override fun toString(): String {
-            return diff.toString() + ": " + this.root
-        }
+
+        override fun toString(): String =
+            diff.toString() + ": " + this.root
+
     }
 
     private var nextRoot: Node? = null
-    private val dq: Deque<RotateNodeOp>
+    private val dequeue: Deque<RotateNodeOp>
     fun queue(head: Node?, root: Node?): Boolean {
-        for (op in dq) {
+        for (op in dequeue) {
             if (op.root === root) {
                 op.heads.add(head)
                 return true
@@ -24,7 +26,7 @@ internal class TreeTransitional(nextRoot: Node) {
     }
 
     fun finish(queue: SortedNodeQueue) {
-        val dq = dq
+        val dq = dequeue
         var prev = nextRoot
         while (!dq.isEmpty()) {
             val op = dq.pop()
@@ -59,7 +61,7 @@ internal class TreeTransitional(nextRoot: Node) {
             newLength0 = length + dl
             curr = up
         }
-        this.dq = dq
+        this.dequeue = dq
         this.nextRoot!!.orphan()
     }
 }

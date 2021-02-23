@@ -6,17 +6,17 @@ import com.extollit.gaming.ai.path.model.*
 
 internal object PassibilityHelpers {
     fun impedesMovement(flags: Byte, capabilities: IPathingEntity.Capabilities?): Boolean {
-        return (Element.earth.flagsIn(flags) && !passibleDoorway(flags, capabilities) && !Logic.ladder.`in`(flags)
+        return (Element.earth.flagsIn(flags) && !passibleDoorway(flags, capabilities) && !Logic.ladder.flagsIn(flags)
                 || Element.air.flagsIn(flags) && impassibleDoorway(flags, capabilities))
     }
 
     @kotlin.jvm.JvmStatic
     fun clearance(flags: Byte, capabilities: IPathingEntity.Capabilities?): Passibility {
-        return if (Element.earth.flagsIn(flags)) if (Logic.ladder.`in`(flags) || passibleDoorway(
+        return if (Element.earth.flagsIn(flags)) if (Logic.ladder.flagsIn(flags) || passibleDoorway(
                 flags,
                 capabilities
             )
-        ) Passibility.passible else if (Logic.fuzzy.`in`(flags)) Passibility.risky else Passibility.impassible else if (Element.water.flagsIn(
+        ) Passibility.passible else if (Logic.fuzzy.flagsIn(flags)) Passibility.risky else Passibility.impassible else if (Element.water.flagsIn(
                 flags
             )
         ) {
@@ -33,7 +33,7 @@ internal object PassibilityHelpers {
         if (impassibleDoorway(flags, capabilities)) return Passibility.impassible
         val kind: Element = Element.of(flags)
         return when (kind) {
-            Element.earth -> if (Logic.ladder.`in`(flags) || passibleDoorway(
+            Element.earth -> if (Logic.ladder.flagsIn(flags) || passibleDoorway(
                     flags,
                     capabilities
                 )
@@ -55,10 +55,10 @@ internal object PassibilityHelpers {
     }
 
     private fun passibleDoorway(flags: Byte, capabilities: IPathingEntity.Capabilities?): Boolean {
-        return Logic.doorway.`in`(flags) && capabilities!!.opensDoors() && !capabilities.avoidsDoorways()
+        return Logic.doorway.flagsIn(flags) && capabilities!!.opensDoors() && !capabilities.avoidsDoorways()
     }
 
     private fun impassibleDoorway(flags: Byte, capabilities: IPathingEntity.Capabilities?): Boolean {
-        return Logic.doorway.`in`(flags) && capabilities!!.avoidsDoorways()
+        return Logic.doorway.flagsIn(flags) && capabilities!!.avoidsDoorways()
     }
 }

@@ -373,9 +373,9 @@ class PathObject protected @JvmOverloads constructor(
                 result[--i] = p
             }
             return if (result.size <= 1)
-                IncompletePath(result[0])
+                IncompletePath(result[0]!!)
             else
-                PathObject(speed, random, *result)
+                PathObject(speed, random, *result.map { it!! }.toTypedArray())
         }
 
         @JvmStatic

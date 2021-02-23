@@ -95,7 +95,7 @@ open class OcclusionField : IOcclusionProvider {
     }
 
     private fun fenceOrDoorLike(flags: Byte): Boolean {
-        return Element.earth.flagsIn(flags) && Logic.fuzzy.`in`(flags) || Logic.doorway.`in`(flags)
+        return Element.earth.flagsIn(flags) && Logic.fuzzy.flagsIn(flags) || Logic.doorway.flagsIn(flags)
     }
 
     private fun decompress() {
@@ -224,8 +224,8 @@ open class OcclusionField : IOcclusionProvider {
                     val xx = x + b
                     val flags: Byte
                     flags = if (words != null) (word and ELEMENT_MASK).toByte() else singleton
-                    val fenceLike = Element.earth.flagsIn(flags) && Logic.fuzzy.`in`(flags)
-                    val doorLike = Logic.doorway.`in`(flags)
+                    val fenceLike = Element.earth.flagsIn(flags) && Logic.fuzzy.flagsIn(flags)
+                    val doorLike = Logic.doorway.flagsIn(flags)
                     if (fenceLike || doorLike) {
                         val block = columnarSpace!!.blockAt(xx, y, z)
                         if (fenceLike && block!!.isFenceLike || doorLike && block!!.isDoor) `object`[xx, 0, z] = flags
@@ -464,13 +464,13 @@ open class OcclusionField : IOcclusionProvider {
         westFlags: Byte
     ): Byte {
         var centerFlags = centerFlags
-        val northElem: Element = Element.of(northFlags)
-        val southElem: Element = Element.of(southFlags)
-        val westElem: Element = Element.of(westFlags)
-        val eastElem: Element = Element.of(eastFlags)
-        val centerElem: Element = Element.of(centerFlags)
-        if (Logic.ladder.`in`(centerFlags) && (northElem == Element.earth || eastElem == Element.earth || southElem == Element.earth || westElem == Element.earth)) centerFlags =
-            Element.earth.to(centerFlags) else if (centerElem == Element.air && Logic.nothing.`in`(centerFlags)
+        val northElem = Element.of(northFlags)
+        val southElem = Element.of(southFlags)
+        val westElem = Element.of(westFlags)
+        val eastElem = Element.of(eastFlags)
+        val centerElem = Element.of(centerFlags)
+        if (Logic.ladder.flagsIn(centerFlags) && (northElem == Element.earth || eastElem == Element.earth || southElem == Element.earth || westElem == Element.earth)) centerFlags =
+            Element.earth.to(centerFlags) else if (centerElem == Element.air && Logic.nothing.flagsIn(centerFlags)
             && (fuzziable(centerElem, northFlags) ||
                     fuzziable(centerElem, eastFlags) ||
                     fuzziable(centerElem, southFlags) ||
@@ -496,14 +496,14 @@ open class OcclusionField : IOcclusionProvider {
         if (!centerBlock!!.isImpeding) {
             if (downFenceOrDoorLike && !centerFenceOrDoorLike && downBlock!!.isFenceLike || !handlingFenceTops && !downFenceOrDoorLike && centerFenceOrDoorLike && !centerBlock.isFenceLike ||
                 downFenceOrDoorLike && centerFenceOrDoorLike &&
-                (Logic.doorway.`in`(downFlags) && downBlock!!.isFenceLike && downBlock.isDoor && (Element.earth.flagsIn(
+                (Logic.doorway.flagsIn(downFlags) && downBlock!!.isFenceLike && downBlock.isDoor && (Element.earth.flagsIn(
                     downFlags
                 ) || !(centerBlock.isDoor && centerBlock.isFenceLike))
                         ||
-                        Logic.doorway.`in`(centerFlags) && !(downBlock!!.isFenceLike && downBlock.isDoor))
+                        Logic.doorway.flagsIn(centerFlags) && !(downBlock!!.isFenceLike && downBlock.isDoor))
             ) return downFlags
         } else if (downFenceOrDoorLike && centerFenceOrDoorLike &&
-            Logic.doorway.`in`(downFlags) && Logic.doorway.`in`(centerFlags) &&
+            Logic.doorway.flagsIn(downFlags) && Logic.doorway.flagsIn(centerFlags) &&
             downBlock!!.isDoor && centerBlock.isDoor
         ) return downFlags
         return centerFlags
@@ -511,7 +511,7 @@ open class OcclusionField : IOcclusionProvider {
 
     private fun fuzziable(centerElem: Element, otherFlags: Byte): Boolean {
         val otherElement: Element = Element.of(otherFlags)
-        return centerElem != otherElement && !(otherElement == Element.earth && Logic.fuzzy.`in`(otherFlags))
+        return centerElem != otherElement && !(otherElement == Element.earth && Logic.fuzzy.flagsIn(otherFlags))
     }
 
     private fun modifyWord(word: Long, offset: Int, flags: Byte): Long {
@@ -525,9 +525,9 @@ open class OcclusionField : IOcclusionProvider {
         val dz = z and DIMENSION_MASK
         val flags = flagsFor(columnarSpace, x, y, z, blockDescription)
         if (set(dx, dy, dz, flags)) {
-            val dzb = dz > 0 && dz < DIMENSION_EXTENT
-            val dxb = dx > 0 && dx < DIMENSION_EXTENT
-            val dyb = dy > 0 && dy < DIMENSION_EXTENT
+            val dzb = dz in 1 until DIMENSION_EXTENT
+            val dxb = dx in 1 until DIMENSION_EXTENT
+            val dyb = dy in 1 until DIMENSION_EXTENT
             if (dzb && dxb && dyb) areaComputeAt(dx, dy, dz) else greaterAreaComputeAt(columnarSpace, x, y, z)
             if (dx > 1 && dzb) areaComputeAt(dx - 1, dy, dz) else greaterAreaComputeAt(columnarSpace, x - 1, y, z)
             if (dx < DIMENSION_EXTENT - 1 && dzb) areaComputeAt(dx + 1, dy, dz) else greaterAreaComputeAt(
@@ -543,7 +543,7 @@ open class OcclusionField : IOcclusionProvider {
                 y,
                 z + 1
             )
-            if (dy > 0 && dy < DIMENSION_EXTENT) fencesAndDoorsComputeAt(
+            if (dy in 1 until DIMENSION_EXTENT) fencesAndDoorsComputeAt(
                 columnarSpace,
                 dx,
                 y,
@@ -749,7 +749,7 @@ open class OcclusionField : IOcclusionProvider {
         private const val ELEMENT_MASK = ((1 shl ELEMENT_LENGTH.toInt()) - 1).toLong()
         private const val FULLY_AREA_INIT: Short = 0x3FF
         fun fuzzyOpenIn(element: Byte): Boolean {
-            return Element.air.flagsIn(element) || Element.earth.flagsIn(element) && Logic.fuzzy.`in`(element)
+            return Element.air.flagsIn(element) || Element.earth.flagsIn(element) && Logic.fuzzy.flagsIn(element)
         }
 
         fun visualizeAt(provider: IOcclusionProvider, dy: Int, x0: Int, z0: Int, xN: Int, zN: Int): String {
@@ -759,8 +759,8 @@ open class OcclusionField : IOcclusionProvider {
                     val ch: Char
                     val flags = provider.elementAt(x, dy, z)
                     ch = when (Element.of(flags)) {
-                        Element.air -> if (Logic.fuzzy.`in`(flags)) '░' else ' '
-                        Element.earth -> if (Logic.climbable(flags)) '#' else if (Logic.fuzzy.`in`(
+                        Element.air -> if (Logic.fuzzy.flagsIn(flags)) '░' else ' '
+                        Element.earth -> if (Logic.climbable(flags)) '#' else if (Logic.fuzzy.flagsIn(
                                 flags
                             )
                         ) '▄' else '█'
