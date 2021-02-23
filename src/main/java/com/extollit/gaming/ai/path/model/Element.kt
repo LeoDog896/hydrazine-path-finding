@@ -17,16 +17,16 @@ enum class Element {
      * Represents a passible block having no collision bounds.
      * A block description that is not impeding, a liquid or incinerating produces an 'air' element.
      *
-     * @see IBlockDescription.isImpeding
-     * @see IBlockDescription.isLiquid
-     * @see IBlockDescription.isIncinerating
+     * @see IBlockDescription.impeding
+     * @see IBlockDescription.liquid
+     * @see IBlockDescription.incinerating
      */
     air,
 
     /**
      * Represents an impassible block having at least some collision bounds.
      * A block description that is impeding produces an 'earth' element with the following additional conditions:
-     * - If the block is a door, [IBlockObject.isImpeding] is called to determine dynamic collision bounds
+     * - If the block is a door, [IBlockObject.impeding] is called to determine dynamic collision bounds
      * from the specific block's state inside the instance.  If the door is open then the element 'air' results
      * instead.
      * - Climable blocks with no collision bounds (i.e. vines and ladders) also produce an 'earth' element.  This is
@@ -34,8 +34,8 @@ enum class Element {
      * cannot also be a climbable ladder or vine due to how these work in the Notchian implementation.
      *
      * @see Logic.climbable
-     * @see IBlockObject.isImpeding
-     * @see IBlockDescription.isDoor
+     * @see IBlockObject.impeding
+     * @see IBlockDescription.door
      * @see .air
      */
     earth,
@@ -47,8 +47,8 @@ enum class Element {
      *
      * A block description that is liquid and not incinerating produces a 'water' element.
      *
-     * @see IBlockDescription.isLiquid
-     * @see IBlockDescription.isIncinerating
+     * @see IBlockDescription.liquid
+     * @see IBlockDescription.incinerating
      */
     water,
 
@@ -58,7 +58,7 @@ enum class Element {
      *
      * A block description that is incinerating produces a 'fire' element.
      *
-     * @see IBlockDescription.isIncinerating
+     * @see IBlockDescription.incinerating
      * @see Logic.fuzzy
      */
     fire;

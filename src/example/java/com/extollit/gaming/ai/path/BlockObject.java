@@ -13,37 +13,37 @@ public class BlockObject implements IBlockObject {
     }
 
     @Override
-    public boolean isFenceLike() {
+    public boolean getFenceLike() {
         return this.fenceLike;
     }
 
     @Override
-    public boolean isClimbable() {
+    public boolean getClimbable() {
         return this.climbable;
     }
 
     @Override
-    public boolean isDoor() {
+    public boolean getDoor() {
         return this.door;
     }
 
     @Override
-    public boolean isImpeding() {
+    public boolean getImpeding() {
         return this.impeding;
     }
 
     @Override
-    public boolean isFullyBounded() {
+    public boolean getFullyBounded() {
         return this.fullyBounded;
     }
 
     @Override
-    public boolean isLiquid() {
+    public boolean getLiquid() {
         return this.liquid;
     }
 
     @Override
-    public boolean isIncinerating() {
+    public boolean getIncinerating() {
         return this.incinerating;
     }
 }

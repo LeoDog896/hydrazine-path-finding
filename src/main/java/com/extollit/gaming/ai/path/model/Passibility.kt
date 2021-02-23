@@ -36,7 +36,7 @@ enum class Passibility {
      * @param other other passibility to compare to
      * @return the lesser of the two passibility ratings
      */
-    fun between(other: Passibility?): Passibility = values()[ordinal.coerceAtLeast(other!!.ordinal)]
+    fun between(other: Passibility): Passibility = values()[ordinal.coerceAtLeast(other.ordinal)]
 
     /**
      * Determines if the given passibility rating is better than this one.  For example, if this is [.dangerous]
@@ -45,7 +45,7 @@ enum class Passibility {
      * @param other other rating to compare with as potentially better than this one
      * @return true if the given passibility rating is better than this one, false otherwise
      */
-    fun betterThan(other: Passibility?): Boolean = ordinal < other!!.ordinal
+    fun betterThan(other: Passibility): Boolean = ordinal < other.ordinal
 
     /**
      * Determines if the given passibility rating is worse than this one.  For example, if this is [.dangerous]
@@ -54,7 +54,7 @@ enum class Passibility {
      * @param other other rating to compare with as potentially worse than this one
      * @return true if the given passibility rating is worse than this one, false otherwise
      */
-    fun worseThan(other: Passibility?): Boolean = ordinal > other!!.ordinal
+    fun worseThan(other: Passibility): Boolean = ordinal > other.ordinal
 
     /**
      * Determines if the entity should path to a node rated this way.  This may return false even if the location rated

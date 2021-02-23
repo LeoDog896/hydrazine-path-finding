@@ -29,7 +29,7 @@ enum class Logic {
      * Von Neumann neighborhood that is dissimilar and not also fuzzy
      * - [Element.water] - Reserved for future use
      *
-     * @see IBlockDescription.isFullyBounded
+     * @see IBlockDescription.fullyBounded
      */
     fuzzy,
 
@@ -41,7 +41,7 @@ enum class Logic {
      * Presently this flag only applies to the [Element.earth] element.  Pairing this flag with any of the other
      * three elements is reserved for future use.
      *
-     * @see IBlockDescription.isClimbable
+     * @see IBlockDescription.climbable
      */
     ladder,
 
@@ -56,7 +56,7 @@ enum class Logic {
      * - [Element.fire] - Reserved for future use
      * - [Element.water] - Reserved for future use
      *
-     * @see IBlockDescription.isDoor
+     * @see IBlockDescription.door
      */
     doorway;
 

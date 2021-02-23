@@ -365,7 +365,7 @@ class HydrazinePathFinder internal constructor(
         unreachableFromSource.clear()
         if (!fuzzyPassibility(sourcePoint!!.x, sourcePoint.y, sourcePoint.z)) return false
         val blockObject = instanceSpace.blockObjectAt(sourcePoint.x, sourcePoint.y, sourcePoint.z)
-        if (!blockObject.isImpeding) return false
+        if (!blockObject.impeding) return false
         val bounds = blockObject.bounds()
         val c = Vec3d(subject.coordinates())
         c.sub(sourcePoint)
@@ -769,7 +769,7 @@ class HydrazinePathFinder internal constructor(
         bounds = when {
             fuzzyPassibility(flags) -> {
                 val block = instanceSpace.blockObjectAt(x, y, z)
-                if (!block.isImpeding) return null
+                if (!block.impeding) return null
                 block.bounds()
             }
             PassibilityHelpers.impedesMovement(

@@ -13,7 +13,7 @@ interface IBlockDescription {
      *
      * @return true if this describes a block that is a fence, wall or fence gate .
      */
-    val isFenceLike: Boolean
+    val fenceLike: Boolean
 
     /**
      * Whether this block is used for climbing (typically by players, but now by mobs who can climb too!)
@@ -24,7 +24,7 @@ interface IBlockDescription {
      *
      * @return true if this is either a ladder or a vine block.
      */
-    val isClimbable: Boolean
+    val climbable: Boolean
 
     /**
      * Whether the block is a door that can be manually opened or broken-down by zombies.
@@ -38,7 +38,7 @@ interface IBlockDescription {
      *
      * @return true if this is a wooden door, wooden trap door or wooden fence gate.
      */
-    val isDoor: Boolean
+    val door: Boolean
 
     /**
      * Does this block impede movement in at least one direction?
@@ -66,7 +66,7 @@ interface IBlockDescription {
      *
      * @return true if this block has at least some collision bounds.
      */
-    val isImpeding: Boolean
+    val impeding: Boolean
 
     /**
      * This is a special sort of block that "impedes" with full 1x1x1 collision bounds effectively filling the entire
@@ -89,7 +89,7 @@ interface IBlockDescription {
      *
      * @return true if the block has min/max bounds of &lt; 0, 0, 0 &gt; to &lt; 1, 1, 1 &gt;.
      */
-    val isFullyBounded: Boolean
+    val fullyBounded: Boolean
 
     /**
      * Whether this represents a liquid block, either flowing or static, harmful or benign.  Blocks like this will
@@ -101,7 +101,7 @@ interface IBlockDescription {
      *
      * @return true if this is a liquid such as water, lava, mud or quicksand.
      */
-    val isLiquid: Boolean
+    val liquid: Boolean
 
     /**
      * Does this block burn entities that come into contact with it?
@@ -111,5 +111,5 @@ interface IBlockDescription {
      *
      * @return true if this is lava or fire or something similar that burns due to high heat.
      */
-    val isIncinerating: Boolean
+    val incinerating: Boolean
 }

@@ -22,7 +22,7 @@ interface IBlockObject : IBlockDescription {
      * collision bounds.
      *
      * @return The maximum axis-aligned bounds for the block, must be non-null
-     * @see IBlockDescription.isImpeding
+     * @see IBlockDescription.impeding
      */
     fun bounds(): AxisAlignedBBox
 }

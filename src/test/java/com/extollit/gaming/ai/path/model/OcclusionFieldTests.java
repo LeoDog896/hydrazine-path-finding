@@ -559,7 +559,7 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
     public void incineratingOverSolid() {
         class SolidIncinerating extends Stone {
             @Override
-            public boolean isIncinerating() {
+            public boolean getIncinerating() {
                 return true;
             }
         }

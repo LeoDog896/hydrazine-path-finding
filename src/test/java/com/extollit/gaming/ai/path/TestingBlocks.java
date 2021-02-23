@@ -21,37 +21,37 @@ public class TestingBlocks {
 
     private static class AbstractBlockDescription implements IBlockObject {
         @Override
-        public boolean isFenceLike() {
+        public boolean getFenceLike() {
             return false;
         }
 
         @Override
-        public boolean isClimbable() {
+        public boolean getClimbable() {
             return false;
         }
 
         @Override
-        public boolean isDoor() {
+        public boolean getDoor() {
             return false;
         }
 
         @Override
-        public boolean isImpeding() {
+        public boolean getImpeding() {
             return false;
         }
 
         @Override
-        public boolean isFullyBounded() {
+        public boolean getFullyBounded() {
             return false;
         }
 
         @Override
-        public boolean isLiquid() {
+        public boolean getLiquid() {
             return false;
         }
 
         @Override
-        public boolean isIncinerating() {
+        public boolean getIncinerating() {
             return false;
         }
 
@@ -59,19 +59,19 @@ public class TestingBlocks {
         public AxisAlignedBBox bounds() {
             return new AxisAlignedBBox(
                 0, 0, 0,
-                1, isFenceLike() ? 1.5f : 0, 1
+                1, getFenceLike() ? 1.5f : 0, 1
             );
         }
     }
 
     public static class Stone extends AbstractBlockDescription {
         @Override
-        public boolean isImpeding() {
+        public boolean getImpeding() {
             return true;
         }
 
         @Override
-        public boolean isFullyBounded() {
+        public boolean getFullyBounded() {
             return true;
         }
 
@@ -86,24 +86,24 @@ public class TestingBlocks {
 
     public static class Wall extends Stone {
         @Override
-        public boolean isFenceLike() {
+        public boolean getFenceLike() {
             return true;
         }
 
         @Override
-        public boolean isFullyBounded() {
+        public boolean getFullyBounded() {
             return false;
         }
     }
 
     public static final class Lava extends AbstractBlockDescription {
         @Override
-        public boolean isLiquid() {
+        public boolean getLiquid() {
             return true;
         }
 
         @Override
-        public boolean isIncinerating() {
+        public boolean getIncinerating() {
             return true;
         }
     }
@@ -114,12 +114,12 @@ public class TestingBlocks {
         public boolean open;
 
         @Override
-        public final boolean isDoor() {
+        public final boolean getDoor() {
             return true;
         }
 
         @Override
-        public final boolean isImpeding() {
+        public final boolean getImpeding() {
             return !open;
         }
 
@@ -134,7 +134,7 @@ public class TestingBlocks {
 
     public static final class FenceGate extends AbstractDoor {
         @Override
-        public boolean isFenceLike() {
+        public boolean getFenceLike() {
             return true;
         }
     }
@@ -143,14 +143,14 @@ public class TestingBlocks {
 
     public static final class Ladder extends AbstractBlockDescription {
         @Override
-        public boolean isClimbable() {
+        public boolean getClimbable() {
             return true;
         }
     }
 
     public static final class SlabDown extends AbstractBlockDescription {
         @Override
-        public boolean isImpeding() {
+        public boolean getImpeding() {
             return true;
         }
         @Override
@@ -164,7 +164,7 @@ public class TestingBlocks {
 
     public static final class SlabUp extends AbstractBlockDescription {
         @Override
-        public boolean isImpeding() {
+        public boolean getImpeding() {
             return true;
         }
 

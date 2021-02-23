@@ -49,7 +49,7 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
             || Element.earth.flagsIn(flags) && Logic.nothing.flagsIn(flags) || swimmingRequiredFor(flags)
         ) return 0f
         val block = instanceSpace.blockObjectAt(x, y, z)
-        return if (!block.isImpeding) 0f else block.bounds().min.y.toFloat()
+        return if (!block.impeding) 0f else block.bounds().min.y.toFloat()
     }
 
     private fun clearance(flags: Byte): Passibility =
@@ -65,10 +65,10 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
         ) return 0f
         if (swimmingRequiredFor(flags)) return -0.5f
         val block = instanceSpace.blockObjectAt(x, y, z)
-        if (!block.isImpeding) {
+        if (!block.impeding) {
             if (Element.earth.flagsIn(flags)) {
                 val blockBelow = instanceSpace.blockObjectAt(x, y - 1, z)
-                if (!blockBelow.isFullyBounded) {
+                if (!blockBelow.fullyBounded) {
                     var offset = blockBelow.bounds().max.y.toFloat() - 2
                     if (offset < -1) offset = 0f
                     return offset

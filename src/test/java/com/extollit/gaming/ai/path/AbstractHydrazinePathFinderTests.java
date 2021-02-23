@@ -83,7 +83,7 @@ public abstract class AbstractHydrazinePathFinderTests {
         when(occlusionProvider.elementAt(x, y, z)).thenReturn(Logic.fuzzy.to(Element.earth.mask));
         when(instanceSpace.blockObjectAt(x, y, z)).thenReturn(block);
         when(block.bounds()).thenReturn(new AxisAlignedBBox(0, 0, 0, 1, 1, 1));
-        when(block.isImpeding()).thenReturn(true);
+        when(block.getImpeding()).thenReturn(true);
     }
     protected void slabDown(final int x, final int y, final int z) {
         fuzzy(x, y, z);
@@ -153,11 +153,11 @@ public abstract class AbstractHydrazinePathFinderTests {
         fuzzy(x, y, z);
         when(instanceSpace.blockObjectAt(x, y, z)).thenReturn(blockBelow);
         when(blockBelow.bounds()).thenReturn(bounds);
-        when(blockBelow.isImpeding()).thenReturn(true);
+        when(blockBelow.getImpeding()).thenReturn(true);
 
         fuzzy(x, y + 1, z);
         when(instanceSpace.blockObjectAt(x, y + 1, z)).thenReturn(blockAbove);
-        when(blockAbove.isImpeding()).thenReturn(false);
+        when(blockAbove.getImpeding()).thenReturn(false);
     }
 
     protected void defaultGround() {

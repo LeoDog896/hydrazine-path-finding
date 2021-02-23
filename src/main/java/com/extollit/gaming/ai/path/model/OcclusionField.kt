@@ -73,7 +73,7 @@ open class OcclusionField : IOcclusionProvider {
                         lastFlags = flags
                         word = word shl (1 shl ELEMENT_LENGTH_SHL.toInt())
                         word = word or flags.toLong()
-                        if (blockDescription!!.isFenceLike && y < yNi) {
+                        if (blockDescription!!.fenceLike && y < yNi) {
                             val indexUp = i + (DIMENSION_SQUARE_SIZE shr COORDINATE_TO_INDEX_SHR.toInt())
                             words!![indexUp] = modifyWord(words[indexUp], b, flags)
                         }
@@ -222,7 +222,7 @@ open class OcclusionField : IOcclusionProvider {
                     val doorLike = Logic.doorway.flagsIn(flags)
                     if (fenceLike || doorLike) {
                         val block = columnarSpace!!.blockAt(xx, y, z)
-                        if (fenceLike && block!!.isFenceLike || doorLike && block!!.isDoor) `object`[xx, 0, z] = flags
+                        if (fenceLike && block!!.fenceLike || doorLike && block!!.door) `object`[xx, 0, z] = flags
                     }
                     word = word shr (1 shl ELEMENT_LENGTH_SHL.toInt())
                 }
@@ -484,18 +484,18 @@ open class OcclusionField : IOcclusionProvider {
         val centerFenceOrDoorLike = fenceOrDoorLike(centerFlags)
         val centerBlock = columnarSpace.blockAt(dx, y, dz)
         val downBlock = columnarSpace.blockAt(dx, y - 1, dz)
-        if (!centerBlock!!.isImpeding) {
-            if (downFenceOrDoorLike && !centerFenceOrDoorLike && downBlock!!.isFenceLike || !handlingFenceTops && !downFenceOrDoorLike && centerFenceOrDoorLike && !centerBlock.isFenceLike ||
+        if (!centerBlock!!.impeding) {
+            if (downFenceOrDoorLike && !centerFenceOrDoorLike && downBlock!!.fenceLike || !handlingFenceTops && !downFenceOrDoorLike && centerFenceOrDoorLike && !centerBlock.fenceLike ||
                 downFenceOrDoorLike && centerFenceOrDoorLike &&
-                (Logic.doorway.flagsIn(downFlags) && downBlock!!.isFenceLike && downBlock.isDoor && (Element.earth.flagsIn(
+                (Logic.doorway.flagsIn(downFlags) && downBlock!!.fenceLike && downBlock.door && (Element.earth.flagsIn(
                     downFlags
-                ) || !(centerBlock.isDoor && centerBlock.isFenceLike))
+                ) || !(centerBlock.door && centerBlock.fenceLike))
                         ||
-                        Logic.doorway.flagsIn(centerFlags) && !(downBlock!!.isFenceLike && downBlock.isDoor))
+                        Logic.doorway.flagsIn(centerFlags) && !(downBlock!!.fenceLike && downBlock.door))
             ) return downFlags
         } else if (downFenceOrDoorLike && centerFenceOrDoorLike &&
             Logic.doorway.flagsIn(downFlags) && Logic.doorway.flagsIn(centerFlags) &&
-            downBlock!!.isDoor && centerBlock.isDoor
+            downBlock!!.door && centerBlock.door
         ) return downFlags
         return centerFlags
     }
@@ -702,15 +702,15 @@ open class OcclusionField : IOcclusionProvider {
     private fun flagsFor(columnarSpace: IColumnarSpace, x: Int, y: Int, z: Int, block: IBlockDescription?): Byte {
         var flags: Byte = 0
         val instance = columnarSpace.instance()
-        val doorway = block!!.isDoor
+        val doorway = block!!.door
         flags = if (doorway) flags or (if (instance!!.blockObjectAt(
                 x,
                 y,
                 z
-            ).isImpeding
-        ) Element.earth else Element.air).mask else if (!block.isImpeding) if (block.isLiquid) if (block.isIncinerating) flags or Element.fire.mask else flags or Element.water.mask else if (block.isIncinerating) flags or (Element.fire.mask or Logic.fuzzy.mask) else flags or Element.air.mask else if (block.isIncinerating) flags or Element.fire.mask else flags or Element.earth.mask
-        if (doorway) flags = Logic.doorway.to(flags) else if (block.isClimbable) flags =
-            Logic.ladder.to(flags) else if (Element.earth.flagsIn(flags) && !block.isFullyBounded) flags =
+            ).impeding
+        ) Element.earth else Element.air).mask else if (!block.impeding) if (block.liquid) if (block.incinerating) flags or Element.fire.mask else flags or Element.water.mask else if (block.incinerating) flags or (Element.fire.mask or Logic.fuzzy.mask) else flags or Element.air.mask else if (block.incinerating) flags or Element.fire.mask else flags or Element.earth.mask
+        if (doorway) flags = Logic.doorway.to(flags) else if (block.climbable) flags =
+            Logic.ladder.to(flags) else if (Element.earth.flagsIn(flags) && !block.fullyBounded) flags =
             Logic.fuzzy.to(flags)
         return flags
     }

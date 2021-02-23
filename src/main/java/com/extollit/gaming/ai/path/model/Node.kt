@@ -293,6 +293,6 @@ class Node : INode {
          *
          * @return If an entity can go from this node to that node without any horrible risk changes.
          */
-        fun passible(node: Node?): Boolean = node != null && node.passibility().betterThan(Passibility.impassible)
+        fun passible(node: Node): Boolean = node.passibility().betterThan(Passibility.impassible)
     }
 }
