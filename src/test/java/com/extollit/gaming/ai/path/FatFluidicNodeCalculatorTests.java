@@ -42,6 +42,6 @@ public class FatFluidicNodeCalculatorTests extends AbstractHydrazinePathFinderTe
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 1), ORIGIN, this.flagSampler);
         assertNotNull(actual);
         assertEquals(Passibility.impassible, actual.passibility());
-        assertEquals(1, actual.key.z);
+        assertEquals(1, actual.getCoordinates().z);
     }
 }

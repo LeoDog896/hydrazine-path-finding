@@ -33,13 +33,13 @@ public class SortedPointQueueTests {
         this.q = new SortedNodeQueue();
         this.graph = new NodeMap(instanceSpace, new TestNodeCalculatorDecorator(this.calculator), occlusionProviderFactory);
         this.target = this.graph.cachedPointAt(0, 0, 7);
-        (this.source = visited(0, 0, 0)).target(this.target.key);
+        (this.source = visited(0, 0, 0)).target(this.target.getCoordinates());
     }
 
     @Test
     public void control() {
         this.q.clear();
-        (this.source = add(0, 0, 3)).target(this.target.key);
+        (this.source = add(0, 0, 3)).target(this.target.getCoordinates());
 
         final Node middle = source;
 
@@ -160,7 +160,7 @@ public class SortedPointQueueTests {
             leftTertiary = visited(leftRoot, -3, 0, 2),
             leftHead = add(leftTertiary, -4, 0, 3);
 
-        graph.cullBranchAt(leftRoot.key, q);
+        graph.cullBranchAt(leftRoot.getCoordinates(), q);
 
         assertQueuePoints(
             new Vec3i(-1, 0, 0),
@@ -206,11 +206,11 @@ public class SortedPointQueueTests {
         final Node
                 node = visited(source, +1, 0, 0);
 
-        assertSame(node, graph.cachedPointAt(node.key));
+        assertSame(node, graph.cachedPointAt(node.getCoordinates()));
 
-        graph.cullBranchAt(node.key, q);
+        graph.cullBranchAt(node.getCoordinates(), q);
 
-        assertNotSame(node, graph.cachedPointAt(node.key));
+        assertNotSame(node, graph.cachedPointAt(node.getCoordinates()));
     }
 
     @Test
@@ -235,10 +235,10 @@ public class SortedPointQueueTests {
         assertQueueRoot(next);
 
         assertQueuePoints(
-                prune.key,
-                next.key,
+                prune.getCoordinates(),
+                next.getCoordinates(),
                 new Vec3i(-1, 0, -1),
-                another.key,
+                another.getCoordinates(),
                 new Vec3i(0, 0, -1),
                 new Vec3i(0, 0, -2),
                 new Vec3i(-1, 0, -2),
@@ -246,8 +246,8 @@ public class SortedPointQueueTests {
         );
 
         assertEquals(3, test.length());
-        assertEquals(2, test.parent().length());
-        assertEquals(1, test.parent().parent().length());
+        assertEquals(2, test.getParent().length());
+        assertEquals(1, test.getParent().getParent().length());
         assertEquals(3, another.length());
         assertEquals(1, pivot.length());
     }
@@ -301,14 +301,14 @@ public class SortedPointQueueTests {
         Node p = visited(x, y, z);
         p.visited(false);
         p.length(parent.length() + 1);
-        q.appendTo(p, parent, target.key);
+        q.appendTo(p, parent, target.getCoordinates());
         return p;
     }
 
     protected void add(Node parent, Node... children) {
         for (Node p : children) {
             p.length(parent.length() + 1);
-            q.appendTo(p, parent, target.key);
+            q.appendTo(p, parent, target.getCoordinates());
         }
     }
 
@@ -349,7 +349,7 @@ public class SortedPointQueueTests {
         {
             int c = 0;
             for (Node p : view)
-                actual[c++] = p.key;
+                actual[c++] = p.getCoordinates();
         }
 
         assertArrayEquals(expected, actual);

@@ -250,7 +250,7 @@ public class IntegrationTests extends AbstractHydrazinePathFinderTests {
         assertNotNull(pathObject);
         INode last = pathObject.last();
         assertNotNull(last);
-        assertEquals(new Vec3i(3, 10, 1), last.coordinates());
+        assertEquals(new Vec3i(3, 10, 1), last.getCoordinates());
 
         solid(1, 9, 0);
         solid(1, 9, -1);
@@ -261,7 +261,7 @@ public class IntegrationTests extends AbstractHydrazinePathFinderTests {
         assertNotNull(pathObject);
         last = pathObject.last();
         assertNotNull(last);
-        assertEquals(new Vec3i(1, 10, -1), last.coordinates());
+        assertEquals(new Vec3i(1, 10, -1), last.getCoordinates());
     }
 
     @Test
@@ -421,7 +421,7 @@ public class IntegrationTests extends AbstractHydrazinePathFinderTests {
             if (path instanceof IncompletePath)
                 incompletes++;
 
-            final Vec3i coords = path.current().coordinates();
+            final Vec3i coords = path.current().getCoordinates();
             pos(coords.x + 0.5, coords.y, coords.z + 0.5);
         }
 

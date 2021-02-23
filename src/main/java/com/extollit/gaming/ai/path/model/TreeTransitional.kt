@@ -34,10 +34,10 @@ internal class TreeTransitional(nextRoot: Node) {
             next.bindParent(prev)
             for (head in op.heads) {
                 if (head!!.dirty()) queue.addLength(head, op.diff)
-                var curr = head.parent()
+                var curr = head.parent
                 while (curr != null && curr !== next && curr.dirty()) {
                     curr.addLength(op.diff)
-                    curr = curr.parent()
+                    curr = curr.parent
                 }
                 if (next.dirty()) next.addLength(op.diff)
             }
@@ -47,11 +47,11 @@ internal class TreeTransitional(nextRoot: Node) {
 
     init {
         val dq: Deque<RotateNodeOp> = LinkedList()
-        var curr = nextRoot.apply { this@TreeTransitional.nextRoot = this }.parent()
+        var curr = nextRoot.apply { this@TreeTransitional.nextRoot = this }.parent
         var length = nextRoot.length().toInt()
         var newLength0 = 0
         while (curr != null) {
-            val up = curr!!.parent()
+            val up = curr!!.parent
             val length0 = length
             length = curr!!.length().toInt()
             curr!!.orphan()

@@ -25,7 +25,7 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 0), ORIGIN, super.flagSampler);
         assertNotNull(actual);
         assertEquals(Passibility.passible, actual.passibility());
-        assertEquals(1, actual.key.y);
+        assertEquals(1, actual.getCoordinates().y);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         slabUp(0, 2, 1);
 
         final Node actual = calculator.passibleNodeNear(new Vec3i(0, 0, 1), ORIGIN, super.flagSampler);
-        assertEquals(1, actual.key.y);
+        assertEquals(1, actual.getCoordinates().y);
     }
 
     @Test
@@ -99,8 +99,8 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 0), ORIGIN, super.flagSampler);
 
         assertTrue(actual.passibility().betterThan(Passibility.impassible));
-        assertEquals(4, actual.key.y);
-        assertEquals(1, actual.key.x);
+        assertEquals(4, actual.getCoordinates().y);
+        assertEquals(1, actual.getCoordinates().x);
     }
 
     @Test
@@ -134,7 +134,7 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 1, 0), new Vec3i(0, 1, 1), super.flagSampler);
 
         assertTrue(actual.passibility().betterThan(Passibility.impassible));
-        assertEquals(new Vec3i(1, 1, 0), actual.key);
+        assertEquals(new Vec3i(1, 1, 0), actual.getCoordinates());
     }
 
     @Test
@@ -152,8 +152,8 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 0), ORIGIN, super.flagSampler);
 
         assertTrue(actual.passibility().betterThan(Passibility.impassible));
-        assertEquals(4, actual.key.y);
-        assertEquals(1, actual.key.x);
+        assertEquals(4, actual.getCoordinates().y);
+        assertEquals(1, actual.getCoordinates().x);
     }
 
     @Test
@@ -176,7 +176,7 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         final Node actual = calculator.passibleNodeNear(new Vec3i(0, 1, 1), new Vec3i(0, 1, 0), super.flagSampler);
 
         assertTrue(actual.passibility().betterThan(Passibility.impassible));
-        assertEquals(2, actual.key.y);
+        assertEquals(2, actual.getCoordinates().y);
     }
 
     @Test
@@ -212,8 +212,8 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 0), ORIGIN, super.flagSampler);
 
         assertTrue(actual.passibility().betterThan(Passibility.impassible));
-        assertEquals(4, actual.key.y);
-        assertEquals(1, actual.key.x);
+        assertEquals(4, actual.getCoordinates().y);
+        assertEquals(1, actual.getCoordinates().x);
     }
 
     @Test
@@ -228,7 +228,7 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
 
         assertTrue(actual.passibility().betterThan(Passibility.impassible));
         assertEquals(Passibility.risky, actual.passibility());
-        assertEquals(-1, actual.key.y);
+        assertEquals(-1, actual.getCoordinates().y);
     }
 
     @Test
@@ -286,7 +286,7 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
 
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 0), ORIGIN, super.flagSampler);
         assertTrue(actual.passibility().betterThan(Passibility.impassible));
-        assertEquals(0, actual.key.y);
+        assertEquals(0, actual.getCoordinates().y);
     }
 
     @Test
@@ -300,7 +300,7 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
 
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 0), ORIGIN, super.flagSampler);
         assertEquals(Passibility.risky, actual.passibility());
-        assertEquals(0, actual.key.y);
+        assertEquals(0, actual.getCoordinates().y);
     }
 
     @Test
@@ -314,7 +314,7 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
 
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 0), ORIGIN, super.flagSampler);
         assertEquals(Passibility.risky, actual.passibility());
-        assertEquals(13, actual.key.y);
+        assertEquals(13, actual.getCoordinates().y);
     }
 
     @Test
@@ -328,7 +328,7 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
 
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 0), ORIGIN, super.flagSampler);
         assertEquals(Passibility.risky, actual.passibility());
-        assertEquals(-4, actual.key.y);
+        assertEquals(-4, actual.getCoordinates().y);
     }
 
     @Test
@@ -375,7 +375,7 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 0), ORIGIN, super.flagSampler);
 
         assertEquals(Passibility.passible, actual.passibility());
-        assertEquals(new Vec3i(1, 1, 0), actual.key);
+        assertEquals(new Vec3i(1, 1, 0), actual.getCoordinates());
     }
 
     @Test
@@ -414,7 +414,7 @@ public class GroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 0), ORIGIN, super.flagSampler);
 
         assertEquals(Passibility.passible, actual.passibility());
-        assertEquals(0, actual.key.y);  // Regression: entities were jumping at 2-block-high doors
+        assertEquals(0, actual.getCoordinates().y);  // Regression: entities were jumping at 2-block-high doors
     }
 
     @Test

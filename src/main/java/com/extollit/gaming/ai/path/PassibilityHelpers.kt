@@ -1,10 +1,10 @@
 package com.extollit.gaming.ai.path
 
-import java.text.MessageFormat
-import java.lang.IllegalArgumentException
 import com.extollit.gaming.ai.path.model.*
+import java.text.MessageFormat
 
 internal object PassibilityHelpers {
+
     fun impedesMovement(flags: Byte, capabilities: IPathingEntity.Capabilities?): Boolean {
         return (Element.earth.flagsIn(flags) && !passibleDoorway(flags, capabilities) && !Logic.ladder.flagsIn(flags)
                 || Element.air.flagsIn(flags) && impassibleDoorway(flags, capabilities))
@@ -28,7 +28,7 @@ internal object PassibilityHelpers {
         ) Passibility.impassible else if (capabilities!!.aquatic()) Passibility.risky else Passibility.passible
     }
 
-    @kotlin.jvm.JvmStatic
+    @JvmStatic
     fun passibilityFrom(flags: Byte, capabilities: IPathingEntity.Capabilities?): Passibility {
         if (impassibleDoorway(flags, capabilities)) return Passibility.impassible
         val kind: Element = Element.of(flags)

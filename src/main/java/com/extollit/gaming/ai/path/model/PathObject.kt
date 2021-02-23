@@ -54,23 +54,23 @@ class PathObject @JvmOverloads protected constructor(
 
     override fun done(): Boolean = index >= length
 
-    override fun update(subject: IPathingEntity) {
+    override fun update(pathingEntity: IPathingEntity) {
         var mutated = false
         try {
             if (done()) return
             val unlevelIndex: Int
-            val capabilities = subject.capabilities()
+            val capabilities = pathingEntity.capabilities()
             val grounded = !(capabilities!!.avian() || capabilities.aquatic() && capabilities.swimmer())
             val fy: Float
             if (grounded) {
-                unlevelIndex = unlevelIndex(index, subject.coordinates())
+                unlevelIndex = unlevelIndex(index, pathingEntity.coordinates())
                 fy = 0f
             } else {
                 unlevelIndex = length
                 fy = 1f
             }
             val adjacentIndex0 = adjacentIndex
-            val minDistanceSquared = updateNearestAdjacentIndex(subject, unlevelIndex, fy)
+            val minDistanceSquared = updateNearestAdjacentIndex(pathingEntity, unlevelIndex, fy)
             val adjacentIndex = adjacentIndex
             var targetIndex = index
             if (minDistanceSquared <= PATHPOINT_SNAP_MARGIN_SQ) {
@@ -86,15 +86,15 @@ class PathObject @JvmOverloads protected constructor(
             mutated = adjacentIndex > adjacentIndex0
             this.adjacentIndex = adjacentIndex
             index = max(adjacentIndex, targetIndex)
-            if (stagnantFor(subject) > nextDirectLineTimeout) {
+            if (stagnantFor(pathingEntity) > nextDirectLineTimeout) {
                 if (taxiUntil < adjacentIndex) taxiUntil = adjacentIndex + 1 else taxiUntil++
                 nextDirectLineTimeout += DIRECT_LINE_TIME_LIMIT!!.next(random)
             }
             val node = if (done()) last() else current()
-            node?.run { moveSubjectTo(subject, this) }
+            node?.run { moveSubjectTo(pathingEntity, this) }
         } finally {
             if (mutated || lastMutationTime < 0) {
-                lastMutationTime = subject.age() * speed
+                lastMutationTime = pathingEntity.age() * speed
                 if (nextDirectLineTimeout > DIRECT_LINE_TIME_LIMIT!!.max) nextDirectLineTimeout =
                     DIRECT_LINE_TIME_LIMIT!!.next(
                         random
@@ -115,7 +115,7 @@ class PathObject @JvmOverloads protected constructor(
             var i = it.adjacentIndex.apply { nextAdjacentIndex = this }
             while (i < it.length && i < end) {
                 val node = it.nodes[i]
-                val pp = node.key
+                val pp = node.coordinates
                 d.sub(pp)
                 d.sub(offset.toDouble(), 0.0, offset.toDouble())
                 d.y *= fy.toDouble()
@@ -134,7 +134,7 @@ class PathObject @JvmOverloads protected constructor(
 
     private fun moveSubjectTo(subject: IPathingEntity, pathPoint: INode) {
         val d = com.extollit.linalg.mutable.Vec3d(subject.coordinates())
-        val position = positionFor(subject, pathPoint.coordinates())
+        val position = positionFor(subject, pathPoint.coordinates)
         d.sub(position)
         if (d.mg2() > PATHPOINT_SNAP_MARGIN_SQ) subject.moveTo(
             position,
@@ -168,10 +168,10 @@ class PathObject @JvmOverloads protected constructor(
         val n = until - 1
         val nodes = nodes
         val node0 = nodes[i]
-        var p0 = node0.key
+        var p0 = node0.coordinates
         while (i++ < n) {
             val node = nodes[i]
-            val p = node.key
+            val p = node.coordinates
             val dx = p.x - p0.x
             val dy = p.y - p0.y
             val dz = p.z - p0.z
@@ -222,10 +222,10 @@ class PathObject @JvmOverloads protected constructor(
         var ayi00 = abs(yi00)
         var azi00 = abs(zi00)
         ii = 0
-        p0 = nodes[i].key
+        p0 = nodes[i].coordinates
         while (i++ < n) {
             val node = nodes[i]
-            val p = node.key
+            val p = node.coordinates
             val dx = p.x - p0.x
             val dy = p.y - p0.y
             val dz = p.z - p0.z
@@ -264,7 +264,7 @@ class PathObject @JvmOverloads protected constructor(
         var levelIndex = length()
         for (i in from until length()) {
             val node = nodes[i]
-            if (node.key.y - y0 != 0) {
+            if (node.coordinates.y - y0 != 0) {
                 levelIndex = i
                 break
             }
@@ -277,16 +277,16 @@ class PathObject @JvmOverloads protected constructor(
         var c = 0
         val i: Iterator<INode?> = other.iterator()
         while (c < length && i.hasNext()) {
-            if (nodes[c].key != i.next()!!.coordinates()) return false
+            if (nodes[c].coordinates != i.next()!!.coordinates) return false
             c++
         }
         return c >= length && !i.hasNext()
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as PathObject
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as PathObject
         return index == that.index && sameAs(that)
     }
 
@@ -302,7 +302,7 @@ class PathObject @JvmOverloads protected constructor(
         sb.append(System.lineSeparator())
         for ((index, pp) in nodes.withIndex()) {
             if (index == this.index) sb.append('*')
-            sb.append(pp.key)
+            sb.append(pp.coordinates)
             sb.append(System.lineSeparator())
         }
         return sb.toString()
@@ -319,12 +319,12 @@ class PathObject @JvmOverloads protected constructor(
         val z = coordinates.z
         var minSquareDistFromSource = Double.MAX_VALUE
         var c = -1
-        while (++c < formerPath.cursor() && c < length && nodes[c].key == formerPath.at(c).coordinates());
+        while (++c < formerPath.cursor() && c < length && nodes[c].coordinates == formerPath.at(c).coordinates);
         c--
         while (++c < length) {
             val node: INode = nodes[c]
-            val p = node.coordinates()
-            if (p == lastPointVisited.coordinates()) {
+            val p = node.coordinates
+            if (p == lastPointVisited.coordinates) {
                 index = c
                 break
             }
@@ -341,7 +341,7 @@ class PathObject @JvmOverloads protected constructor(
 
     fun reachableFrom(otherPath: PathObject): Boolean {
         val pivot = otherPath.current()
-        return nodes.any { it.key == pivot.coordinates() }
+        return nodes.any { it.coordinates == pivot.coordinates }
     }
 
     companion object {
@@ -355,16 +355,16 @@ class PathObject @JvmOverloads protected constructor(
             var i = 1
             let {
                 var p: Node? = head
-                while (p!!.parent() != null) {
+                while (p!!.parent != null) {
                     ++i
-                    p = p!!.parent()
+                    p = p!!.parent
                 }
             }
             val result = arrayOfNulls<Node>(i)
             result[--i] = head
             var p: Node? = head
-            while (p!!.parent() != null) {
-                p = p!!.parent()
+            while (p!!.parent != null) {
+                p = p!!.parent
                 result[--i] = p
             }
             return if (result.size <= 1)

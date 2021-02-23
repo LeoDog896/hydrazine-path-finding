@@ -25,9 +25,9 @@ class IncompletePath(val node: INode) : IPath {
     override fun taxiUntil(index: Int) {}
 
     override fun sameAs(other: IPath): Boolean {
-        if (other is IncompletePath) return other.node.coordinates() == node.coordinates()
+        if (other is IncompletePath) return other.node.coordinates == node.coordinates
         val i: Iterator<INode?> = other.iterator()
-        return (!i.hasNext() || node.coordinates() == i.next()!!.coordinates()) && !i.hasNext()
+        return (!i.hasNext() || node.coordinates == i.next()!!.coordinates) && !i.hasNext()
     }
 
     override fun stagnantFor(subject: IPathingEntity): Float = 0f
@@ -42,7 +42,7 @@ class IncompletePath(val node: INode) : IPath {
 
     override fun hashCode(): Int = node.hashCode()
 
-    override fun toString(): String = "*" + node.coordinates() + "...?"
+    override fun toString(): String = "*" + node.coordinates + "...?"
 
     override fun iterator(): MutableIterator<INode> = Option.of(node).iterator()
 }

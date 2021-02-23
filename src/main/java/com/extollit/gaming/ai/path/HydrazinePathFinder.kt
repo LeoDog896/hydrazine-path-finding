@@ -86,7 +86,7 @@ class HydrazinePathFinder internal constructor(
     fun trackingDestination(): Vec3i? {
         return if (destinationEntity != null && destinationPosition != null) {
             val pointAtDestination = edgeAtDestination()
-            pointAtDestination?.key
+            pointAtDestination?.coordinates
         } else null
     }
 
@@ -96,7 +96,7 @@ class HydrazinePathFinder internal constructor(
      *
      * @return the current target destination, can be null if there is no target available.
      */
-    fun currentTarget(): Vec3i? = if (target == null) null else target!!.key
+    fun currentTarget(): Vec3i? = if (target == null) null else target!!.coordinates
 
     /**
      * Begin path-finding to a destination entity and update the path as necessary as the destination entity changes
@@ -232,7 +232,7 @@ class HydrazinePathFinder internal constructor(
         val last = path.last()
         return if (last != null) {
             val dd = Vec3d(destinationPosition)
-            dd.sub(last.coordinates())
+            dd.sub(last.coordinates)
             if (dd.mg2() < 1) null else IncompletePath(last)
         } else null
     }
@@ -291,12 +291,12 @@ class HydrazinePathFinder internal constructor(
     }
 
     private fun destinationDeviatedFromTarget(): Boolean {
-        val dt = Vec3d(target!!.key)
+        val dt = Vec3d(target!!.coordinates)
         val dd = Vec3d(destinationPosition)
         dd.x = floor(dd.x)
         dd.y = ceil(dd.y)
         dd.z = floor(dd.z)
-        val source = source!!.key
+        val source = source!!.coordinates
         dt.sub(source)
         dd.sub(source)
         if (dt.mg2() > dd.mg2()) return true
@@ -315,7 +315,7 @@ class HydrazinePathFinder internal constructor(
                 random
             )
             val culprit = currentPath!!.current()
-            nodeMap.cullBranchAt(culprit.coordinates(), queue)
+            nodeMap.cullBranchAt(culprit.coordinates, queue)
             passiblePointPathTimeLimit += PASSIBLE_POINT_TIME_LIMIT!!.next(random)
         }
         return status
@@ -353,7 +353,7 @@ class HydrazinePathFinder internal constructor(
         source!!.length(0)
         source.isolate()
         trimmedToCurrent = true
-        refinePassibility(source.key)
+        refinePassibility(source.coordinates)
         setTargetFor(source)
         nodeMap.reset(queue)
         queue.add(source)
@@ -423,9 +423,9 @@ class HydrazinePathFinder internal constructor(
             null == edgeAtDestination().also { target = it } -> return false
             bestEffort -> {
                 var distance: Int = Node.MAX_PATH_DISTANCE.toInt()
-                while (distance > 0 && !source!!.target(target!!.key)) {
+                while (distance > 0 && !source!!.target(target!!.coordinates)) {
                     val v = Vec3d(destinationPosition)
-                    val init = Vec3d(source.key)
+                    val init = Vec3d(source.coordinates)
                     distance--
                     v.sub(init)
                     v.normalize()
@@ -433,9 +433,9 @@ class HydrazinePathFinder internal constructor(
                     v.add(init)
                     target = edgeAtTarget(v.x, v.y, v.z)
                 }
-                return if (distance == 0) source!!.target(this.source.also { target = it }!!.key) else true
+                return if (distance == 0) source!!.target(this.source.also { target = it }!!.coordinates) else true
             }
-            source!!.target(target!!.key) -> return true
+            source!!.target(target!!.coordinates) -> return true
             else -> {
                 target = null
                 return false
@@ -452,12 +452,12 @@ class HydrazinePathFinder internal constructor(
 
     private fun updateFieldWindow(path: IPath) {
         var node: INode? = path.last() ?: return
-        var pp = node?.coordinates()
+        var pp = node?.coordinates
         val min = com.extollit.linalg.mutable.Vec3i(pp!!.x, pp.y, pp.z)
         val max = com.extollit.linalg.mutable.Vec3i(pp.x, pp.y, pp.z)
         if (!path.done()) for (c in path.cursor() until path.length()) {
             node = path.at(c)
-            pp = node.coordinates()
+            pp = node.coordinates
             if (pp.x < min.x) min.x = pp.x
             if (pp.y < min.y) min.y = pp.y
             if (pp.z < min.z) min.z = pp.z
@@ -514,7 +514,7 @@ class HydrazinePathFinder internal constructor(
         } else {
             node = nodeMap.cachedPassiblePointNear(nx, ny, nz)
             if (impassible(node)) return null
-            val dl = Vec3d(node.coordinates())
+            val dl = Vec3d(node.coordinates)
             dl.sub(destinationPosition)
             if (dl.mg2() > 1) return null
         }
@@ -686,7 +686,7 @@ class HydrazinePathFinder internal constructor(
 
     private fun processNode(current: Node?) {
         current!!.visited(true)
-        val coords = current.key
+        val coords = current.coordinates
         val west = cachedPassiblePointNear(coords.x - 1, coords.y, coords.z, coords)
         val east = cachedPassiblePointNear(coords.x + 1, coords.y, coords.z, coords)
         val north = cachedPassiblePointNear(coords.x, coords.y, coords.z - 1, coords)
@@ -794,7 +794,7 @@ class HydrazinePathFinder internal constructor(
             found = true
             alternative?.sterilize()
             if (alternative != null) {
-                queue.appendTo(alternative, current, target!!.key)
+                queue.appendTo(alternative, current, target!!.coordinates)
             }
         }
         return found
@@ -823,7 +823,7 @@ class HydrazinePathFinder internal constructor(
     }
 
     fun unreachableFromSource(current: Vec3i, target: Vec3i): Boolean {
-        val sourcePoint = source!!.key
+        val sourcePoint = source!!.coordinates
         return current == sourcePoint && unreachableFromSource.contains(target)
     }
 
@@ -845,7 +845,7 @@ class HydrazinePathFinder internal constructor(
         applySubject()
         updateFieldWindow(x, z, tx, tz, false)
         val point = nodeMap.cachedPassiblePointNear(tx, ty, tz)
-        return point.passibility() to point.key
+        return point.passibility() to point.coordinates
     }
 
     companion object {

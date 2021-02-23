@@ -8,11 +8,11 @@ import com.extollit.linalg.immutable.Vec3i
  * @see PathObject
  */
 interface INode {
+
     /**
      * Coordinates relative to the instance space of the path point
-     * @return coordinates relative to the instance space of the path point
      */
-    fun coordinates(): Vec3i
+    val coordinates: Vec3i
 
     /**
      * Passibility of this path point, which expresses how likely an entity can survive pathing to this point

@@ -39,7 +39,7 @@ public class PathObjectUtil {
     private static void compareCoordinates(Vec3i[] coordinates, INode[] nodes) {
         final Vec3i[] otherCoords = new Vec3i[nodes.length];
         for (int c = 0; c < otherCoords.length; ++c)
-            otherCoords[c] = nodes[c].coordinates();
+            otherCoords[c] = nodes[c].getCoordinates();
 
         assertArrayEquals(coordinates, otherCoords);
     }

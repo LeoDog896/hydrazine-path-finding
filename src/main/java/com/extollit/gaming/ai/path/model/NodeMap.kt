@@ -41,7 +41,7 @@ class NodeMap(
 
     fun cullBranchAt(coordinates: Vec3i?, queue: SortedNodeQueue) {
         val node = internalMap[coordinates] ?: return
-        val parent = node.parent()
+        val parent = node.parent
         queue.cullBranch(node)
         if (parent != null && !parent.assigned()) {
             parent.visited(false)
@@ -114,7 +114,7 @@ class NodeMap(
         var point = internalMap[coords]
         if (point == null) {
             point = passibleNodeNear(coords, null)
-            if (point.key != coords) point = Node(coords, Passibility.impassible, false)
+            if (point.coordinates != coords) point = Node(coords, Passibility.impassible, false)
             internalMap[coords] = point
         }
         return point
@@ -133,15 +133,15 @@ class NodeMap(
         var point = point0
         if (point == null) point = passibleNodeNear(coords, origin) else if (point.volatile_()) {
             point = passibleNodeNear(coords, origin)
-            if (point.key == point0!!.key) {
+            if (point.coordinates == point0!!.coordinates) {
                 point0.passibility(point.passibility())
                 point0.volatile_(point.volatile_())
                 point = point0
             } else point0.isolate()
         }
-        if (coords != point.key) {
-            val existing = nodeMap[point.key]
-            if (existing == null) nodeMap[point.key] = point else point = existing
+        if (coords != point.coordinates) {
+            val existing = nodeMap[point.coordinates]
+            if (existing == null) nodeMap[point.coordinates] = point else point = existing
         }
         if (point !== point0) nodeMap[coords] = point
         return point

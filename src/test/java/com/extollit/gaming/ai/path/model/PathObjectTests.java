@@ -178,7 +178,7 @@ public class PathObjectTests {
         assertEquals(3, pathObject.length());
         List<Vec3i> actual = new ArrayList<>();
         for (INode node : pathObject)
-            actual.add(node.coordinates());
+            actual.add(node.getCoordinates());
 
         assertEquals(
             Arrays.asList(

@@ -8,14 +8,21 @@ import kotlin.math.sqrt
 
 class Node : INode {
 
-    @kotlin.jvm.JvmField
-    val key: Vec3i
+    /**
+     * The coordinates of this node in Space.
+     */
+    override val coordinates: Vec3i
+
     private var word = 0
-    private var previous: Node? = null
+
+    /** The previous node of this node. If this node is a root, there won't be a parent. */
+    var parent: Node? = null
+        private set
+
     private var children: NodeLinkedList? = null
 
-    constructor(key: Vec3i) {
-        this.key = key
+    constructor(coordinates: Vec3i) {
+        this.coordinates = coordinates
         unassign()
     }
 
@@ -26,12 +33,11 @@ class Node : INode {
         volatility: Boolean = false,
         gravitation: Gravitation? = Gravitation.grounded
     ) {
-        this.key = key
+        coordinates = key
         word =
             Mask_512 shl Index_BitOffs.toInt() or (gravitation!!.ordinal and Mask_Gravitation.toInt() shl Gravitation_BitOffs.toInt()) or (passibility.ordinal and Mask_Passibility.toInt()) or ((if (volatility) 1 else 0) shl Volatile_BitOffs.toInt())
     }
 
-    override fun coordinates(): Vec3i = key
 
     fun length(): Byte = (word shr Length_BitOffs.toInt() and Mask_128).toByte()
 
@@ -40,20 +46,23 @@ class Node : INode {
     fun journey(): Byte = (length() + remaining()).toByte()
 
     /**
-     * Gets the previous node of this node, or its "parent"
-     *
-     * @return The parent of the node.
-     */
-    fun parent(): Node? = previous
-
-    /**
      * Goes through all parents of this node to find the oldest relative of this Node.
      *
      * @return The highest up node in this Node family tree.
      */
     fun root(): Node {
-        var node: Node? = this
-        while (!node!!.orphaned()) node = node.parent()
+
+        // Gets mutable node for looping
+        var node: Node = this
+
+        while (!node.orphaned()) {
+            // If the node is orphaned, this is the root.
+            if (node.orphaned()) return node
+
+            // Else continue with the next parent (will not be null)
+            node = node.parent!!
+        }
+
         return node
     }
 
@@ -61,8 +70,7 @@ class Node : INode {
 
     fun passibility(passibility: Passibility?) {
         var mutablePassibility = passibility
-        val previous = parent()
-        if (previous != null) mutablePassibility = mutablePassibility!!.between(previous.passibility())
+        if (parent != null) mutablePassibility = mutablePassibility!!.between(parent!!.passibility())
         word = word and Mask_Passibility.inv().toInt() or mutablePassibility!!.ordinal
     }
 
@@ -137,7 +145,7 @@ class Node : INode {
         var curr: Node? = this
         do {
             if (curr === node) return true
-        } while (curr?.previous.apply { curr = this } != null)
+        } while (curr?.parent.apply { curr = this } != null)
         return false
     }
 
@@ -146,11 +154,11 @@ class Node : INode {
      *
      * @return True if this node has no parents
      */
-    fun orphaned(): Boolean = parent() == null
+    fun orphaned(): Boolean = parent == null
 
     fun orphan() {
-        if (previous != null) previous!!.removeChild(this)
-        previous = null
+        if (parent != null) parent!!.removeChild(this)
+        parent = null
     }
 
     fun isolate() {
@@ -161,8 +169,8 @@ class Node : INode {
     fun sterilize() {
         if (children != null) {
             for (child in children!!) {
-                assert(child.previous === this)
-                child.previous = null
+                assert(child.parent === this)
+                child.parent = null
             }
             children = null
         }
@@ -185,7 +193,7 @@ class Node : INode {
     fun bindParent(parent: Node?) {
         assert(!cyclic(parent))
         orphan()
-        previous = parent
+        this.parent = parent
         parent!!.addChild(this)
         passibility(passibility())
     }
@@ -204,12 +212,12 @@ class Node : INode {
 
     private fun cyclic(parent: Node?): Boolean {
         var p = parent
-        while (p != null) p = if (p === this || p.key == key) return true else p.parent()
+        while (p != null) p = if (p === this || p.coordinates == coordinates) return true else p.parent
         return false
     }
 
     override fun toString(): String {
-        val sb = StringBuilder("$key")
+        val sb = StringBuilder("$coordinates")
         val index = index()
         if (volatile_()) sb.append('!')
         if (visited()) sb.insert(0, '|')
@@ -237,11 +245,11 @@ class Node : INode {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val pathPoint = other as Node
-        return key == pathPoint.key
+        return coordinates == pathPoint.coordinates
     }
 
     override fun hashCode(): Int {
-        val key = key
+        val key = coordinates
         var result = key.x shr 4
         result = 31 * result + (key.y shr 4)
         result = 31 * result + (key.z shr 4)
@@ -268,10 +276,10 @@ class Node : INode {
         private fun wordReset(copy: Node): Int =
             copy.word and ((Mask_Passibility or ((1 shl Volatile_BitOffs.toInt()).toByte()) or (Mask_Gravitation shl Gravitation_BitOffs)).toInt()) or (Mask_512 shl Index_BitOffs.toInt() or (1 shl LengthDirty_BitOffs.toInt()))
 
-        fun squareDelta(left: Node?, right: Node?): Int = squareDelta(left, right!!.key)
+        fun squareDelta(left: Node?, right: Node?): Int = squareDelta(left, right!!.coordinates)
 
         fun squareDelta(left: Node?, rightCoords: Vec3i?): Int {
-            val leftCoords = left!!.key
+            val leftCoords = left!!.coordinates
             val dx = leftCoords.x - rightCoords!!.x
             val dy = leftCoords.y - rightCoords.y
             val dz = leftCoords.z - rightCoords.z

@@ -68,7 +68,7 @@ class SortedNodeQueue {
     fun trimFrom(source: Node): Node {
         if (source.orphaned()) return source
         val root0 = source.root()
-        val dd = source.key.subOf(root0.key)
+        val dd = source.coordinates.subOf(root0.coordinates)
         val list: MutableList<Node?> = list
         val length0 = source.length()
         val path = Stack<Node?>()
@@ -78,7 +78,7 @@ class SortedNodeQueue {
             val head = i.next()
             var point = head
             while (!point!!.orphaned()) {
-                point = point.parent()
+                point = point.parent
                 path.push(point)
             }
             if (point === source) {
@@ -92,7 +92,7 @@ class SortedNodeQueue {
                 head.index(i.previousIndex())
             } else {
                 val root: Node? = if (path.isEmpty()) head else path.pop()
-                if (head === point || head!!.key.subOf(point.key).dot(dd) <= 0) {
+                if (head === point || head!!.coordinates.subOf(point.coordinates).dot(dd) <= 0) {
                     head.dirty(true)
                     while (!path.isEmpty()) path.pop()!!.dirty(true)
                     treeTransitional.queue(head, root)
@@ -123,7 +123,7 @@ class SortedNodeQueue {
             val head = i.next()
             var point = head
             while (!point!!.orphaned() && point !== ancestor) {
-                point = point.parent()
+                point = point.parent
                 stack.push(point)
             }
             if (point !== ancestor) head!!.index(i.previousIndex()) else {
@@ -284,12 +284,12 @@ class SortedNodeQueue {
 
     fun roots(): Set<Node?> = list.mapTo<Node?, Node, HashSet<Node?>>(HashSet(1)) { it!!.root() }
 
-    override fun toString(): String = list.toString()
+    override fun toString(): String = "$list"
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as SortedNodeQueue
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as SortedNodeQueue
         return list == that.list
     }
 

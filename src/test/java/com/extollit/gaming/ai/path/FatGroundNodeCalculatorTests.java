@@ -33,7 +33,7 @@ public class FatGroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
 
         final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 0), ORIGIN, new FlagSampler(super.occlusionProvider));
         assertNotNull(actual);
-        assertEquals(0, actual.key.y);
+        assertEquals(0, actual.getCoordinates().y);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class FatGroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
 
         final Node actual = calculator.passibleNodeNear(new Vec3i(-1, 0, 0), ORIGIN, new FlagSampler(super.occlusionProvider));
         assertNotNull(actual);
-        assertEquals(1, actual.key.y);
+        assertEquals(1, actual.getCoordinates().y);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class FatGroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
 
         final Node actual = calculator.passibleNodeNear(new Vec3i(0, 0, 1), ORIGIN, new FlagSampler(super.occlusionProvider));
         assertNotNull(actual);
-        assertEquals(0, actual.key.y);
+        assertEquals(0, actual.getCoordinates().y);
     }
 
     @Test
@@ -66,6 +66,6 @@ public class FatGroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
 
         final Node actual = calculator.passibleNodeNear(new Vec3i(0, 0, -1), ORIGIN, new FlagSampler(super.occlusionProvider));
         assertNotNull(actual);
-        assertEquals(1, actual.key.y);
+        assertEquals(1, actual.getCoordinates().y);
     }
 }
