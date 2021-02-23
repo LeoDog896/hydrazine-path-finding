@@ -138,9 +138,9 @@ public class SortedPointQueueTests {
         pivot.remaining(Node.MAX_PATH_DISTANCE);
         q.add(pivot);
 
-        assertEquals(Node.MAX_INDICES - (int)(Node.MAX_INDICES * 0.1f), q.size());
+        assertEquals(Node.MAX_INDICES - (int)(Node.MAX_INDICES * 0.1f), q.getSize());
 
-        while (q.size() > 2)
+        while (q.getSize() > 2)
             q.dequeue();
 
         assertSame(pivot, q.dequeue());

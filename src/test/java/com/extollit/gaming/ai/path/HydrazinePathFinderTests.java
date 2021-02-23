@@ -435,7 +435,7 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
         pathFinder.initiatePathTo(0, 0, 4);
         final List<Node> q = pathFinder.queue.view();
         pathFinder.applyPointOptions(q.get(7), q.get(5));
-        assertEquals(1, pathFinder.queue.roots().size());
+        assertEquals(1, pathFinder.queue.getRoots().size());
     }
 
     @Test
@@ -456,7 +456,7 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
 
         enigma.passibility(Passibility.Risky);
         pathFinder.applyPointOptions(parent, enigma);
-        assertEquals(1, pathFinder.queue.roots().size());
+        assertEquals(1, pathFinder.queue.getRoots().size());
     }
 
     @Test

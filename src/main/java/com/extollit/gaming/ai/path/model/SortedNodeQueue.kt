@@ -38,7 +38,7 @@ class SortedNodeQueue {
         check(!point.assigned()) { "Point is already assigned" }
         if (fastAdd(point)) return true
         val list = list
-        val size = size()
+        val size = size
         val i = list.listIterator(size)
         var amount = ceil((size.toFloat() * CULL_THRESHOLD).toDouble())
             .toInt()
@@ -280,9 +280,14 @@ class SortedNodeQueue {
         return false
     }
 
-    fun size(): Int = list.size
+    /**
+     * The size of this [SortedNodeQueue]
+     */
+    val size: Int
+        get() = list.size
 
-    fun roots(): Set<Node?> = list.mapTo<Node?, Node, HashSet<Node?>>(HashSet(1)) { it!!.root() }
+    val roots: Set<Node?>
+        get() = list.mapTo<Node?, Node, HashSet<Node?>>(HashSet(1)) { it!!.root() }
 
     override fun toString(): String = "$list"
 
