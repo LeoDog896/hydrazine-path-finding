@@ -14,7 +14,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
         val delta: Vec3i = if (origin != null) coordinates0.subOf(origin) else Vec3i.ZERO
         val hasOrigin = delta != Vec3i.ZERO
         val climbsLadders = this.capabilities!!.climber()
-        var passibility: Passibility? = Passibility.passible
+        var passibility: Passibility? = Passibility.Passible
         var minY = Int.MIN_VALUE
         var minPartY = 0f
         val r = discreteSize / 2
@@ -133,7 +133,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
         var passibility = passibility
         val dy = y0 - minY
         if (dy > 1) passibility = passibility!!.between(
-            if (dy > MAX_SAFE_FALL_DISTANCE) Passibility.dangerous else Passibility.risky
+            if (dy > MAX_SAFE_FALL_DISTANCE) Passibility.Dangerous else Passibility.Risky
         )
         return passibility
     }

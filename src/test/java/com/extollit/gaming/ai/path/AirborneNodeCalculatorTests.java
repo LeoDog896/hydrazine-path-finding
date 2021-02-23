@@ -31,7 +31,7 @@ public class AirborneNodeCalculatorTests extends AbstractNodeCalculatorTests {
 
         final Node actual = calculator.passibleNodeNear(new Vec3i(0, 1, 0), ORIGIN, this.flagSampler);
         assertNotNull(actual);
-        assertEquals(Passibility.passible, actual.passibility());
+        assertEquals(Passibility.Passible, actual.passibility());
         assertEquals(1, actual.getCoordinates().y);
     }
 

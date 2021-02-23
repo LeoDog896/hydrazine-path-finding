@@ -106,7 +106,7 @@ public class NodeMapTests {
     public void alwaysVolatile() {
         final Node initial = new Node(new Vec3i(1, 2, 3));
 
-        initial.passibility(Passibility.risky);
+        initial.passibility(Passibility.Risky);
         initial.volatile_(true);
 
         when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(initial);
@@ -115,7 +115,7 @@ public class NodeMapTests {
 
         final Node second = new Node(new Vec3i(1, 2, 3));
 
-        second.passibility(Passibility.dangerous);
+        second.passibility(Passibility.Dangerous);
         second.volatile_(true);
 
         when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(second);
@@ -124,7 +124,7 @@ public class NodeMapTests {
 
         assertSame(result0, result1);
         assertSame(result1, initial);
-        assertEquals(Passibility.dangerous, result1.passibility());
+        assertEquals(Passibility.Dangerous, result1.passibility());
         assertTrue(result1.volatile_());
     }
 
@@ -132,7 +132,7 @@ public class NodeMapTests {
     public void becomeStable() {
         final Node initial = new Node(new Vec3i(1, 2, 3));
 
-        initial.passibility(Passibility.risky);
+        initial.passibility(Passibility.Risky);
         initial.volatile_(true);
 
         when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(initial);
@@ -141,7 +141,7 @@ public class NodeMapTests {
 
         final Node second = new Node(new Vec3i(1, 2, 3));
 
-        second.passibility(Passibility.dangerous);
+        second.passibility(Passibility.Dangerous);
         second.volatile_(false);
 
         when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(second);
@@ -150,12 +150,12 @@ public class NodeMapTests {
 
         assertSame(result0, result1);
         assertSame(result1, initial);
-        assertEquals(Passibility.dangerous, result1.passibility());
+        assertEquals(Passibility.Dangerous, result1.passibility());
         assertFalse(result1.volatile_());
 
         final Node third = new Node(new Vec3i(1, 2, 3));
 
-        third.passibility(Passibility.risky);
+        third.passibility(Passibility.Risky);
         third.volatile_(true);
         when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(third);
 
@@ -187,6 +187,6 @@ public class NodeMapTests {
 
         verify(this.filter).mapPassibility(node);
 
-        assertEquals(Passibility.passible, node.passibility());
+        assertEquals(Passibility.Passible, node.passibility());
     }
 }

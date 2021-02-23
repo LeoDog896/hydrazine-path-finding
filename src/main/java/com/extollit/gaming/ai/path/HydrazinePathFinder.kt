@@ -240,7 +240,7 @@ class HydrazinePathFinder internal constructor(
     /**
      * Optionally apply a graph node filter to this object which will be applied to all path-points computed by this path-finder.
      * This allows a caller to modify the passibility of points as they are computed.  For example, vampires are
-     * vulnerable to sunlight, so a filter used here could mark all sunlit points as [Passibility.dangerous].
+     * vulnerable to sunlight, so a filter used here could mark all sunlit points as [Passibility.Dangerous].
      *
      * @param filter a caller-supplied callback for altering node passibility
      * @return this
@@ -510,7 +510,7 @@ class HydrazinePathFinder internal constructor(
         val node: Node?
         if (bestEffort) {
             node = nodeMap.cachedPointAt(nx, ny, nz)
-            if (node.passibility() == Passibility.impassible) node.passibility(Passibility.dangerous)
+            if (node.passibility() == Passibility.impassible) node.passibility(Passibility.Dangerous)
         } else {
             node = nodeMap.cachedPassiblePointNear(nx, ny, nz)
             if (impassible(node)) return null
@@ -532,7 +532,7 @@ class HydrazinePathFinder internal constructor(
         val y = floor(sourcePosition.y).toInt()
         val z = floor(sourcePosition.z).toInt()
         val candidate = cachedPassiblePointNear(x, y, z)
-        if (impassible(candidate)) candidate!!.passibility(if (capabilities!!.cautious()) Passibility.passible else Passibility.risky)
+        if (impassible(candidate)) candidate!!.passibility(if (capabilities!!.cautious()) Passibility.Passible else Passibility.Risky)
         return candidate
     }
 

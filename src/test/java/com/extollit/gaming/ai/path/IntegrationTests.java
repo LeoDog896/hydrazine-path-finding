@@ -377,7 +377,7 @@ public class IntegrationTests extends AbstractHydrazinePathFinderTests {
 
         path.update(pathingEntity);
 
-        verify(pathingEntity).moveTo(new Vec3d(0.5, 0, 3.5), Passibility.passible, Gravitation.grounded);
+        verify(pathingEntity).moveTo(new Vec3d(0.5, 0, 3.5), Passibility.Passible, Gravitation.grounded);
         pos(0.5, 0, 1.5);
 
         IPath path2 = pathFinder.update();
@@ -428,6 +428,6 @@ public class IntegrationTests extends AbstractHydrazinePathFinderTests {
         assertEquals(65, iterations);
         assertEquals(5, incompletes);
 
-        verify(pathingEntity).moveTo(new Vec3d(1.5, 0, 7.5), Passibility.passible, Gravitation.grounded);
+        verify(pathingEntity).moveTo(new Vec3d(1.5, 0, 7.5), Passibility.Passible, Gravitation.grounded);
     }
 }

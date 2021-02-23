@@ -46,21 +46,21 @@ public class PassibilityHelpersTests {
 
         final Passibility result = passibilityFrom(Element.earth.to(Logic.doorway.mask), capabilities);
 
-        assertEquals(Passibility.passible, result);
+        assertEquals(Passibility.Passible, result);
     }
 
     @Test
     public void ladders() {
         final Passibility result = passibilityFrom(Element.earth.to(Logic.ladder.mask), capabilities);
 
-        assertEquals(Passibility.passible, result);
+        assertEquals(Passibility.Passible, result);
     }
 
     @Test
     public void air() {
         final Passibility result = passibilityFrom(Element.air.mask, capabilities);
 
-        assertEquals(Passibility.passible, result);
+        assertEquals(Passibility.Passible, result);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class PassibilityHelpersTests {
 
         final Passibility result = passibilityFrom(Element.air.mask, capabilities);
 
-        assertEquals(Passibility.dangerous, result);
+        assertEquals(Passibility.Dangerous, result);
     }
 
     @Test
@@ -78,14 +78,14 @@ public class PassibilityHelpersTests {
 
         final Passibility result = passibilityFrom(Element.water.mask, capabilities);
 
-        assertEquals(Passibility.dangerous, result);
+        assertEquals(Passibility.Dangerous, result);
     }
 
     @Test
     public void leadAnchor() {
         final Passibility result = passibilityFrom(Element.water.mask, capabilities);
 
-        assertEquals(Passibility.risky, result);
+        assertEquals(Passibility.Risky, result);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class PassibilityHelpersTests {
 
         final Passibility result = passibilityFrom(Element.water.mask, capabilities);
 
-        assertEquals(Passibility.risky, result);
+        assertEquals(Passibility.Risky, result);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class PassibilityHelpersTests {
 
         final Passibility result = passibilityFrom(Element.water.mask, capabilities);
 
-        assertEquals(Passibility.risky, result);
+        assertEquals(Passibility.Risky, result);
     }
 
     @Test
@@ -113,14 +113,14 @@ public class PassibilityHelpersTests {
 
         final Passibility result = passibilityFrom(Element.water.mask, capabilities);
 
-        assertEquals(Passibility.passible, result);
+        assertEquals(Passibility.Passible, result);
     }
 
     @Test
     public void fire() {
         final Passibility result = passibilityFrom(Element.fire.mask, capabilities);
 
-        assertEquals(Passibility.dangerous, result);
+        assertEquals(Passibility.Dangerous, result);
     }
 
     @Test
@@ -129,6 +129,6 @@ public class PassibilityHelpersTests {
 
         final Passibility result = passibilityFrom(Element.fire.mask, capabilities);
 
-        assertEquals(Passibility.risky, result);
+        assertEquals(Passibility.Risky, result);
     }
 }

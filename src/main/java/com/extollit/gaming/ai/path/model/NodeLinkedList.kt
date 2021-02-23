@@ -7,7 +7,7 @@ class NodeLinkedList(
     private var next: NodeLinkedList? = null
 ) : Iterable<Node> {
 
-    private class Iter(private var head: NodeLinkedList?) : MutableIterator<Node> {
+    private class NodeIterable(private var head: NodeLinkedList?) : MutableIterator<Node> {
         override fun hasNext() = head != null
 
         override fun next(): Node {
@@ -19,7 +19,7 @@ class NodeLinkedList(
         override fun remove() = throw UnsupportedOperationException()
     }
 
-    override fun iterator(): MutableIterator<Node> = Iter(this)
+    override fun iterator(): MutableIterator<Node> = NodeIterable(this)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -28,6 +28,13 @@ class NodeLinkedList(
         return if (next != nodes.next) false else self == nodes.self
     }
 
+    /**
+     * Removes an element from this array.
+     *
+     * @param child The child to remove
+     *
+     * @return The LinkedList of that node.
+     */
     fun remove(child: Node): NodeLinkedList? {
         var e: NodeLinkedList? = this
         var last: NodeLinkedList? = null
@@ -44,6 +51,13 @@ class NodeLinkedList(
         return this
     }
 
+    /**
+     * Adds a [Node] to this LinkedList
+     *
+     * @param child The child to add to this [NodeLinkedList]
+     *
+     * @return If the addition operation was successful or not (will be unsuccessful if the node is already in the list)
+     */
     fun add(child: Node): Boolean {
         var e: NodeLinkedList? = this
         var last: NodeLinkedList?
@@ -54,19 +68,32 @@ class NodeLinkedList(
         last?.next = NodeLinkedList(child)
         return true
     }
+    /**
+     * Adds a [Node] to this LinkedList
+     *
+     * @param child The child to add to this [NodeLinkedList]
+     */
+    operator fun plusAssign(child: Node): Unit {
+        add(child)
+    }
+
+    /**
+     * Check if this [NodeLinkedList] contains a [Node]
+     *
+     * @param node The node to check this LinkedList by.
+     *
+     * @return If this [NodeLinkedList] contains the said [node]
+     */
+    operator fun contains(node: Node): Boolean {
+        var list: NodeLinkedList? = this
+        while (list != null) {
+            if (list.self === node) return true
+            list = list.next
+        }
+        return false
+    }
 
     override fun hashCode(): Int = self.hashCode()
 
     override fun toString(): String = CollectionsExt.toList(this).toString()
-
-    companion object {
-        fun contains(list: NodeLinkedList?, other: Node): Boolean {
-            var list = list
-            while (list != null) {
-                if (list.self === other) return true
-                list = list.next
-            }
-            return false
-        }
-    }
 }

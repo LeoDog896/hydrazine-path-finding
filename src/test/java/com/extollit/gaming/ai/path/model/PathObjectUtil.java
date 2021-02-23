@@ -13,7 +13,7 @@ public class PathObjectUtil {
     public static PathObject pathObject(Vec3i... coordinates) {
         final Node[] nodes = new Node[coordinates.length];
         for (int c = 0; c < nodes.length; ++c)
-            nodes[c] = new Node(coordinates[c], Passibility.passible);
+            nodes[c] = new Node(coordinates[c], Passibility.Passible);
 
         return new PathObject(1, nodes);
     }

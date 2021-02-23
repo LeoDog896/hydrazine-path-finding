@@ -267,7 +267,7 @@ public class PathObjectTests {
         pathObject.update(pathingEntity);
 
         assertEquals(4, pathObject.index);
-        verify(pathingEntity).moveTo(new Vec3d(5.5, 0, 0.5), Passibility.passible, Gravitation.grounded);
+        verify(pathingEntity).moveTo(new Vec3d(5.5, 0, 0.5), Passibility.Passible, Gravitation.grounded);
 
         tick(100);
         pos(3.5, 0, 1.5);
@@ -275,7 +275,7 @@ public class PathObjectTests {
         pathObject.update(pathingEntity);
 
         assertEquals(2, pathObject.index);
-        verify(pathingEntity).moveTo(new Vec3d(3.5, 0, 0.5), Passibility.passible, Gravitation.grounded);
+        verify(pathingEntity).moveTo(new Vec3d(3.5, 0, 0.5), Passibility.Passible, Gravitation.grounded);
     }
 
 

@@ -454,7 +454,7 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
         boolean lengthSetResult = parent.length(109);
         assertTrue(lengthSetResult);
 
-        enigma.passibility(Passibility.risky);
+        enigma.passibility(Passibility.Risky);
         pathFinder.applyPointOptions(parent, enigma);
         assertEquals(1, pathFinder.queue.roots().size());
     }

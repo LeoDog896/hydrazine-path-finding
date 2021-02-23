@@ -6,6 +6,11 @@ import kotlin.experimental.inv
 import kotlin.experimental.or
 import kotlin.math.sqrt
 
+/**
+ * Implementation of a node in an A* graph which is used by a path to move an entity between points
+ *
+ * @see PathObject
+ */
 class Node : INode {
 
     /**
@@ -180,7 +185,7 @@ class Node : INode {
 
     private fun removeChild(child: Node) {
         if (children != null) children = children!!.remove(child)
-        assert(!NodeLinkedList.contains(children, child))
+        assert(child !in children!!)
     }
 
     fun unassign(): Boolean = index(-1)
@@ -199,8 +204,8 @@ class Node : INode {
     }
 
     private fun addChild(child: Node) {
-        if (children == null) children = NodeLinkedList(child) else children!!.add(child)
-        assert(NodeLinkedList.contains(children, child))
+        if (children == null) children = NodeLinkedList(child) else children!! += child
+        assert(child in children!!)
     }
 
     /**

@@ -36,7 +36,7 @@ public class BuoyantNodeCalculatorTests extends AbstractNodeCalculatorTests {
 
         final Node actual = calculator.passibleNodeNear(new Vec3i(0, 1, 0), ORIGIN, this.flagSampler);
         assertNotNull(actual);
-        assertEquals(Passibility.passible, actual.passibility());
+        assertEquals(Passibility.Passible, actual.passibility());
         assertEquals(1, actual.getCoordinates().y);
     }
 
@@ -148,6 +148,6 @@ public class BuoyantNodeCalculatorTests extends AbstractNodeCalculatorTests {
         solid(1, -1, 0);
 
         final Node node = calculator.passibleNodeNear(new Vec3i(1, 0, 0), new Vec3i(0, -1, 0), this.flagSampler);
-        assertEquals(Passibility.dangerous, node.passibility());
+        assertEquals(Passibility.Dangerous, node.passibility());
     }
 }

@@ -21,7 +21,7 @@ public class NodeTests {
 
         node.length(7);
         node.remaining(11);
-        node.passibility(Passibility.risky);
+        node.passibility(Passibility.Risky);
         node.index(42);
         node.volatile_(true);
         node.visited(true);
@@ -31,7 +31,7 @@ public class NodeTests {
         assertEquals(0, node.length());
         assertEquals(0, node.remaining());
         assertEquals(0, node.journey());
-        assertEquals(Passibility.risky, node.passibility());
+        assertEquals(Passibility.Risky, node.passibility());
         assertFalse(node.assigned());
         assertTrue(node.dirty());
         assertFalse(node.visited());

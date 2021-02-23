@@ -215,7 +215,7 @@ class SortedNodeQueue {
             if (j >= list.size) {
                 pointBeta = null
                 distBeta = Int.MIN_VALUE
-                passibilityBeta = Passibility.passible
+                passibilityBeta = Passibility.Passible
             } else {
                 pointBeta = list[j]
                 distBeta = pointBeta!!.journey().toInt()

@@ -9,17 +9,17 @@ enum class Passibility {
     /**
      * Pristine, fully-passible, no risk to the entity
      */
-    passible,
+    Passible,
 
     /**
      * Mild risk pathing into this point, it could be close to lava or through water.
      */
-    risky,
+    Risky,
 
     /**
      * High risk pathing into this point, these points are usually over cliffs or on-fire
      */
-    dangerous,
+    Dangerous,
 
     /**
      * Impossible (or completely impractical) pathing into this point, usually impeded by collision bounds of
@@ -65,6 +65,6 @@ enum class Passibility {
      */
     fun impassible(capabilities: IPathingEntity.Capabilities?): Boolean {
         return (this == impassible
-                || capabilities!!.cautious() && worseThan(passible))
+                || capabilities!!.cautious() && worseThan(Passible))
     }
 }

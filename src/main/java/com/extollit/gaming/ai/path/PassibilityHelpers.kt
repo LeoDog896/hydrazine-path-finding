@@ -16,16 +16,16 @@ internal object PassibilityHelpers {
                 flags,
                 capabilities
             )
-        ) Passibility.passible else if (Logic.fuzzy.flagsIn(flags)) Passibility.risky else Passibility.impassible else if (Element.water.flagsIn(
+        ) Passibility.Passible else if (Logic.fuzzy.flagsIn(flags)) Passibility.Risky else Passibility.impassible else if (Element.water.flagsIn(
                 flags
             )
         ) {
-            if (capabilities!!.fireResistant()) Passibility.dangerous else if (capabilities.aquatic() && capabilities.swimmer()) Passibility.passible else Passibility.risky
-        } else if (Element.fire.flagsIn(flags)) if (capabilities!!.fireResistant()) Passibility.risky else Passibility.dangerous else if (impassibleDoorway(
+            if (capabilities!!.fireResistant()) Passibility.Dangerous else if (capabilities.aquatic() && capabilities.swimmer()) Passibility.Passible else Passibility.Risky
+        } else if (Element.fire.flagsIn(flags)) if (capabilities!!.fireResistant()) Passibility.Risky else Passibility.Dangerous else if (impassibleDoorway(
                 flags,
                 capabilities
             )
-        ) Passibility.impassible else if (capabilities!!.aquatic()) Passibility.risky else Passibility.passible
+        ) Passibility.impassible else if (capabilities!!.aquatic()) Passibility.Risky else Passibility.Passible
     }
 
     @JvmStatic
@@ -37,13 +37,13 @@ internal object PassibilityHelpers {
                     flags,
                     capabilities
                 )
-            ) Passibility.passible else Passibility.impassible
-            Element.air -> if (capabilities!!.aquatic()) Passibility.dangerous else Passibility.passible
+            ) Passibility.Passible else Passibility.impassible
+            Element.air -> if (capabilities!!.aquatic()) Passibility.Dangerous else Passibility.Passible
             Element.water -> {
                 val gilled = capabilities!!.aquatic()
-                if (capabilities.aquaphobic()) Passibility.dangerous else if (gilled && capabilities.swimmer()) Passibility.passible else Passibility.risky
+                if (capabilities.aquaphobic()) Passibility.Dangerous else if (gilled && capabilities.swimmer()) Passibility.Passible else Passibility.Risky
             }
-            Element.fire -> if (!capabilities!!.fireResistant()) Passibility.dangerous else Passibility.risky
+            Element.fire -> if (!capabilities!!.fireResistant()) Passibility.Dangerous else Passibility.Risky
         }
         throw IllegalArgumentException(MessageFormat.format("Unhandled element type ''{0}''", kind))
     }

@@ -86,7 +86,7 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
         minY: Int,
         minPartY: Float
     ): Passibility? {
-        var passibility = passibility
+        var mutablePassibility = passibility
         val yN = minY + tall
         val yNa = yN + floor(minPartY.toDouble()).toInt()
         var x = origin.x
@@ -95,8 +95,8 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
             var z = origin.z
             val zN = origin.z + discreteSize
             while (z < zN) {
-                for (y in origin.y + tall until yNa) passibility =
-                    passibility?.between(clearance(sampler.flagsAt(x, y, z)))
+                for (y in origin.y + tall until yNa) mutablePassibility =
+                    mutablePassibility?.between(clearance(sampler.flagsAt(x, y, z)))
                 ++z
             }
             ++x
@@ -109,14 +109,14 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
                 val zN = origin.z + discreteSize
                 while (z < zN) {
                     val flags = sampler.flagsAt(x, yNa, z)
-                    if (insufficientHeadClearance(flags, minPartY, x, yNa, z)) passibility =
-                        passibility?.between(clearance(flags))
+                    if (insufficientHeadClearance(flags, minPartY, x, yNa, z)) mutablePassibility =
+                        mutablePassibility?.between(clearance(flags))
                     ++z
                 }
                 ++x
             }
         }
-        return passibility
+        return mutablePassibility
     }
 
     companion object {

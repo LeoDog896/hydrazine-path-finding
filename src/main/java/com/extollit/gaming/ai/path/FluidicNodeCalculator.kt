@@ -14,7 +14,7 @@ internal class FluidicNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNo
         val z0 = coords0.z
         val d: Vec3i = if (origin != null) coords0.subOf(origin) else Vec3i.ZERO
         val hasOrigin = d != Vec3i.ZERO
-        var passibility: Passibility? = Passibility.passible
+        var passibility: Passibility? = Passibility.Passible
         var gravitation: Gravitation? = Gravitation.airborne
         var minY = Int.MIN_VALUE
         var minPartY = 0f
