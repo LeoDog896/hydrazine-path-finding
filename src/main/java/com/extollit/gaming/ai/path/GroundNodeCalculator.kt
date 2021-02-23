@@ -2,6 +2,7 @@ package com.extollit.gaming.ai.path
 
 import com.extollit.gaming.ai.path.model.*
 import com.extollit.linalg.immutable.Vec3i
+import kotlin.math.roundToInt
 
 internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNodeCalculator(instanceSpace) {
     override fun passibleNodeNear(coordinates0: Vec3i, origin: Vec3i?, flagSampler: FlagSampler): Node {
@@ -32,7 +33,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
                 )
                 var flags = flagSampler.flagsAt(x, y, z)
                 val impedesMovement: Boolean
-                if (PassibilityHelpers.impedesMovement(flags, capabilities).also { impedesMovement = it }) {
+                if (PassibilityHelpers.impedesMovement(flags, capabilities).apply { impedesMovement = this }) {
                     val partialDisparity = partY - topOffsetAt(flags, x, y++, z)
                     flags = flagSampler.flagsAt(x, y, z)
                     if (partialDisparity < 0 || PassibilityHelpers.impedesMovement(flags, capabilities)) {
@@ -46,10 +47,10 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
                             ) while (climbsLadders && Logic.climbable(flags))
                         }
                         if (PassibilityHelpers.impedesMovement(
-                                flagSampler.flagsAt(x, --y, z).also { flags = it },
+                                flagSampler.flagsAt(x, --y, z).apply { flags = this },
                                 capabilities
                             ) && (PassibilityHelpers.impedesMovement(
-                                flagSampler.flagsAt(x, ++y, z).also { flags = it },
+                                flagSampler.flagsAt(x, ++y, z).apply { flags = this },
                                 capabilities
                             ) || partY < 0)
                         ) return Node(coordinates0, Passibility.impassible, flagSampler.volatility > 0)
@@ -58,12 +59,12 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
                 partY = topOffsetAt(flagSampler, x, y - 1, z)
                 val ys: Int
                 passibility =
-                    verticalClearanceAt(flagSampler, tall, flags, passibility, delta, x, y.also { ys = it }, z, partY)
+                    verticalClearanceAt(flagSampler, tall, flags, passibility, delta, x, y.apply { ys = this }, z, partY)
                 var swimable = false
-                run {
+                let {
                     var condition = !impedesMovement || unstable(flags)
                     var j = 0
-                    while (condition && !swimable(flags).also { swimable = it } && j <= MAX_SURVIVE_FALL_DISTANCE) {
+                    while (condition && !it.swimable(flags).apply { swimable = this } && j <= MAX_SURVIVE_FALL_DISTANCE) {
                         flags = flagSampler.flagsAt(x, --y, z)
                         j++
                         condition = unstable(flags)
@@ -120,15 +121,13 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
             originHeadClearance(flagSampler, passibility, origin!!, minY, minPartY)
         passibility = fallingSafety(passibility, y0, minY)
         if (passibility!!.impassible(capabilities)) passibility = Passibility.impassible
-        point = Node(Vec3i(x0, minY + Math.round(minPartY), z0))
+        point = Node(Vec3i(x0, minY + minPartY.roundToInt(), z0))
         point.passibility(passibility)
         point.volatile_(flagSampler.volatility > 0)
         return point
     }
 
-    override fun omnidirectional(): Boolean {
-        return false
-    }
+    override fun omnidirectional(): Boolean = false
 
     private fun fallingSafety(passibility: Passibility?, y0: Int, minY: Int): Passibility? {
         var passibility = passibility
@@ -161,8 +160,6 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
             CESA_LIMIT = configModel.cesaLimit().toInt()
         }
 
-        private fun unstable(flags: Byte): Boolean {
-            return !Element.earth.flagsIn(flags) || Logic.ladder.flagsIn(flags)
-        }
+        private fun unstable(flags: Byte): Boolean = !Element.earth.flagsIn(flags) || Logic.ladder.flagsIn(flags)
     }
 }

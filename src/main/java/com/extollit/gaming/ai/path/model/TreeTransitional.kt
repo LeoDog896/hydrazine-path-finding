@@ -47,7 +47,7 @@ internal class TreeTransitional(nextRoot: Node) {
 
     init {
         val dq: Deque<RotateNodeOp> = LinkedList()
-        var curr = nextRoot.also { this.nextRoot = it }.parent()
+        var curr = nextRoot.apply { this@TreeTransitional.nextRoot = this }.parent()
         var length = nextRoot.length().toInt()
         var newLength0 = 0
         while (curr != null) {
@@ -61,7 +61,7 @@ internal class TreeTransitional(nextRoot: Node) {
             newLength0 = length + dl
             curr = up
         }
-        this.dequeue = dq
+        dequeue = dq
         this.nextRoot!!.orphan()
     }
 }

@@ -16,9 +16,7 @@ class NodeLinkedList(val self: Node, private var next: NodeLinkedList? = null) :
         override fun remove() = throw UnsupportedOperationException()
     }
 
-    override fun iterator(): MutableIterator<Node> {
-        return Iter(this)
-    }
+    override fun iterator(): MutableIterator<Node> = Iter(this)
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
@@ -49,18 +47,14 @@ class NodeLinkedList(val self: Node, private var next: NodeLinkedList? = null) :
         do {
             if (e?.self === child) return false
             last = e
-        } while (e?.next.also { e = it } != null)
+        } while (e?.next.apply { e = this } != null)
         last?.next = NodeLinkedList(child)
         return true
     }
 
-    override fun hashCode(): Int {
-        return self.hashCode()
-    }
+    override fun hashCode(): Int = self.hashCode()
 
-    override fun toString(): String {
-        return CollectionsExt.toList(this).toString()
-    }
+    override fun toString(): String = CollectionsExt.toList(this).toString()
 
     companion object {
         fun contains(list: NodeLinkedList?, other: Node): Boolean {

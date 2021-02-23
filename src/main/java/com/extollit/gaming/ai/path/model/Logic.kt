@@ -61,8 +61,8 @@ enum class Logic {
     doorway;
 
     companion object {
-        const val BIT_OFFSET = 2
-        const val MASK = 4 - 1
+        const val BIT_OFFSET: Int = 2
+        const val MASK: Int = 4 - 1
 
         /**
          * Helper function for determining the logic indicator represented by the specified nibble.  The nibble may contain
@@ -72,9 +72,7 @@ enum class Logic {
          *
          * @return the logic indicator represented by the nibble
          */
-        fun of(flags: Byte): Logic {
-            return values()[(flags and ((MASK shl BIT_OFFSET).toByte())).toInt() shr BIT_OFFSET]
-        }
+        fun of(flags: Byte): Logic = values()[(flags and ((MASK shl BIT_OFFSET).toByte())).toInt() shr BIT_OFFSET]
 
         /**
          * Helper function for determining whether the entire nibble (both high and low sets of bit pairs) represents a
@@ -85,14 +83,12 @@ enum class Logic {
          * @return whether the flags map to both [.ladder] and [Element.earth]
          */
         @kotlin.jvm.JvmStatic
-        fun climbable(flags: Byte): Boolean {
-            return ladder.flagsIn(flags) && Element.earth.flagsIn(flags)
-        }
+        fun climbable(flags: Byte): Boolean = ladder.flagsIn(flags) && Element.earth.flagsIn(flags)
     }
 
     // TODO Unexpected const error?
     @JvmField
-    val mask = (ordinal shl 2).toByte()
+    val mask: Byte = (ordinal shl 2).toByte()
 
     /**
      * Helper function for determining whether this logic indicator is represented by the specified nibble.
@@ -102,9 +98,7 @@ enum class Logic {
      *
      * @return true if the higher two bits map to this logic indicator
      */
-    fun flagsIn(flags: Byte): Boolean {
-        return flags and ((MASK shl BIT_OFFSET).toByte()) == mask
-    }
+    fun flagsIn(flags: Byte): Boolean = flags and ((MASK shl BIT_OFFSET).toByte()) == mask
 
     /**
      * Helper function for setting the higher two bits of the specified nibble to represent this logic indicator.
@@ -113,7 +107,5 @@ enum class Logic {
      * @param flags A four-bit nibble that will be modified to represent this logic indicator
      * @return the passed-in flags modified to represent this logic indicator
      */
-    fun to(flags: Byte): Byte {
-        return (flags and (MASK shl BIT_OFFSET).inv().toByte() or mask)
-    }
+    fun to(flags: Byte): Byte = (flags and (MASK shl BIT_OFFSET).inv().toByte() or mask)
 }

@@ -63,13 +63,11 @@ open class ColumnarOcclusionFieldList
             result
         } else {
             val occlusionField = createOcclusionField(cx, cy, cz)
-            occlusionField.also { fields!![cy] = it }
+            occlusionField.apply { fields!![cy] = this }
         }
     }
 
-    fun optionalOcclusionFieldAt(cy: Int): OcclusionField? {
-        return if (fields == null) null else fields!![cy]
-    }
+    fun optionalOcclusionFieldAt(cy: Int): OcclusionField? = if (fields == null) null else fields!![cy]
 
     protected open fun createOcclusionField(cx: Int, cy: Int, cz: Int): OcclusionField {
         val occlusionField = OcclusionField()

@@ -29,8 +29,8 @@ class HydrazinePathFinder internal constructor(
     occlusionProviderFactory: IOcclusionProviderFactory = AreaOcclusionProviderFactory
 ) {
     @kotlin.jvm.JvmField
-    val queue = SortedNodeQueue()
-    val nodeMap: NodeMap
+    val queue: SortedNodeQueue = SortedNodeQueue()
+    val nodeMap: NodeMap = NodeMap(instanceSpace, occlusionProviderFactory)
     private val unreachableFromSource: MutableSet<Vec3i> = HashSet(3)
     private var sourcePosition: Vec3d? = null
     private var destinationPosition: Vec3d? = null
@@ -60,7 +60,7 @@ class HydrazinePathFinder internal constructor(
     /**
      * Random used for fuzzy logic.
      */
-    var random = Random()
+    var random: Random = Random()
 
     /**
      * Applies a scheduling priority to this path-finder (and associated entity)
@@ -96,9 +96,7 @@ class HydrazinePathFinder internal constructor(
      *
      * @return the current target destination, can be null if there is no target available.
      */
-    fun currentTarget(): Vec3i? {
-        return if (target == null) null else target!!.key
-    }
+    fun currentTarget(): Vec3i? = if (target == null) null else target!!.key
 
     /**
      * Begin path-finding to a destination entity and update the path as necessary as the destination entity changes
@@ -124,9 +122,8 @@ class HydrazinePathFinder internal constructor(
      * @param coordinates the target destination to path-find to
      * @return the complete path to the destination, or null if the destination is unreachable from the current location
      */
-    fun computePathTo(coordinates: com.extollit.linalg.immutable.Vec3d): IPath? {
-        return computePathTo(coordinates.x, coordinates.y, coordinates.z)
-    }
+    fun computePathTo(coordinates: com.extollit.linalg.immutable.Vec3d): IPath? =
+        computePathTo(coordinates.x, coordinates.y, coordinates.z)
 
     /**
      * Completely computes a path to the specified location.  This is the traditional A* search algorithm, which
@@ -178,9 +175,8 @@ class HydrazinePathFinder internal constructor(
      * algorithm is not used then this is more likely to return immediately with null if it is determined the
      * destination is unreachable.
      */
-    fun initiatePathTo(coordinates: com.extollit.linalg.immutable.Vec3d?, bestEffort: Boolean): IPath? {
-        return initiatePathTo(coordinates!!.x, coordinates.y, coordinates.z, bestEffort)
-    }
+    fun initiatePathTo(coordinates: com.extollit.linalg.immutable.Vec3d?, bestEffort: Boolean): IPath? =
+        initiatePathTo(coordinates!!.x, coordinates.y, coordinates.z, bestEffort)
     /**
      * Starts path-finding to the specified destination using either best-effort or not.
      * Best-effort means that the algorithm will try it's best to get as close as possible to the target
@@ -279,9 +275,7 @@ class HydrazinePathFinder internal constructor(
      *
      * @return current path processor, null if not set
      */
-    fun pathProcessor(): IPathProcessor? {
-        return pathProcessor
-    }
+    fun pathProcessor(): IPathProcessor? = pathProcessor
 
     fun update(): IPath? {
         if (destinationEntity != null) updateDestination(destinationEntity!!.coordinates())
@@ -413,7 +407,7 @@ class HydrazinePathFinder internal constructor(
         val initPathPointCalculator = pathPointCalculator == null
         if (initPathPointCalculator || flying != this.flying || aqua != this.aqua) {
             pathPointCalculatorChanged = !initPathPointCalculator
-            nodeMap.calculator(createPassibilityCalculator(capabilities).also { pathPointCalculator = it })
+            nodeMap.calculator(createPassibilityCalculator(capabilities).apply { pathPointCalculator = this })
             this.flying = flying
             this.aqua = aqua
         }
@@ -425,22 +419,28 @@ class HydrazinePathFinder internal constructor(
 
     private fun setTargetFor(source: Node?): Boolean {
         val destinationPosition = destinationPosition
-        if (null == edgeAtDestination().also { target = it }) return false else if (bestEffort) {
-            var distance: Int = Node.MAX_PATH_DISTANCE.toInt()
-            while (distance > 0 && !source!!.target(target!!.key)) {
-                val v = Vec3d(destinationPosition)
-                val init = Vec3d(source.key)
-                distance--
-                v.sub(init)
-                v.normalize()
-                v.mul(distance.toDouble())
-                v.add(init)
-                target = edgeAtTarget(v.x, v.y, v.z)
+        when {
+            null == edgeAtDestination().also { target = it } -> return false
+            bestEffort -> {
+                var distance: Int = Node.MAX_PATH_DISTANCE.toInt()
+                while (distance > 0 && !source!!.target(target!!.key)) {
+                    val v = Vec3d(destinationPosition)
+                    val init = Vec3d(source.key)
+                    distance--
+                    v.sub(init)
+                    v.normalize()
+                    v.mul(distance.toDouble())
+                    v.add(init)
+                    target = edgeAtTarget(v.x, v.y, v.z)
+                }
+                return if (distance == 0) source!!.target(this.source.also { target = it }!!.key) else true
             }
-            return if (distance == 0) source!!.target(this.source.also { target = it }!!.key) else true
-        } else if (source!!.target(target!!.key)) return true
-        target = null
-        return false
+            source!!.target(target!!.key) -> return true
+            else -> {
+                target = null
+                return false
+            }
+        }
     }
 
     private fun resetGraph() {
@@ -570,14 +570,13 @@ class HydrazinePathFinder internal constructor(
     private fun updateSourcePosition() {
         val coordinates = subject.coordinates()
         if (sourcePosition != null) {
-            val sourcePosition: Vec3d?
-            sourcePosition = this.sourcePosition
+            val sourcePosition: Vec3d? = sourcePosition
             sourcePosition!!.x = coordinates!!.x
             sourcePosition.y = coordinates.y
             sourcePosition.z = coordinates.z
         } else sourcePosition = Vec3d(coordinates!!.x, coordinates.y, coordinates.z)
-        val x = Math.floor(coordinates.x).toInt()
-        val z = Math.floor(coordinates.z).toInt()
+        val x = floor(coordinates.x).toInt()
+        val z = floor(coordinates.z).toInt()
         updateFieldWindow(x, z, x, z, false)
         val last = current
         current = pointAtSource()
@@ -615,7 +614,7 @@ class HydrazinePathFinder internal constructor(
 
     private fun updatePath(newPath: IPath?): IPath? {
         var mutableNewPath = newPath
-        if (mutableNewPath == null) return null.also { currentPath = it }
+        if (mutableNewPath == null) return null.apply { currentPath = this }
         val currentPath = currentPath
         if (currentPath != null) {
             if (currentPath.sameAs(mutableNewPath)) mutableNewPath =
@@ -628,9 +627,11 @@ class HydrazinePathFinder internal constructor(
         if (mutableNewPath.done()) {
             var last = mutableNewPath.last()
             if (last == null) last = pointAtSource()
-            return last?.let { lastElement -> IncompletePath(lastElement).also { this.currentPath = it } }
+            return last?.let { lastElement -> IncompletePath(lastElement).apply { this@HydrazinePathFinder.currentPath =
+                this
+            } }
         }
-        return mutableNewPath.also { this.currentPath = it }
+        return mutableNewPath.apply { this@HydrazinePathFinder.currentPath = this }
     }
 
     private fun triage(iterations: Int): IPath? {
@@ -655,7 +656,7 @@ class HydrazinePathFinder internal constructor(
             val current = queue.dequeue()
             val closest = closest
             if (closest == null || closest.orphaned()
-                || Node.squareDelta(current, target) < Node.squareDelta(closest, target)
+                || Node.squareDelta(current, target!!) < Node.squareDelta(closest, target!!)
             ) this.closest = current
             if (current === target) {
                 nextPath = createPath(current)
@@ -764,21 +765,24 @@ class HydrazinePathFinder internal constructor(
         val z = coords.z + dz
         val bounds: com.extollit.linalg.immutable.AxisAlignedBBox
         val flags = nodeMap.flagsAt(x, y, z)
-        bounds = if (fuzzyPassibility(flags)) {
-            val block = instanceSpace.blockObjectAt(x, y, z)
-            if (!block.isImpeding) return null
-            block.bounds()
-        } else if (PassibilityHelpers.impedesMovement(
+        bounds = when {
+            fuzzyPassibility(flags) -> {
+                val block = instanceSpace.blockObjectAt(x, y, z)
+                if (!block.isImpeding) return null
+                block.bounds()
+            }
+            PassibilityHelpers.impedesMovement(
                 flags,
                 capabilities
-            )
-        ) FULL_BOUNDS else return null
+            ) -> FULL_BOUNDS
+            else -> return null
+        }
         val result = AxisAlignedBBox(bounds)
         result.add(dx.toDouble(), dy.toDouble(), dz.toDouble())
         return result
     }
 
-    fun applyPointOptions(current: Node?, vararg pointOptions: Node?): Boolean {
+    fun applyPointOptions(current: Node, vararg pointOptions: Node?): Boolean {
         var found = false
         for (alternative in pointOptions) {
             if (impassible(alternative) || alternative?.visited() == true || Node.squareDelta(
@@ -795,9 +799,8 @@ class HydrazinePathFinder internal constructor(
         return found
     }
 
-    private fun impassible(alternative: Node?): Boolean {
-        return alternative == null || alternative.passibility().impassible(capabilities)
-    }
+    private fun impassible(alternative: Node?): Boolean =
+        alternative == null || alternative.passibility().impassible(capabilities)
 
     private fun cachedPassiblePointNear(x0: Int, y0: Int, z0: Int, origin: Vec3i? = null): Node? {
         val coords0 = Vec3i(x0, y0, z0)
@@ -809,9 +812,7 @@ class HydrazinePathFinder internal constructor(
         ) null else result
     }
 
-    private fun fuzzyPassibility(x: Int, y: Int, z: Int): Boolean {
-        return fuzzyPassibility(nodeMap.flagsAt(x, y, z))
-    }
+    private fun fuzzyPassibility(x: Int, y: Int, z: Int): Boolean = fuzzyPassibility(nodeMap.flagsAt(x, y, z))
 
     private fun fuzzyPassibility(flags: Byte): Boolean {
         return PassibilityHelpers.impedesMovement(
@@ -834,11 +835,9 @@ class HydrazinePathFinder internal constructor(
         ) == floor(dest.z)
     }
 
-    private fun pathTimeAge(): Float {
-        return subject.age() * capabilities!!.speed()
-    }
+    private fun pathTimeAge(): Float = subject.age() * capabilities!!.speed()
 
-    fun passibilityNear(tx: Int, ty: Int, tz: Int): kotlin.Pair<Passibility, Vec3i> {
+    fun passibilityNear(tx: Int, ty: Int, tz: Int): Pair<Passibility, Vec3i> {
         updateSourcePosition()
         val x = floor(sourcePosition!!.x).toInt()
         val z = floor(sourcePosition!!.z).toInt()
@@ -870,9 +869,7 @@ class HydrazinePathFinder internal constructor(
             GroundNodeCalculator.configureFrom(configModel)
         }
 
-        private fun differs(a: com.extollit.linalg.immutable.Vec3d?, b: Vec3d?): Boolean {
-            return differs(a!!.x, a.y, a.z, b)
-        }
+        private fun differs(a: com.extollit.linalg.immutable.Vec3d?, b: Vec3d?): Boolean = differs(a!!.x, a.y, a.z, b)
 
         private fun differs(x: Double, y: Double, z: Double, other: Vec3d?): Boolean {
             return floor(other!!.x) != floor(x) || floor(other.y) != floor(y) || floor(
@@ -882,7 +879,6 @@ class HydrazinePathFinder internal constructor(
     }
 
     init {
-        nodeMap = NodeMap(instanceSpace, occlusionProviderFactory)
         applySubject()
         schedulingPriority(SchedulingPriority.low)
         resetFaultTimings()

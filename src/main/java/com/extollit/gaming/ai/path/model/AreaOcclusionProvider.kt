@@ -3,12 +3,15 @@ package com.extollit.gaming.ai.path.model
 import com.extollit.gaming.ai.path.model.OcclusionField.AreaInit
 
 class AreaOcclusionProvider(
+    /** Represents all colum spaces in both the X ad Z planes. */
     private val columnarSpaces: Array<Array<IColumnarSpace?>>,
     private val cx0: Int,
     private val cz0: Int
 ) : IOcclusionProvider {
+
     private val cxN: Int = columnarSpaces[0].size + cx0 - 1
     private val czN: Int = columnarSpaces.size + cz0 - 1
+
     override fun elementAt(x: Int, y: Int, z: Int): Byte {
         val columnarSpaces = columnarSpaces
         val cx = x shr 4
@@ -112,8 +115,7 @@ class AreaOcclusionProvider(
         }
     }
 
-    override fun visualizeAt(y: Int): String {
-        return OcclusionField.visualizeAt(this, y, cx0 shl 4, cz0 shl 4, cxN + 1 shl 4, czN + 1 shl 4)
-    }
+    override fun visualizeAt(y: Int): String =
+        OcclusionField.visualizeAt(this, y, cx0 shl 4, cz0 shl 4, cxN + 1 shl 4, czN + 1 shl 4)
 
 }

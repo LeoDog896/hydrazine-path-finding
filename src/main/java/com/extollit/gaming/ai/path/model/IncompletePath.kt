@@ -3,24 +3,24 @@ package com.extollit.gaming.ai.path.model
 import com.extollit.collect.Option
 
 class IncompletePath(val node: INode) : IPath {
-    override fun truncateTo(length: Int) =
+    override fun truncateTo(length: Int): Nothing =
         throw ArrayIndexOutOfBoundsException("Cannot truncate incomplete paths")
 
     override fun untruncate() {}
 
-    override fun length() = 1
+    override fun length(): Int = 1
 
-    override fun cursor() = 0
+    override fun cursor(): Int = 0
 
-    override fun at(i: Int) = node
+    override fun at(i: Int): INode = node
 
-    override fun current() = node
+    override fun current(): INode = node
 
-    override fun last() = node
+    override fun last(): INode = node
 
-    override fun done() = false
+    override fun done(): Boolean = false
 
-    override fun taxiing() = false
+    override fun taxiing(): Boolean = false
 
     override fun taxiUntil(index: Int) {}
 
@@ -30,7 +30,7 @@ class IncompletePath(val node: INode) : IPath {
         return (!i.hasNext() || node.coordinates() == i.next()!!.coordinates()) && !i.hasNext()
     }
 
-    override fun stagnantFor(subject: IPathingEntity) = 0f
+    override fun stagnantFor(subject: IPathingEntity): Float = 0f
 
     override fun update(pathingEntity: IPathingEntity) {}
     override fun equals(other: Any?): Boolean {
@@ -40,9 +40,9 @@ class IncompletePath(val node: INode) : IPath {
         return node == iNodes.node
     }
 
-    override fun hashCode() = node.hashCode()
+    override fun hashCode(): Int = node.hashCode()
 
-    override fun toString() = "*" + node.coordinates() + "...?"
+    override fun toString(): String = "*" + node.coordinates() + "...?"
 
-    override fun iterator() = Option.of(node).iterator()
+    override fun iterator(): MutableIterator<INode> = Option.of(node).iterator()
 }

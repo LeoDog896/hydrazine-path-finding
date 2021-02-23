@@ -55,7 +55,7 @@ class NodeMap(
         occlusionProvider = null
     }
 
-    fun clear() = internalMap.clear()
+    fun clear(): Unit = internalMap.clear()
 
     fun needsOcclusionProvider(): Boolean = occlusionProvider == null
 
@@ -109,9 +109,7 @@ class NodeMap(
         return point
     }
 
-    fun cachedPassiblePointNear(x: Int, y: Int, z: Int): Node {
-        return cachedPassiblePointNear(x, y, z, null)
-    }
+    fun cachedPassiblePointNear(x: Int, y: Int, z: Int): Node = cachedPassiblePointNear(x, y, z, null)
 
     fun cachedPassiblePointNear(x0: Int, y0: Int, z0: Int, origin: Vec3i?): Node {
         val coords0 = Vec3i(x0, y0, z0)
@@ -159,9 +157,7 @@ class NodeMap(
         return false
     }
 
-    override fun toString(): String {
-        return internalMap.toString()
-    }
+    override fun toString(): String = internalMap.toString()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -170,7 +166,5 @@ class NodeMap(
         return internalMap == nodeMap.internalMap
     }
 
-    override fun hashCode(): Int {
-        return internalMap.hashCode()
-    }
+    override fun hashCode(): Int = internalMap.hashCode()
 }

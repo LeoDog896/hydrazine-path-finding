@@ -7,16 +7,18 @@ import com.extollit.linalg.immutable.Vec3i
 import com.extollit.num.FloatRange
 import java.text.MessageFormat
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.max
 
-class PathObject protected @JvmOverloads constructor(
+class PathObject @JvmOverloads protected constructor(
     val speed: Float,
     val random: Random = Random(),
     @kotlin.jvm.JvmField vararg val nodes: Node
 ) : IPath {
     @kotlin.jvm.JvmField
-    var index = 0
+    var index: Int = 0
     private var taxiUntil = 0
     private var adjacentIndex = 0
     private var length: Int = nodes.size
@@ -34,17 +36,15 @@ class PathObject protected @JvmOverloads constructor(
         length = nodes.size
     }
 
-    override fun iterator(): MutableIterator<INode> {
-        return ArrayIterable.Iter<INode>(nodes, length)
-    }
+    override fun iterator(): MutableIterator<INode> = ArrayIterable.Iter<INode>(nodes, length)
 
-    override fun length() = length
+    override fun length(): Int = length
 
-    override fun cursor() = index
+    override fun cursor(): Int = index
 
-    override fun at(i: Int) = nodes[i]
+    override fun at(i: Int): Node = nodes[i]
 
-    override fun current() = nodes[index]
+    override fun current(): Node = nodes[index]
 
     override fun last(): INode? {
         val nodes = nodes
@@ -52,7 +52,7 @@ class PathObject protected @JvmOverloads constructor(
         return if (length > 0) nodes[length - 1] else null
     }
 
-    override fun done() = index >= length
+    override fun done(): Boolean = index >= length
 
     override fun update(subject: IPathingEntity) {
         var mutated = false
@@ -80,18 +80,18 @@ class PathObject protected @JvmOverloads constructor(
                         targetIndex,
                         unlevelIndex,
                         grounded
-                    ).also { advanceTargetIndex = it } > targetIndex
+                    ).apply { advanceTargetIndex = this } > targetIndex
                 ) targetIndex = advanceTargetIndex!! else targetIndex = adjacentIndex + 1
             } else if (minDistanceSquared > 0.5 || targetIndex < taxiUntil) targetIndex = adjacentIndex
             mutated = adjacentIndex > adjacentIndex0
             this.adjacentIndex = adjacentIndex
-            index = Math.max(adjacentIndex, targetIndex)
+            index = max(adjacentIndex, targetIndex)
             if (stagnantFor(subject) > nextDirectLineTimeout) {
                 if (taxiUntil < adjacentIndex) taxiUntil = adjacentIndex + 1 else taxiUntil++
                 nextDirectLineTimeout += DIRECT_LINE_TIME_LIMIT!!.next(random)
             }
             val node = if (done()) last() else current()
-            node?.let { moveSubjectTo(subject, it) }
+            node?.run { moveSubjectTo(subject, this) }
         } finally {
             if (mutated || lastMutationTime < 0) {
                 lastMutationTime = subject.age() * speed
@@ -111,10 +111,10 @@ class PathObject protected @JvmOverloads constructor(
         val offset = pointToPositionOffset(width)
         val d = com.extollit.linalg.mutable.Vec3d(currentPosition)
         val end = unlevelIndex + 1
-        run {
-            var i = this.adjacentIndex.also { nextAdjacentIndex = it }
-            while (i < this.length && i < end) {
-                val node = this.nodes[i]
+        let {
+            var i = it.adjacentIndex.apply { nextAdjacentIndex = this }
+            while (i < it.length && i < end) {
+                val node = it.nodes[i]
                 val pp = node.key
                 d.sub(pp)
                 d.sub(offset.toDouble(), 0.0, offset.toDouble())
@@ -143,17 +143,13 @@ class PathObject protected @JvmOverloads constructor(
         )
     }
 
-    override fun taxiing(): Boolean {
-        return taxiUntil >= adjacentIndex
-    }
+    override fun taxiing(): Boolean = taxiUntil >= adjacentIndex
 
     override fun taxiUntil(index: Int) {
         taxiUntil = index
     }
 
-    override fun stagnantFor(subject: IPathingEntity): Float {
-        return if (lastMutationTime < 0) 0f else subject.age() * speed - lastMutationTime
-    }
+    override fun stagnantFor(subject: IPathingEntity): Float = if (lastMutationTime < 0) 0f else subject.age() * speed - lastMutationTime
 
     fun directLine(from: Int, until: Int, grounded: Boolean): Int {
         val xis = IntArray(4)
@@ -199,9 +195,9 @@ class PathObject protected @JvmOverloads constructor(
                 val bdx0 = bdx
                 val bdy0 = bdy
                 val bdz0 = bdz
-                if (!(dx != 0).let { bdx = bdx xor it; bdx } && bdx0 ||
-                    !(dy != 0).let { bdy = bdy xor it; bdy } && bdy0 ||
-                    !(dz != 0).let { bdz = bdz xor it; bdz } && bdz0) break else ++ii
+                if (!(dx != 0).run { bdx = bdx xor this; bdx } && bdx0 ||
+                    !(dy != 0).run { bdy = bdy xor this; bdy } && bdy0 ||
+                    !(dz != 0).run { bdz = bdz xor this; bdz } && bdz0) break else ++ii
                 i0 = i - 1
             }
             xis[ii] = xi
@@ -222,9 +218,9 @@ class PathObject protected @JvmOverloads constructor(
         var xi = 0
         var yi = 0
         var zi = 0
-        var axi00 = Math.abs(xi00)
-        var ayi00 = Math.abs(yi00)
-        var azi00 = Math.abs(zi00)
+        var axi00 = abs(xi00)
+        var ayi00 = abs(yi00)
+        var azi00 = abs(zi00)
         ii = 0
         p0 = nodes[i].key
         while (i++ < n) {
@@ -239,7 +235,7 @@ class PathObject protected @JvmOverloads constructor(
             xi += dx
             yi += dy
             zi += dz
-            if (Math.abs(xi0) > axi00 || Math.abs(yi0) > ayi00 || Math.abs(zi0) > azi00) {
+            if (abs(xi0) > axi00 || abs(yi0) > ayi00 || abs(zi0) > azi00) {
                 --i
                 break
             }
@@ -252,9 +248,9 @@ class PathObject protected @JvmOverloads constructor(
                 xi00 = xis[ii]
                 yi00 = yis[ii]
                 zi00 = zis[ii]
-                axi00 = Math.abs(xi00)
-                ayi00 = Math.abs(yi00)
-                azi00 = Math.abs(zi00)
+                axi00 = abs(xi00)
+                ayi00 = abs(yi00)
+                azi00 = abs(zi00)
             }
             if (dx * xi00 < 0 || dy * yi00 < 0 || dz * zi00 < 0) break
             p0 = p
@@ -345,8 +341,7 @@ class PathObject protected @JvmOverloads constructor(
 
     fun reachableFrom(otherPath: PathObject): Boolean {
         val pivot = otherPath.current()
-        for (node in nodes) if (node.key == pivot.coordinates()) return true
-        return false
+        return nodes.any { it.key == pivot.coordinates() }
     }
 
     companion object {
@@ -358,7 +353,7 @@ class PathObject protected @JvmOverloads constructor(
 
         fun fromHead(speed: Float, random: Random = Random(), head: Node): IPath {
             var i = 1
-            run {
+            let {
                 var p: Node? = head
                 while (p!!.parent() != null) {
                     ++i

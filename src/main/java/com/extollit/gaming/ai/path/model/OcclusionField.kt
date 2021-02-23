@@ -15,7 +15,7 @@ open class OcclusionField : IOcclusionProvider {
 
         @kotlin.jvm.JvmField
         val offset: VertexOffset
-        val mask = (1 shl ordinal).toShort()
+        val mask: Short = (1 shl ordinal).toShort()
 
         constructor(dx: Int, dz: Int) {
             offset = VertexOffset(dx, 0, dz)
@@ -25,13 +25,9 @@ open class OcclusionField : IOcclusionProvider {
             offset = VertexOffset(0, dy, 0)
         }
 
-        fun `in`(flags: Short): Boolean {
-            return flags and mask != 0.toShort()
-        }
+        fun `in`(flags: Short): Boolean = flags and mask != 0.toShort()
 
-        fun to(flags: Short): Short {
-            return (flags or mask)
-        }
+        fun to(flags: Short): Short = (flags or mask)
 
         companion object {
             @kotlin.jvm.JvmStatic
@@ -94,14 +90,13 @@ open class OcclusionField : IOcclusionProvider {
         } else areaInit()
     }
 
-    private fun fenceOrDoorLike(flags: Byte): Boolean {
-        return Element.earth.flagsIn(flags) && Logic.fuzzy.flagsIn(flags) || Logic.doorway.flagsIn(flags)
-    }
+    private fun fenceOrDoorLike(flags: Byte): Boolean =
+        Element.earth.flagsIn(flags) && Logic.fuzzy.flagsIn(flags) || Logic.doorway.flagsIn(flags)
 
     private fun decompress() {
         val word = singletonWord()
         words = LongArray(DIMENSION_SQUARE_SIZE * DIMENSION_SIZE * ELEMENT_LENGTH / WORD_LENGTH)
-        words?.let { Arrays.fill(words!!, word) }
+        words?.run { Arrays.fill(words!!, word) }
         singleton = 0
     }
 
@@ -164,7 +159,7 @@ open class OcclusionField : IOcclusionProvider {
     }
 
     fun areaInitNorthEast(horizontal: OcclusionField?, depth: OcclusionField?) {
-        areaInitVerticalEdge(horizontal, depth, true, false)
+        areaInitVerticalEdge(horizontal, depth, horizEnd = true, depthEnd = false)
         areaInit = AreaInit.northEast.to(areaInit)
     }
 
@@ -222,8 +217,7 @@ open class OcclusionField : IOcclusionProvider {
                 if (words != null) word = words[i++]
                 for (b in 0 until ELEMENTS_PER_WORD) {
                     val xx = x + b
-                    val flags: Byte
-                    flags = if (words != null) (word and ELEMENT_MASK).toByte() else singleton
+                    val flags: Byte = if (words != null) (word and ELEMENT_MASK).toByte() else singleton
                     val fenceLike = Element.earth.flagsIn(flags) && Logic.fuzzy.flagsIn(flags)
                     val doorLike = Logic.doorway.flagsIn(flags)
                     if (fenceLike || doorLike) {
@@ -253,7 +247,7 @@ open class OcclusionField : IOcclusionProvider {
                 var word = words?.get(index) ?: singletonWord
                 val northWord: Long
                 val southWord: Long
-                run {
+                let {
                     val primary =
                         if (words == null) singletonWord else words!![index + -disposition * (DIMENSION_SIZE shr COORDINATE_TO_INDEX_SHR.toInt())]
                     val secondary = neighborWords?.get(northIndex) ?: neighborSingletonWord
@@ -314,7 +308,7 @@ open class OcclusionField : IOcclusionProvider {
                 val eastWord: Long
                 val northWord: Long
                 val southWord: Long
-                run {
+                let {
                     val primary = if (words == null) singletonWord else words!![index]
                     val secondary = neighborWords?.get(neighborIndex) ?: neighborSingletonWord
                     if (disposition < 0) {
@@ -376,7 +370,7 @@ open class OcclusionField : IOcclusionProvider {
             val eastWord: Long
             val northWord: Long
             val southWord: Long
-            run {
+            let {
                 val horizSecondary = horizNeighborWords?.get(horizNeighborIndex) ?: horizNeighborSingletonWord
                 val depthSecondary = depthNeighborWords?.get(depthNeighborIndex) ?: depthNeighborSingletonWord
                 if (xd < 0) {
@@ -448,13 +442,10 @@ open class OcclusionField : IOcclusionProvider {
         return centerWord
     }
 
-    private fun eastFlags(offset: Int, eastWord: Long): Byte {
-        return elementAt(eastWord, (offset + 1) % ELEMENTS_PER_WORD)
-    }
+    private fun eastFlags(offset: Int, eastWord: Long): Byte = elementAt(eastWord, (offset + 1) % ELEMENTS_PER_WORD)
 
-    private fun westFlags(offset: Int, westWord: Long): Byte {
-        return elementAt(westWord, (offset + ELEMENTS_PER_WORD - 1) % ELEMENTS_PER_WORD)
-    }
+    private fun westFlags(offset: Int, westWord: Long): Byte =
+        elementAt(westWord, (offset + ELEMENTS_PER_WORD - 1) % ELEMENTS_PER_WORD)
 
     private fun areaFlagsFor(
         centerFlags: Byte,
@@ -584,9 +575,8 @@ open class OcclusionField : IOcclusionProvider {
         return false
     }
 
-    private fun index(dx: Int, dy: Int, dz: Int): Int {
-        return dy * DIMENSION_SQUARE_SIZE + dz * DIMENSION_SIZE + dx shr COORDINATE_TO_INDEX_SHR.toInt()
-    }
+    private fun index(dx: Int, dy: Int, dz: Int): Int =
+        dy * DIMENSION_SQUARE_SIZE + dz * DIMENSION_SIZE + dx shr COORDINATE_TO_INDEX_SHR.toInt()
 
     private fun areaComputeAt(dx: Int, dy: Int, dz: Int) {
         val words = words
@@ -698,8 +688,7 @@ open class OcclusionField : IOcclusionProvider {
     }
 
     override fun elementAt(x: Int, y: Int, z: Int): Byte {
-        val element: Byte
-        element = if (words != null) {
+        val element: Byte = if (words != null) {
             val word = words!![index(x, y, z)]
             elementAt(word, x % ELEMENTS_PER_WORD)
         } else singleton
@@ -709,24 +698,18 @@ open class OcclusionField : IOcclusionProvider {
     private fun elementAt(word: Long, offset: Int) =
         ((word shr (offset shl ELEMENT_LENGTH_SHL.toInt())).toByte()) and ELEMENT_MASK.toByte()
 
-    override fun visualizeAt(dy: Int): String {
-        return visualizeAt(this, dy, 0, 0, DIMENSION_SIZE, DIMENSION_SIZE)
-    }
+    override fun visualizeAt(dy: Int): String = visualizeAt(this, dy, 0, 0, DIMENSION_SIZE, DIMENSION_SIZE)
 
     private fun flagsFor(columnarSpace: IColumnarSpace, x: Int, y: Int, z: Int, block: IBlockDescription?): Byte {
         var flags: Byte = 0
         val instance = columnarSpace.instance()
         val doorway = block!!.isDoor
-        if (doorway) flags = flags or (if (instance!!.blockObjectAt(
+        flags = if (doorway) flags or (if (instance!!.blockObjectAt(
                 x,
                 y,
                 z
             ).isImpeding
-        ) Element.earth else Element.air).mask else if (!block.isImpeding) if (block.isLiquid) if (block.isIncinerating) flags =
-            flags or Element.fire.mask else flags = flags or Element.water.mask else if (block.isIncinerating) flags =
-            flags or (Element.fire.mask or Logic.fuzzy.mask) else flags =
-            flags or Element.air.mask else if (block.isIncinerating) flags = flags or Element.fire.mask else flags =
-            flags or Element.earth.mask
+        ) Element.earth else Element.air).mask else if (!block.isImpeding) if (block.isLiquid) if (block.isIncinerating) flags or Element.fire.mask else flags or Element.water.mask else if (block.isIncinerating) flags or (Element.fire.mask or Logic.fuzzy.mask) else flags or Element.air.mask else if (block.isIncinerating) flags or Element.fire.mask else flags or Element.earth.mask
         if (doorway) flags = Logic.doorway.to(flags) else if (block.isClimbable) flags =
             Logic.ladder.to(flags) else if (Element.earth.flagsIn(flags) && !block.isFullyBounded) flags =
             Logic.fuzzy.to(flags)
@@ -741,16 +724,15 @@ open class OcclusionField : IOcclusionProvider {
         private const val WORD_LAST_OFFSET = (ELEMENTS_PER_WORD - 1).toByte()
         private const val COORDINATE_TO_INDEX_SHR: Byte = 4
         private const val DIMENSION_ORDER: Byte = 4
-        const val DIMENSION_SIZE = 1 shl DIMENSION_ORDER.toInt()
-        const val DIMENSION_MASK = (1 shl DIMENSION_ORDER.toInt()) - 1
-        const val DIMENSION_EXTENT = DIMENSION_SIZE - 1
+        const val DIMENSION_SIZE: Int = 1 shl DIMENSION_ORDER.toInt()
+        const val DIMENSION_MASK: Int = (1 shl DIMENSION_ORDER.toInt()) - 1
+        const val DIMENSION_EXTENT: Int = DIMENSION_SIZE - 1
         private const val DIMENSION_SQUARE_SIZE = DIMENSION_SIZE * DIMENSION_SIZE
         private const val LAST_INDEX = DIMENSION_SIZE * DIMENSION_SQUARE_SIZE - 1 shr COORDINATE_TO_INDEX_SHR.toInt()
         private const val ELEMENT_MASK = ((1 shl ELEMENT_LENGTH.toInt()) - 1).toLong()
         private const val FULLY_AREA_INIT: Short = 0x3FF
-        fun fuzzyOpenIn(element: Byte): Boolean {
-            return Element.air.flagsIn(element) || Element.earth.flagsIn(element) && Logic.fuzzy.flagsIn(element)
-        }
+        fun fuzzyOpenIn(element: Byte): Boolean =
+            Element.air.flagsIn(element) || Element.earth.flagsIn(element) && Logic.fuzzy.flagsIn(element)
 
         fun visualizeAt(provider: IOcclusionProvider, dy: Int, x0: Int, z0: Int, xN: Int, zN: Int): String {
             val sb = StringBuilder()
@@ -760,10 +742,13 @@ open class OcclusionField : IOcclusionProvider {
                     val flags = provider.elementAt(x, dy, z)
                     ch = when (Element.of(flags)) {
                         Element.air -> if (Logic.fuzzy.flagsIn(flags)) '░' else ' '
-                        Element.earth -> if (Logic.climbable(flags)) '#' else if (Logic.fuzzy.flagsIn(
+                        Element.earth -> when {
+                            Logic.climbable(flags) -> '#'
+                            Logic.fuzzy.flagsIn(
                                 flags
-                            )
-                        ) '▄' else '█'
+                            ) -> '▄'
+                            else -> '█'
+                        }
                         Element.fire -> 'X'
                         Element.water -> '≋'
                         else -> '?'

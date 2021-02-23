@@ -64,7 +64,7 @@ enum class Element {
     fire;
 
     @kotlin.jvm.JvmField
-    val mask = ordinal.toByte()
+    val mask: Byte = ordinal.toByte()
 
     /**
      * Helper function for determining whether this element is represented by the specified nibble.  The nibble may

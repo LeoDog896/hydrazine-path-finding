@@ -1,19 +1,19 @@
 package com.extollit.gaming.ai.path
 
-
 import com.extollit.gaming.ai.path.model.*
-import java.lang.Math
 import com.extollit.linalg.immutable.Vec3i
+import kotlin.math.floor
 
 internal abstract class AbstractNodeCalculator(protected val instanceSpace: IInstanceSpace) : INodeCalculator {
     protected var capabilities: IPathingEntity.Capabilities? = null
     protected var discreteSize = 0
     protected var tall = 0
     protected var actualSize = 0f
+
     override fun applySubject(subject: IPathingEntity) {
         actualSize = subject.width()
-        discreteSize = Math.floor((subject.width() + 1).toDouble()).toInt()
-        tall = Math.floor((subject.height() + 1).toDouble()).toInt()
+        discreteSize = floor((subject.width() + 1).toDouble()).toInt()
+        tall = floor((subject.height() + 1).toDouble()).toInt()
         capabilities = subject.capabilities()
     }
 
@@ -28,9 +28,9 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
         var passibility = passibility
         var clearanceFlags = flags
         val yMax = y + max
-        val yN = Math.max(y, y - delta.y) + tall
+        val yN = y.coerceAtLeast(y - delta.y) + tall
         var yt = y
-        val yNa = yN + Math.floor(partY.toDouble()).toInt()
+        val yNa = yN + floor(partY.toDouble()).toInt()
         while (yt < yNa && yt < yMax) {
             passibility = passibility!!.between(clearance(clearanceFlags))
             clearanceFlags = sampler.flagsAt(x, ++yt, z)
@@ -40,9 +40,8 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
         return passibility
     }
 
-    protected fun insufficientHeadClearance(flags: Byte, partialY0: Float, x: Int, yN: Int, z: Int): Boolean {
-        return bottomOffsetAt(flags, x, yN, z) + partialY0 > 0
-    }
+    protected fun insufficientHeadClearance(flags: Byte, partialY0: Float, x: Int, yN: Int, z: Int): Boolean =
+        bottomOffsetAt(flags, x, yN, z) + partialY0 > 0
 
     private fun bottomOffsetAt(flags: Byte, x: Int, y: Int, z: Int): Float {
         if (Element.air.flagsIn(flags)
@@ -53,13 +52,11 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
         return if (!block.isImpeding) 0f else block.bounds().min.y.toFloat()
     }
 
-    private fun clearance(flags: Byte): Passibility {
-        return PassibilityHelpers.clearance(flags, capabilities)
-    }
+    private fun clearance(flags: Byte): Passibility =
+        PassibilityHelpers.clearance(flags, capabilities)
 
-    protected fun topOffsetAt(sampler: FlagSampler, x: Int, y: Int, z: Int): Float {
-        return topOffsetAt(sampler.flagsAt(x, y, z), x, y, z)
-    }
+    protected fun topOffsetAt(sampler: FlagSampler, x: Int, y: Int, z: Int): Float =
+        topOffsetAt(sampler.flagsAt(x, y, z), x, y, z)
 
     protected fun topOffsetAt(flags: Byte, x: Int, y: Int, z: Int): Float {
         if (Element.air.flagsIn(flags)
@@ -91,7 +88,7 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
     ): Passibility? {
         var passibility = passibility
         val yN = minY + tall
-        val yNa = yN + Math.floor(minPartY.toDouble()).toInt()
+        val yNa = yN + floor(minPartY.toDouble()).toInt()
         var x = origin.x
         val xN = origin.x + discreteSize
         while (x < xN) {
@@ -124,8 +121,7 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
 
     companion object {
         @JvmStatic
-        protected fun swimmingRequiredFor(flags: Byte): Boolean {
-            return Element.water.flagsIn(flags) || Element.fire.flagsIn(flags) && !Logic.fuzzy.flagsIn(flags)
-        }
+        protected fun swimmingRequiredFor(flags: Byte): Boolean =
+            Element.water.flagsIn(flags) || Element.fire.flagsIn(flags) && !Logic.fuzzy.flagsIn(flags)
     }
 }

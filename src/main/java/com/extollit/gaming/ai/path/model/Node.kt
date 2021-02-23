@@ -4,6 +4,7 @@ import com.extollit.linalg.immutable.Vec3i
 import java.text.MessageFormat
 import kotlin.experimental.inv
 import kotlin.experimental.or
+import kotlin.math.sqrt
 
 class Node : INode {
     @kotlin.jvm.JvmField
@@ -29,9 +30,7 @@ class Node : INode {
             Mask_512 shl Index_BitOffs.toInt() or (gravitation!!.ordinal and Mask_Gravitation.toInt() shl Gravitation_BitOffs.toInt()) or (passibility.ordinal and Mask_Passibility.toInt()) or ((if (volatility) 1 else 0) shl Volatile_BitOffs.toInt())
     }
 
-    override fun coordinates(): Vec3i {
-        return key
-    }
+    override fun coordinates(): Vec3i = key
 
     fun length(): Byte = (word shr Length_BitOffs.toInt() and Mask_128).toByte()
 
@@ -57,7 +56,7 @@ class Node : INode {
         return node
     }
 
-    override fun passibility() = Passibility.values()[word and Mask_Passibility.toInt()]
+    override fun passibility(): Passibility = Passibility.values()[word and Mask_Passibility.toInt()]
 
     fun passibility(passibility: Passibility?) {
         var mutablePassibility = passibility
@@ -66,7 +65,7 @@ class Node : INode {
         word = word and Mask_Passibility.inv().toInt() or mutablePassibility!!.ordinal
     }
 
-    override fun gravitation() = Gravitation.values()[word shr Gravitation_BitOffs.toInt() and Mask_Gravitation.toInt()]
+    override fun gravitation(): Gravitation = Gravitation.values()[word shr Gravitation_BitOffs.toInt() and Mask_Gravitation.toInt()]
 
     fun gravitation(gravitation: Gravitation?) {
         word =
@@ -92,7 +91,7 @@ class Node : INode {
         word = wordReset(this)
     }
 
-    fun rollback() = reset()
+    fun rollback(): Unit = reset()
 
     fun index(): Short {
         val index = (word shr Index_BitOffs.toInt() and Mask_512).toShort()
@@ -126,7 +125,7 @@ class Node : INode {
     fun assigned(): Boolean = index().toInt() != -1
 
     fun target(targetPoint: Vec3i?): Boolean {
-        val distance = Math.sqrt(squareDelta(this, targetPoint).toDouble())
+        val distance = sqrt(squareDelta(this, targetPoint).toDouble())
             .toInt()
         if (distance > Mask_128) return false
         word = word and (Mask_128 shl Remain_BitOffs.toInt()).inv() or (distance shl Remain_BitOffs.toInt())
@@ -137,7 +136,7 @@ class Node : INode {
         var curr: Node? = this
         do {
             if (curr === node) return true
-        } while (curr?.previous.also { curr = it } != null)
+        } while (curr?.previous.apply { curr = this } != null)
         return false
     }
 
@@ -146,9 +145,7 @@ class Node : INode {
      *
      * @return True if this node has no parents
      */
-    fun orphaned(): Boolean {
-        return parent() == null
-    }
+    fun orphaned(): Boolean = parent() == null
 
     fun orphan() {
         if (previous != null) previous!!.removeChild(this)
@@ -202,9 +199,7 @@ class Node : INode {
      *
      * @return All children of this node.
      */
-    fun children(): Iterable<Node> {
-        return children ?: emptyList()
-    }
+    fun children(): Iterable<Node> = children ?: emptyList()
 
     private fun cyclic(parent: Node?): Boolean {
         var p = parent
@@ -213,7 +208,7 @@ class Node : INode {
     }
 
     override fun toString(): String {
-        val sb = StringBuilder(key.toString())
+        val sb = StringBuilder("$key")
         val index = index()
         if (volatile_()) sb.append('!')
         if (visited()) sb.insert(0, '|')
@@ -226,7 +221,7 @@ class Node : INode {
             sb.append(" @ ")
             sb.append(index.toInt())
         }
-        var length = java.lang.Byte.toString(length())
+        var length = length().toString()
         if (dirty()) length += '*'
         return sb.toString() + MessageFormat.format(
             " ({0}) : length={1}, remaining={2}, journey={3}",
@@ -237,10 +232,10 @@ class Node : INode {
         )
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val pathPoint = o as Node
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val pathPoint = other as Node
         return key == pathPoint.key
     }
 
@@ -265,17 +260,14 @@ class Node : INode {
         private const val Visited_BitOffs = (Remain_BitOffs + BitWidth_128).toByte()
         private const val Gravitation_BitOffs = (Visited_BitOffs + 1).toByte()
         private const val LengthDirty_BitOffs = (Gravitation_BitOffs + 2).toByte()
-        const val MAX_PATH_DISTANCE = ((1 shl BitWidth_128.toInt()) - 1).toShort()
+        const val MAX_PATH_DISTANCE: Short = ((1 shl BitWidth_128.toInt()) - 1).toShort()
         private const val Mask_128 = MAX_PATH_DISTANCE.toInt()
         private const val Mask_512 = (1 shl BitWidth_512.toInt()) - 1
-        const val MAX_INDICES = (1 shl BitWidth_512.toInt()) - 1
-        private fun wordReset(copy: Node): Int {
-            return copy.word and ((Mask_Passibility or ((1 shl Volatile_BitOffs.toInt()).toByte()) or (Mask_Gravitation shl Gravitation_BitOffs)).toInt()) or (Mask_512 shl Index_BitOffs.toInt() or (1 shl LengthDirty_BitOffs.toInt()))
-        }
+        const val MAX_INDICES: Int = (1 shl BitWidth_512.toInt()) - 1
+        private fun wordReset(copy: Node): Int =
+            copy.word and ((Mask_Passibility or ((1 shl Volatile_BitOffs.toInt()).toByte()) or (Mask_Gravitation shl Gravitation_BitOffs)).toInt()) or (Mask_512 shl Index_BitOffs.toInt() or (1 shl LengthDirty_BitOffs.toInt()))
 
-        fun squareDelta(left: Node?, right: Node?): Int {
-            return squareDelta(left, right!!.key)
-        }
+        fun squareDelta(left: Node?, right: Node?): Int = squareDelta(left, right!!.key)
 
         fun squareDelta(left: Node?, rightCoords: Vec3i?): Int {
             val leftCoords = left!!.key
@@ -292,8 +284,6 @@ class Node : INode {
          *
          * @return If an entity can go from this node to that node without any horrible risk changes.
          */
-        fun passible(node: Node?): Boolean {
-            return node != null && node.passibility().betterThan(Passibility.impassible)
-        }
+        fun passible(node: Node?): Boolean = node != null && node.passibility().betterThan(Passibility.impassible)
     }
 }

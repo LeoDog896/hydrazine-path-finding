@@ -28,7 +28,7 @@ class SortedNodeQueue {
     /**
      * Adds a node to this sorted queue/
      *
-     * @param node The [Node] to add to this list
+     * @param point The [Node] to add to this list
      *
      * @return If adding this node was successful
      *
@@ -91,8 +91,7 @@ class SortedNodeQueue {
                 head.length(length)
                 head.index(i.previousIndex())
             } else {
-                val root: Node?
-                root = if (path.isEmpty()) head else path.pop()
+                val root: Node? = if (path.isEmpty()) head else path.pop()
                 if (head === point || head!!.key.subOf(point.key).dot(dd) <= 0) {
                     head.dirty(true)
                     while (!path.isEmpty()) path.pop()!!.dirty(true)
@@ -244,22 +243,21 @@ class SortedNodeQueue {
         originalPoint.index(mutableIndex)
     }
 
-    fun appendTo(point: Node, parent: Node?, targetPoint: Vec3i?): Boolean {
-        return appendTo(
+    fun appendTo(point: Node, parent: Node, targetPoint: Vec3i?): Boolean =
+        appendTo(
             point, parent, sqrt(Node.squareDelta(point, targetPoint).toDouble())
                 .toInt()
         )
-    }
 
-    fun appendTo(point: Node, parent: Node?, remaining: Int): Boolean {
+    fun appendTo(point: Node, parent: Node, remaining: Int): Boolean {
         val squareDelta: Int = Node.squareDelta(parent, point)
         val length = point.length()
-        if (!point.assigned() || parent!!.length() + squareDelta < length * length && !point.passibility().betterThan(
+        if (!point.assigned() || parent.length() + squareDelta < length * length && !point.passibility().betterThan(
                 parent.passibility()
             )
         ) {
             val distance0 = point.journey()
-            if (point.appendTo(parent, Math.sqrt(squareDelta.toDouble()).toInt(), remaining)) return resort(
+            if (point.appendTo(parent, sqrt(squareDelta.toDouble()).toInt(), remaining)) return resort(
                 point,
                 distance0
             ) else point.orphan()
@@ -267,8 +265,8 @@ class SortedNodeQueue {
         return false
     }
 
-    fun addLength(point: Node?, diff: Int): Boolean {
-        val journey0 = point!!.journey()
+    fun addLength(point: Node, diff: Int): Boolean {
+        val journey0 = point.journey()
         point.addLength(diff)
         return resort(point, journey0)
     }
@@ -282,22 +280,14 @@ class SortedNodeQueue {
         return false
     }
 
-    fun size(): Int {
-        return list.size
-    }
+    fun size(): Int = list.size
 
     fun roots(): Set<Node?> {
-        val roots: MutableSet<Node?> = HashSet(1)
-        for (node in list) {
-            val root = node!!.root()
-            roots.add(root)
-        }
+        val roots: MutableSet<Node?> = list.mapTo(HashSet(1)) { it!!.root() }
         return roots
     }
 
-    override fun toString(): String {
-        return list.toString()
-    }
+    override fun toString(): String = list.toString()
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
@@ -306,9 +296,7 @@ class SortedNodeQueue {
         return list == that.list
     }
 
-    override fun hashCode(): Int {
-        return list.hashCode()
-    }
+    override fun hashCode(): Int = list.hashCode()
 
     companion object {
         private const val CULL_THRESHOLD = 0.1f

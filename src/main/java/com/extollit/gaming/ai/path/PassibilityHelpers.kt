@@ -54,11 +54,7 @@ internal object PassibilityHelpers {
         return if (Element.air.flagsIn(flags)) Gravitation.airborne else Gravitation.grounded
     }
 
-    private fun passibleDoorway(flags: Byte, capabilities: IPathingEntity.Capabilities?): Boolean {
-        return Logic.doorway.flagsIn(flags) && capabilities!!.opensDoors() && !capabilities.avoidsDoorways()
-    }
+    private fun passibleDoorway(flags: Byte, capabilities: IPathingEntity.Capabilities?): Boolean = Logic.doorway.flagsIn(flags) && capabilities!!.opensDoors() && !capabilities.avoidsDoorways()
 
-    private fun impassibleDoorway(flags: Byte, capabilities: IPathingEntity.Capabilities?): Boolean {
-        return Logic.doorway.flagsIn(flags) && capabilities!!.avoidsDoorways()
-    }
+    private fun impassibleDoorway(flags: Byte, capabilities: IPathingEntity.Capabilities?): Boolean = Logic.doorway.flagsIn(flags) && capabilities!!.avoidsDoorways()
 }
