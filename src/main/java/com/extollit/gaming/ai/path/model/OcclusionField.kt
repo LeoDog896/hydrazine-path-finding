@@ -45,14 +45,12 @@ open class OcclusionField : IOcclusionProvider {
     private var words: LongArray? = null
     private var singleton: Byte = 0
     private var areaInit: Short = 0
-    fun areaInitFull(): Boolean {
-        return areaInit == FULLY_AREA_INIT
-    }
 
-    fun areaInitAt(direction: AreaInit): Boolean {
-        return direction.`in`(areaInit)
-    }
+    fun areaInitFull(): Boolean = areaInit == FULLY_AREA_INIT
 
+    fun areaInitAt(direction: AreaInit): Boolean = direction.`in`(areaInit)
+
+    // TODO document what is this?
     fun loadFrom(columnarSpace: IColumnarSpace, cx: Int, cy: Int, cz: Int) {
         singleton = 0
         words = LongArray(DIMENSION_SQUARE_SIZE * DIMENSION_SIZE * ELEMENT_LENGTH / WORD_LENGTH)
@@ -97,14 +95,13 @@ open class OcclusionField : IOcclusionProvider {
     }
 
     private fun fenceOrDoorLike(flags: Byte): Boolean {
-        return Element.earth.`in`(flags) && Logic.fuzzy.`in`(flags) || Logic.doorway.`in`(flags)
+        return Element.earth.flagsIn(flags) && Logic.fuzzy.`in`(flags) || Logic.doorway.`in`(flags)
     }
 
     private fun decompress() {
         val word = singletonWord()
         words = LongArray(DIMENSION_SQUARE_SIZE * DIMENSION_SIZE * ELEMENT_LENGTH / WORD_LENGTH)
-        val words = words
-        Arrays.fill(words, word)
+        words?.let { Arrays.fill(words!!, word) }
         singleton = 0
     }
 
@@ -227,7 +224,7 @@ open class OcclusionField : IOcclusionProvider {
                     val xx = x + b
                     val flags: Byte
                     flags = if (words != null) (word and ELEMENT_MASK).toByte() else singleton
-                    val fenceLike = Element.earth.`in`(flags) && Logic.fuzzy.`in`(flags)
+                    val fenceLike = Element.earth.flagsIn(flags) && Logic.fuzzy.`in`(flags)
                     val doorLike = Logic.doorway.`in`(flags)
                     if (fenceLike || doorLike) {
                         val block = columnarSpace!!.blockAt(xx, y, z)
@@ -499,7 +496,7 @@ open class OcclusionField : IOcclusionProvider {
         if (!centerBlock!!.isImpeding) {
             if (downFenceOrDoorLike && !centerFenceOrDoorLike && downBlock!!.isFenceLike || !handlingFenceTops && !downFenceOrDoorLike && centerFenceOrDoorLike && !centerBlock.isFenceLike ||
                 downFenceOrDoorLike && centerFenceOrDoorLike &&
-                (Logic.doorway.`in`(downFlags) && downBlock!!.isFenceLike && downBlock.isDoor && (Element.earth.`in`(
+                (Logic.doorway.`in`(downFlags) && downBlock!!.isFenceLike && downBlock.isDoor && (Element.earth.flagsIn(
                     downFlags
                 ) || !(centerBlock.isDoor && centerBlock.isFenceLike))
                         ||
@@ -731,7 +728,7 @@ open class OcclusionField : IOcclusionProvider {
             flags or Element.air.mask else if (block.isIncinerating) flags = flags or Element.fire.mask else flags =
             flags or Element.earth.mask
         if (doorway) flags = Logic.doorway.to(flags) else if (block.isClimbable) flags =
-            Logic.ladder.to(flags) else if (Element.earth.`in`(flags) && !block.isFullyBounded) flags =
+            Logic.ladder.to(flags) else if (Element.earth.flagsIn(flags) && !block.isFullyBounded) flags =
             Logic.fuzzy.to(flags)
         return flags
     }
@@ -752,7 +749,7 @@ open class OcclusionField : IOcclusionProvider {
         private const val ELEMENT_MASK = ((1 shl ELEMENT_LENGTH.toInt()) - 1).toLong()
         private const val FULLY_AREA_INIT: Short = 0x3FF
         fun fuzzyOpenIn(element: Byte): Boolean {
-            return Element.air.`in`(element) || Element.earth.`in`(element) && Logic.fuzzy.`in`(element)
+            return Element.air.flagsIn(element) || Element.earth.flagsIn(element) && Logic.fuzzy.`in`(element)
         }
 
         fun visualizeAt(provider: IOcclusionProvider, dy: Int, x0: Int, z0: Int, xN: Int, zN: Int): String {

@@ -7,23 +7,21 @@ import com.extollit.linalg.immutable.Vec3i
 import com.extollit.num.FloatRange
 import java.text.MessageFormat
 import java.util.*
+import kotlin.math.ceil
+import kotlin.math.floor
 
-class PathObject protected constructor(
+class PathObject protected @JvmOverloads constructor(
     val speed: Float,
-    val random: Random?,
-    vararg nodes: Node?
+    val random: Random = Random(),
+    @kotlin.jvm.JvmField vararg val nodes: Node
 ) : IPath {
-    @kotlin.jvm.JvmField
-    val nodes: Array<Node> = nodes as Array<Node>
     @kotlin.jvm.JvmField
     var index = 0
     private var taxiUntil = 0
     private var adjacentIndex = 0
-    private var length: Int
+    private var length: Int = nodes.size
     private var nextDirectLineTimeout: Float = DIRECT_LINE_TIME_LIMIT!!.next(random)
     private var lastMutationTime = -1f
-
-    internal constructor(speed: Float, vararg nodes: Node?) : this(speed, Random(), *nodes)
 
     override fun truncateTo(length: Int) {
         if (length < 0 || length >= nodes.size) throw ArrayIndexOutOfBoundsException(
@@ -265,7 +263,7 @@ class PathObject protected constructor(
     }
 
     private fun unlevelIndex(from: Int, position: Vec3d?): Int {
-        val y0 = Math.floor(position!!.y).toInt()
+        val y0 = floor(position!!.y).toInt()
         val nodes = nodes
         var levelIndex = length()
         for (i in from until length()) {
@@ -358,7 +356,7 @@ class PathObject protected constructor(
             DIRECT_LINE_TIME_LIMIT = configModel.directLineTimeLimit()
         }
 
-        fun fromHead(speed: Float, random: Random?, head: Node): IPath {
+        fun fromHead(speed: Float, random: Random = Random(), head: Node): IPath {
             var i = 1
             run {
                 var p: Node? = head
@@ -380,12 +378,10 @@ class PathObject protected constructor(
                 PathObject(speed, random, *result)
         }
 
-        @kotlin.jvm.JvmStatic
-        fun active(path: IPath?): Boolean {
-            return path != null && !path.done()
-        }
+        @JvmStatic
+        fun active(path: IPath?): Boolean = path != null && !path.done()
 
-        @kotlin.jvm.JvmStatic
+        @JvmStatic
         fun positionFor(subject: IPathingEntity, point: Vec3i?): Vec3d {
             val offset = pointToPositionOffset(subject.width())
             return Vec3d(
@@ -396,13 +392,8 @@ class PathObject protected constructor(
         }
 
         private fun pointToPositionOffset(subjectWidth: Float): Float {
-            val dw = Math.ceil(subjectWidth.toDouble()).toFloat() / 2
-            return dw - Math.floor(dw.toDouble()).toInt()
+            val dw = ceil(subjectWidth.toDouble()).toFloat() / 2
+            return dw - floor(dw.toDouble()).toInt()
         }
-    }
-
-    init {
-        // TODO NULL AAAAA
-        length = nodes.size
     }
 }

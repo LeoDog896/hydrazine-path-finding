@@ -189,20 +189,20 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
 
         assertTrue(main.areaInitAt(OcclusionField.AreaInit.up));
 
-        assertTrue(Element.earth.in(wall[0]));
-        assertTrue(Element.earth.in(wall[1]));
+        assertTrue(Element.earth.flagsIn(wall[0]));
+        assertTrue(Element.earth.flagsIn(wall[1]));
         assertTrue(Logic.fuzzy.in(wall[0]));
         assertTrue(Logic.fuzzy.in(wall[1]));
-        assertFalse(Element.earth.in(areaOcclusionProvider.elementAt(5, 62, 5)));
-        assertFalse(Element.earth.in(areaOcclusionProvider.elementAt(5, 65, 5)));
-        assertFalse(Element.earth.in(areaOcclusionProvider.elementAt(5 + 1, 63, 5)));
-        assertFalse(Element.earth.in(areaOcclusionProvider.elementAt(5 - 1, 63, 5)));
-        assertFalse(Element.earth.in(areaOcclusionProvider.elementAt(5, 63, 5 + 1)));
-        assertFalse(Element.earth.in(areaOcclusionProvider.elementAt(5, 63, 5 - 1)));
-        assertFalse(Element.earth.in(areaOcclusionProvider.elementAt(5 + 1, 64, 5)));
-        assertFalse(Element.earth.in(areaOcclusionProvider.elementAt(5 - 1, 64, 5)));
-        assertFalse(Element.earth.in(areaOcclusionProvider.elementAt(5, 64, 5 + 1)));
-        assertFalse(Element.earth.in(areaOcclusionProvider.elementAt(5, 64, 5 - 1)));
+        assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5, 62, 5)));
+        assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5, 65, 5)));
+        assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5 + 1, 63, 5)));
+        assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5 - 1, 63, 5)));
+        assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5, 63, 5 + 1)));
+        assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5, 63, 5 - 1)));
+        assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5 + 1, 64, 5)));
+        assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5 - 1, 64, 5)));
+        assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5, 64, 5 + 1)));
+        assertFalse(Element.earth.flagsIn(areaOcclusionProvider.elementAt(5, 64, 5 - 1)));
     }
 
     @Test
@@ -218,7 +218,7 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
         main.loadFrom(centerSpace, 0, 3, 0);
 
         final byte flags = areaOcclusionProvider.elementAt(5, 64, 5);
-        assertTrue(Element.earth.in(flags) && Logic.fuzzy.in(flags));
+        assertTrue(Element.earth.flagsIn(flags) && Logic.fuzzy.in(flags));
     }
 
     @Test
@@ -277,7 +277,7 @@ public class AreaInitOcclusionFieldTests extends AbstractAreaInitOcclusionFieldT
         main.loadFrom(columnarSpace, 0, 0, 0);
 
         final byte lava = main.elementAt(1, 1, 1);
-        assertTrue(Element.fire.in(lava));
+        assertTrue(Element.fire.flagsIn(lava));
         assertFalse(Logic.fuzzy.in(lava));
     }
 }

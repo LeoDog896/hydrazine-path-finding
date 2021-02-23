@@ -19,7 +19,7 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
     public void control() {
         occlusionField.loadFrom(centerSpace,  0, 0, 0);
 
-        assertTrue(Element.air.in(occlusionField.elementAt(1, 2, 3)));
+        assertTrue(Element.air.flagsIn(occlusionField.elementAt(1, 2, 3)));
     }
 
     @Test
@@ -60,9 +60,9 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 for (int x = 0; x < 16; ++x) {
                     final byte element = occlusionField.elementAt(x, y, z);
                     if (x <= 7)
-                        assertFalse(Element.air.in(element));
+                        assertFalse(Element.air.flagsIn(element));
                     else
-                        assertTrue(Element.air.in(element));
+                        assertTrue(Element.air.flagsIn(element));
                 }
     }
 
@@ -77,9 +77,9 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 for (int x = 0; x < 16; ++x) {
                     final byte element = occlusionField.elementAt(x, y, z);
                     if (y <= 7)
-                        assertFalse(Element.air.in(element));
+                        assertFalse(Element.air.flagsIn(element));
                     else
-                        assertTrue(Element.air.in(element));
+                        assertTrue(Element.air.flagsIn(element));
                 }
     }
 
@@ -93,9 +93,9 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 for (int x = 0; x < 16; ++x) {
                     final byte element = occlusionField.elementAt(x, y, z);
                     if (z <= 7)
-                        assertFalse(Element.air.in(element));
+                        assertFalse(Element.air.flagsIn(element));
                     else
-                        assertTrue(Element.air.in(element));
+                        assertTrue(Element.air.flagsIn(element));
                 }
     }
 
@@ -105,7 +105,7 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
         occlusionField.loadFrom(centerSpace,  0, 0, 0);
         occlusionField.set(centerSpace, 3, 9, 2, lava);
         final byte element = this.occlusionField.elementAt(3, 9, 2);
-        assertTrue(Element.fire.in(element));
+        assertTrue(Element.fire.flagsIn(element));
     }
 
     @Test
@@ -117,17 +117,17 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 occlusionField.elementAt(5, 5, 5),
                 occlusionField.elementAt(5, 6, 5),
         };
-        assertTrue(Element.earth.in(wall[0]));
-        assertTrue(Element.earth.in(wall[1]));
+        assertTrue(Element.earth.flagsIn(wall[0]));
+        assertTrue(Element.earth.flagsIn(wall[1]));
         assertTrue(Logic.fuzzy.in(wall[0]));
         assertTrue(Logic.fuzzy.in(wall[1]));
-        assertFalse(Element.earth.in(occlusionField.elementAt(5, 4, 5)));
-        assertFalse(Element.earth.in(occlusionField.elementAt(5, 7, 5)));
+        assertFalse(Element.earth.flagsIn(occlusionField.elementAt(5, 4, 5)));
+        assertFalse(Element.earth.flagsIn(occlusionField.elementAt(5, 7, 5)));
         for (int y = 5; y <= 6; ++y) {
-            assertFalse(Element.earth.in(occlusionField.elementAt(5 + 1, y, 5)));
-            assertFalse(Element.earth.in(occlusionField.elementAt(5 - 1, y, 5)));
-            assertFalse(Element.earth.in(occlusionField.elementAt(5, y, 5 + 1)));
-            assertFalse(Element.earth.in(occlusionField.elementAt(5, y, 5 - 1)));
+            assertFalse(Element.earth.flagsIn(occlusionField.elementAt(5 + 1, y, 5)));
+            assertFalse(Element.earth.flagsIn(occlusionField.elementAt(5 - 1, y, 5)));
+            assertFalse(Element.earth.flagsIn(occlusionField.elementAt(5, y, 5 + 1)));
+            assertFalse(Element.earth.flagsIn(occlusionField.elementAt(5, y, 5 - 1)));
         }
     }
 
@@ -142,8 +142,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.earth.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
         assertTrue(Logic.doorway.in(bottom));
         assertTrue(Logic.doorway.in(top));
     }
@@ -156,8 +156,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.earth.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
         assertTrue(Logic.doorway.in(bottom));
         assertTrue(Logic.doorway.in(top));
 
@@ -167,8 +167,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
         top = occlusionField.elementAt(5, 6, 5);
         bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.air.in(bottom));
-        assertTrue(Element.air.in(top));
+        assertTrue(Element.air.flagsIn(bottom));
+        assertTrue(Element.air.flagsIn(top));
         assertTrue(Logic.nothing.in(bottom));
         assertTrue(Logic.nothing.in(top));
     }
@@ -182,8 +182,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.earth.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
         assertTrue(Logic.doorway.in(bottom));
         assertTrue(Logic.doorway.in(top));
 
@@ -193,8 +193,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
         top = occlusionField.elementAt(5, 6, 5);
         bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.air.in(bottom));
-        assertTrue(Element.air.in(top));
+        assertTrue(Element.air.flagsIn(bottom));
+        assertTrue(Element.air.flagsIn(top));
         assertTrue(Logic.doorway.in(bottom));
         assertTrue(Logic.doorway.in(top));
     }
@@ -208,8 +208,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.air.in(bottom));
-        assertTrue(Element.air.in(top));
+        assertTrue(Element.air.flagsIn(bottom));
+        assertTrue(Element.air.flagsIn(top));
         assertTrue(Logic.doorway.in(bottom));
         assertTrue(Logic.doorway.in(top));
 
@@ -219,8 +219,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
         top = occlusionField.elementAt(5, 6, 5);
         bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.earth.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
         assertTrue(Logic.doorway.in(bottom));
         assertTrue(Logic.doorway.in(top));
     }
@@ -233,7 +233,7 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
         when(centerSpace.blockAt(5, 6, 5)).thenReturn(stone);
         occlusionField.set(centerSpace, 5, 6, 5, stone);
 
-        assertTrue(Element.earth.in(occlusionField.elementAt(5, 6, 5)));
+        assertTrue(Element.earth.flagsIn(occlusionField.elementAt(5, 6, 5)));
 
         fenceGate.open = true;
         occlusionField.set(centerSpace, 5, 5, 5, fenceGate);
@@ -242,8 +242,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.air.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.air.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
         assertTrue(Logic.doorway.in(bottom));
         assertTrue(Logic.nothing.in(top));
     }
@@ -256,7 +256,7 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
         when(centerSpace.blockAt(5, 6, 5)).thenReturn(stone);
         occlusionField.set(centerSpace, 5, 6, 5, stone);
 
-        assertTrue(Element.earth.in(occlusionField.elementAt(5, 6, 5)));
+        assertTrue(Element.earth.flagsIn(occlusionField.elementAt(5, 6, 5)));
 
         fenceGate.open = false;
         occlusionField.set(centerSpace, 5, 5, 5, fenceGate);
@@ -265,8 +265,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.earth.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
         assertTrue(Logic.doorway.in(bottom));
         assertTrue(Logic.nothing.in(top));
     }
@@ -286,8 +286,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.air.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.air.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
         assertTrue(Logic.nothing.in(bottom));
         assertTrue(Logic.nothing.in(top));
     }
@@ -306,8 +306,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.earth.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
         assertTrue(Logic.doorway.in(bottom));
         assertTrue(Logic.nothing.in(top));
     }
@@ -324,8 +324,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.earth.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
         assertTrue(Logic.fuzzy.in(bottom));
         assertTrue(Logic.fuzzy.in(top));
     }
@@ -342,8 +342,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.earth.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
         assertTrue(Logic.doorway.in(bottom));
         assertTrue(Logic.doorway.in(top));
     }
@@ -357,16 +357,16 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.earth.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
 
         occlusionField.set(centerSpace, 5, 6, 5, torch);
 
         top = occlusionField.elementAt(5, 6, 5);
         bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.earth.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
     }
 
     @Test
@@ -379,16 +379,16 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.earth.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
 
         occlusionField.set(centerSpace, 5, 6, 5, air);
 
         top = occlusionField.elementAt(5, 6, 5);
         bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(bottom));
-        assertTrue(Element.earth.in(top));
+        assertTrue(Element.earth.flagsIn(bottom));
+        assertTrue(Element.earth.flagsIn(top));
     }
 
     @Test
@@ -417,8 +417,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(top));
-        assertFalse(Element.earth.in(bottom));
+        assertTrue(Element.earth.flagsIn(top));
+        assertFalse(Element.earth.flagsIn(bottom));
 
         topGate.open = true;
         occlusionField.set(centerSpace, 5, 6, 5, topGate);
@@ -426,8 +426,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
         top = occlusionField.elementAt(5, 6, 5);
         bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertFalse(Element.earth.in(top));
-        assertFalse(Element.earth.in(bottom));
+        assertFalse(Element.earth.flagsIn(top));
+        assertFalse(Element.earth.flagsIn(bottom));
     }
 
     @Test
@@ -455,8 +455,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(top));
-        assertTrue(Element.earth.in(bottom));
+        assertTrue(Element.earth.flagsIn(top));
+        assertTrue(Element.earth.flagsIn(bottom));
 
         topGate.open = false;
         occlusionField.set(centerSpace, 5, 6, 5, topGate);
@@ -464,8 +464,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
         top = occlusionField.elementAt(5, 6, 5);
         bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(top));
-        assertTrue(Element.earth.in(bottom));
+        assertTrue(Element.earth.flagsIn(top));
+        assertTrue(Element.earth.flagsIn(bottom));
     }
 
 
@@ -495,8 +495,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(top));
-        assertTrue(Element.earth.in(bottom));
+        assertTrue(Element.earth.flagsIn(top));
+        assertTrue(Element.earth.flagsIn(bottom));
 
         topGate.open = false;
         occlusionField.set(centerSpace, 5, 6, 5, topGate);
@@ -504,8 +504,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
         top = occlusionField.elementAt(5, 6, 5);
         bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.earth.in(top));
-        assertTrue(Element.earth.in(bottom));
+        assertTrue(Element.earth.flagsIn(top));
+        assertTrue(Element.earth.flagsIn(bottom));
     }
 
     @Test
@@ -535,8 +535,8 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
                 top = occlusionField.elementAt(5, 6, 5),
                 bottom = occlusionField.elementAt(5, 5, 5);
 
-        assertTrue(Element.air.in(top));
-        assertTrue(Element.air.in(bottom));
+        assertTrue(Element.air.flagsIn(top));
+        assertTrue(Element.air.flagsIn(bottom));
     }
 
     @Test
@@ -566,6 +566,6 @@ public class OcclusionFieldTests extends AbstractOcclusionFieldTesting {
 
         occlusionField.set(centerSpace, 2, 9, 6, new SolidIncinerating());
         final byte element = occlusionField.elementAt(2, 9, 6);
-        assertTrue(Element.fire.in(element));
+        assertTrue(Element.fire.flagsIn(element));
     }
 }

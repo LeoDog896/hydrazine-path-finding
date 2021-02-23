@@ -27,7 +27,5 @@ enum class Gravitation {
      * @param other the other gravitation rating to compare with this one
      * @return the more restrictive gravitation between this and the parameter
      */
-    fun between(other: Gravitation?): Gravitation {
-        return values()[ordinal.coerceAtMost(other!!.ordinal)]
-    }
+    fun between(other: Gravitation?): Gravitation = values()[ordinal.coerceAtMost(other!!.ordinal)]
 }

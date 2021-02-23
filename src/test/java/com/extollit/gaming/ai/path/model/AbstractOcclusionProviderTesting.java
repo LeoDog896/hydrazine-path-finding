@@ -21,8 +21,8 @@ public class AbstractOcclusionProviderTesting {
         assertTrue(Logic.doorway.in(top));
         assertTrue(Logic.doorway.in(bottom));
         final Element expectedElement = open ? Element.air : Element.earth;
-        assertTrue(expectedElement.in(top));
-        assertTrue(expectedElement.in(bottom));
+        assertTrue(expectedElement.flagsIn(top));
+        assertTrue(expectedElement.flagsIn(bottom));
     }
 
     @Before

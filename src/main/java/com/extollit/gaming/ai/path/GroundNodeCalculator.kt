@@ -140,7 +140,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
     }
 
     private fun swimable(flags: Byte): Boolean {
-        return capabilities!!.swimmer() && swimmingRequiredFor(flags) && (Element.water.`in`(
+        return capabilities!!.swimmer() && swimmingRequiredFor(flags) && (Element.water.flagsIn(
             flags
         ) || capabilities!!.fireResistant())
     }
@@ -162,7 +162,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
         }
 
         private fun unstable(flags: Byte): Boolean {
-            return !Element.earth.`in`(flags) || Logic.ladder.`in`(flags)
+            return !Element.earth.flagsIn(flags) || Logic.ladder.`in`(flags)
         }
     }
 }

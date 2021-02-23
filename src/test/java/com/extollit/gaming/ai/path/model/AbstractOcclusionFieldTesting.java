@@ -33,11 +33,11 @@ public class AbstractOcclusionFieldTesting extends AbstractOcclusionProviderTest
                 north = this.occlusionField.elementAt(x, y, z - 1),
                 south = this.occlusionField.elementAt(x, y, z + 1);
 
-        assertTrue(test.in(element));
-        assertTrue(westElem.in(west));
-        assertTrue(eastElem.in(east));
-        assertTrue(northElem.in(north));
-        assertTrue(southElem.in(south));
+        assertTrue(test.flagsIn(element));
+        assertTrue(westElem.flagsIn(west));
+        assertTrue(eastElem.flagsIn(east));
+        assertTrue(northElem.flagsIn(north));
+        assertTrue(southElem.flagsIn(south));
     }
 
     protected void fenceGate(boolean open, final int x, final int y, final int z) {

@@ -6,22 +6,22 @@ import com.extollit.gaming.ai.path.model.*
 
 internal object PassibilityHelpers {
     fun impedesMovement(flags: Byte, capabilities: IPathingEntity.Capabilities?): Boolean {
-        return (Element.earth.`in`(flags) && !passibleDoorway(flags, capabilities) && !Logic.ladder.`in`(flags)
-                || Element.air.`in`(flags) && impassibleDoorway(flags, capabilities))
+        return (Element.earth.flagsIn(flags) && !passibleDoorway(flags, capabilities) && !Logic.ladder.`in`(flags)
+                || Element.air.flagsIn(flags) && impassibleDoorway(flags, capabilities))
     }
 
     @kotlin.jvm.JvmStatic
     fun clearance(flags: Byte, capabilities: IPathingEntity.Capabilities?): Passibility {
-        return if (Element.earth.`in`(flags)) if (Logic.ladder.`in`(flags) || passibleDoorway(
+        return if (Element.earth.flagsIn(flags)) if (Logic.ladder.`in`(flags) || passibleDoorway(
                 flags,
                 capabilities
             )
-        ) Passibility.passible else if (Logic.fuzzy.`in`(flags)) Passibility.risky else Passibility.impassible else if (Element.water.`in`(
+        ) Passibility.passible else if (Logic.fuzzy.`in`(flags)) Passibility.risky else Passibility.impassible else if (Element.water.flagsIn(
                 flags
             )
         ) {
             if (capabilities!!.fireResistant()) Passibility.dangerous else if (capabilities.aquatic() && capabilities.swimmer()) Passibility.passible else Passibility.risky
-        } else if (Element.fire.`in`(flags)) if (capabilities!!.fireResistant()) Passibility.risky else Passibility.dangerous else if (impassibleDoorway(
+        } else if (Element.fire.flagsIn(flags)) if (capabilities!!.fireResistant()) Passibility.risky else Passibility.dangerous else if (impassibleDoorway(
                 flags,
                 capabilities
             )
@@ -49,9 +49,9 @@ internal object PassibilityHelpers {
     }
 
     fun gravitationFrom(flags: Byte): Gravitation {
-        if (Element.earth.`in`(flags)) return Gravitation.grounded
-        if (Element.water.`in`(flags)) return Gravitation.buoyant
-        return if (Element.air.`in`(flags)) Gravitation.airborne else Gravitation.grounded
+        if (Element.earth.flagsIn(flags)) return Gravitation.grounded
+        if (Element.water.flagsIn(flags)) return Gravitation.buoyant
+        return if (Element.air.flagsIn(flags)) Gravitation.airborne else Gravitation.grounded
     }
 
     private fun passibleDoorway(flags: Byte, capabilities: IPathingEntity.Capabilities?): Boolean {

@@ -79,9 +79,7 @@ class NodeMap(
         }
     }
 
-    fun all(): Collection<Node?> {
-        return internalMap.values
-    }
+    fun all(): Collection<Node?> = internalMap.values
 
     fun cullOutside(x0: Int, z0: Int, xN: Int, zN: Int) {
         for (p in internalMap.cullOutside(
@@ -150,9 +148,7 @@ class NodeMap(
         return node
     }
 
-    fun remove(x: Int, y: Int, z: Int): Boolean {
-        return remove(Vec3i(x, y, z))
-    }
+    fun remove(x: Int, y: Int, z: Int): Boolean = remove(Vec3i(x, y, z))
 
     fun remove(coordinates: Vec3i?): Boolean {
         val existing = internalMap.remove(coordinates)

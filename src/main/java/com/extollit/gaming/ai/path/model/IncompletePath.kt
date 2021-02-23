@@ -3,9 +3,8 @@ package com.extollit.gaming.ai.path.model
 import com.extollit.collect.Option
 
 class IncompletePath(val node: INode) : IPath {
-    override fun truncateTo(length: Int) {
+    override fun truncateTo(length: Int) =
         throw ArrayIndexOutOfBoundsException("Cannot truncate incomplete paths")
-    }
 
     override fun untruncate() {}
 

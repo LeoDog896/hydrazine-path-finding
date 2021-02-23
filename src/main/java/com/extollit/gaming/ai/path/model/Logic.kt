@@ -86,7 +86,7 @@ enum class Logic {
          */
         @kotlin.jvm.JvmStatic
         fun climbable(flags: Byte): Boolean {
-            return ladder.`in`(flags) && Element.earth.`in`(flags)
+            return ladder.`in`(flags) && Element.earth.flagsIn(flags)
         }
     }
 

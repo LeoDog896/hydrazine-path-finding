@@ -74,9 +74,7 @@ enum class Element {
      *
      * @return true if the lower two bits map to this element
      */
-    fun `in`(flags: Byte): Boolean {
-        return flags and MASK == mask
-    }
+    fun flagsIn(flags: Byte): Boolean = flags and MASK == mask
 
     /**
      * Helper function for setting the lower two bits of the specified nibble to represent this element.  The nibble
@@ -85,9 +83,7 @@ enum class Element {
      * @param flags A four-bit nibble that will be modified to represent this element
      * @return the passed-in flags modified to represent this element
      */
-    fun to(flags: Byte): Byte {
-        return (flags and MASK.inv() or mask)
-    }
+    fun to(flags: Byte): Byte = flags and MASK.inv() or mask
 
     companion object {
         // TODO ?? figure out these magic values.
@@ -101,8 +97,7 @@ enum class Element {
          *
          * @return the element represented by the nibble
          */
-        fun of(flags: Byte): Element {
-            return values()[(flags and MASK).toInt()]
-        }
+        fun of(flags: Byte): Element =
+            values()[(flags and MASK).toInt()]
     }
 }

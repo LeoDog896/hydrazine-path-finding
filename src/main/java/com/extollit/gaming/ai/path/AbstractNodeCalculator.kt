@@ -45,9 +45,9 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
     }
 
     private fun bottomOffsetAt(flags: Byte, x: Int, y: Int, z: Int): Float {
-        if (Element.air.`in`(flags)
+        if (Element.air.flagsIn(flags)
             || Logic.climbable(flags)
-            || Element.earth.`in`(flags) && Logic.nothing.`in`(flags) || swimmingRequiredFor(flags)
+            || Element.earth.flagsIn(flags) && Logic.nothing.`in`(flags) || swimmingRequiredFor(flags)
         ) return 0f
         val block = instanceSpace.blockObjectAt(x, y, z)
         return if (!block.isImpeding) 0f else block.bounds().min.y.toFloat()
@@ -62,14 +62,14 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
     }
 
     protected fun topOffsetAt(flags: Byte, x: Int, y: Int, z: Int): Float {
-        if (Element.air.`in`(flags)
+        if (Element.air.flagsIn(flags)
             || Logic.climbable(flags)
-            || Element.earth.`in`(flags) && Logic.nothing.`in`(flags) || Element.water.`in`(flags) && (capabilities!!.aquatic() || !capabilities!!.swimmer())
+            || Element.earth.flagsIn(flags) && Logic.nothing.`in`(flags) || Element.water.flagsIn(flags) && (capabilities!!.aquatic() || !capabilities!!.swimmer())
         ) return 0f
         if (swimmingRequiredFor(flags)) return -0.5f
         val block = instanceSpace.blockObjectAt(x, y, z)
         if (!block.isImpeding) {
-            if (Element.earth.`in`(flags)) {
+            if (Element.earth.flagsIn(flags)) {
                 val blockBelow = instanceSpace.blockObjectAt(x, y - 1, z)
                 if (!blockBelow.isFullyBounded) {
                     var offset = blockBelow.bounds().max.y.toFloat() - 2
@@ -125,7 +125,7 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
     companion object {
         @JvmStatic
         protected fun swimmingRequiredFor(flags: Byte): Boolean {
-            return Element.water.`in`(flags) || Element.fire.`in`(flags) && !Logic.fuzzy.`in`(flags)
+            return Element.water.flagsIn(flags) || Element.fire.flagsIn(flags) && !Logic.fuzzy.`in`(flags)
         }
     }
 }
