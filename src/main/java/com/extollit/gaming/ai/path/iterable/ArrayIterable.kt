@@ -2,7 +2,7 @@ package com.extollit.gaming.ai.path.iterable
 
 import java.text.MessageFormat
 
-class ArrayIterable<out T>(elements: Array<out T>) : AbstractArrayIterable<T, T>(elements) {
+class ArrayIterable<out T>(val delegate: Array<out T>) : Iterable<T> {
     override operator fun iterator(): Iterator<T> = Iter(delegate)
 
     override fun equals(other: Any?): Boolean {
@@ -16,25 +16,19 @@ class ArrayIterable<out T>(elements: Array<out T>) : AbstractArrayIterable<T, T>
 
     override fun hashCode(): Int = delegate.contentHashCode()
 
-    class Iter<T> : AbstractIter<T, T> {
-        constructor(array: Array<out T>) : super(array)
-        constructor(array: Array<out T>, len: Int) : super(array, len)
+    class Iter<T> @JvmOverloads constructor(val array: Array<out T>, val length: Int = array.size) : MutableIterator<T> {
 
-        override fun map(index: Int, input: T): T = input
-    }
-}
-
-abstract class AbstractArrayIterable<out A, out B>(val delegate: Array<out B>) : Iterable<A> {
-    abstract class AbstractIter<A, B> @JvmOverloads constructor(val array: Array<out B>, val length: Int = array.size) : MutableIterator<A> {
         private var c = 0
+
         override fun hasNext(): Boolean = c < length
 
-        override fun next(): A = map(c, array[c++])
+        override fun next(): T = map(c, array[c++])
 
-        protected abstract fun map(index: Int, input: B): A
         override fun remove() {
             throw UnsupportedOperationException()
         }
+
+        fun map(index: Int, input: T): T = input
 
         init {
             if (length > array.size || length < 0) throw ArrayIndexOutOfBoundsException(
