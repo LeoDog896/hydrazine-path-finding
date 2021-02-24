@@ -1,19 +1,19 @@
 package com.extollit.gaming.ai.path
 
 import com.extollit.gaming.ai.path.model.*
-import com.extollit.linalg.immutable.Vec3i
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import kotlin.math.roundToInt
 
 internal class FluidicNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNodeCalculator(instanceSpace),
     INodeCalculator {
-    override fun passibleNodeNear(coords0: Vec3i, origin: Vec3i?, flagSampler: FlagSampler): Node {
+    override fun passibleNodeNear(coords0: ThreeDimensionalIntVector, origin: ThreeDimensionalIntVector?, flagSampler: FlagSampler): Node {
         val point: Node
         val capabilities = capabilities
         val x0 = coords0.x
         val y0 = coords0.y
         val z0 = coords0.z
-        val d: Vec3i = if (origin != null) coords0.subOf(origin) else Vec3i.ZERO
-        val hasOrigin = d != Vec3i.ZERO
+        val d: ThreeDimensionalIntVector = if (origin != null) coords0.subOf(origin) else ThreeDimensionalIntVector.ZERO
+        val hasOrigin = d != ThreeDimensionalIntVector.ZERO
         var passibility: Passibility? = Passibility.Passible
         var gravitation: Gravitation? = Gravitation.airborne
         var minY = Int.MIN_VALUE
@@ -56,7 +56,7 @@ internal class FluidicNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNo
         if (passibility!!.impassible(capabilities)) passibility =
             Passibility.impassible else if (hasOrigin) passibility =
             originHeadClearance(flagSampler, passibility, origin!!, minY, minPartY)
-        point = Node(Vec3i(x0, minY + minPartY.roundToInt(), z0))
+        point = Node(ThreeDimensionalIntVector(x0, minY + minPartY.roundToInt(), z0))
         point.passibility(passibility)
         point.gravitation(gravitation)
         point.volatile_(flagSampler.volatility > 0)
