@@ -103,7 +103,7 @@ class NodeMap(
                 Int.MAX_VALUE,
                 zN
             )
-        )) p!!.rollback()
+        )) p.rollback()
     }
 
     fun cachedPointAt(x: Int, y: Int, z: Int): Node {

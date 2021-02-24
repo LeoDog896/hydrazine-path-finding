@@ -76,8 +76,8 @@ open class ColumnarOcclusionFieldList
     }
 
     companion object {
-        fun optionalOcclusionFieldAt(instance: IInstanceSpace?, cx: Int, cy: Int, cz: Int): OcclusionField? {
-            val columnarSpace = instance!!.columnarSpaceAt(cx, cz) ?: return null
+        fun optionalOcclusionFieldAt(instance: IInstanceSpace, cx: Int, cy: Int, cz: Int): OcclusionField? {
+            val columnarSpace = instance.columnarSpaceAt(cx, cz) ?: return null
             return columnarSpace.occlusionFields().optionalOcclusionFieldAt(cy)
         }
     }

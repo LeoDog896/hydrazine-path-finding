@@ -79,7 +79,7 @@ class NodeLinkedList(
 
         do {
             // If this iteration's [Node] is the same as the child, then this child is already in this linked list
-            if (element?.self === child) return false
+            if (element.self === child) return false
 
             // Else, move to the next element.
             last = element

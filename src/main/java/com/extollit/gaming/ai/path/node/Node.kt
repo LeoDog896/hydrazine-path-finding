@@ -20,12 +20,16 @@ class Node {
      */
     val coordinates: ThreeDimensionalIntVector
 
+    // TODO what is word?
     private var word = 0
 
     /** The previous node of this node. If this node is a root, there won't be a parent. */
     var parent: Node? = null
         private set
 
+    /**
+     * The next nodes of this node.
+     */
     private var children: NodeLinkedList? = null
 
     constructor(coordinates: ThreeDimensionalIntVector) {
@@ -98,7 +102,7 @@ class Node {
 
     fun gravitation(gravitation: Gravitation) {
         word =
-            word and (Mask_Gravitation shl Gravitation_BitOffs).toInt().inv() or (gravitation!!.ordinal shl Gravitation_BitOffs.toInt())
+            word and (Mask_Gravitation shl Gravitation_BitOffs).toInt().inv() or (gravitation.ordinal shl Gravitation_BitOffs.toInt())
     }
 
     fun length(length: Int): Boolean {
@@ -189,6 +193,9 @@ class Node {
         sterilize()
     }
 
+    /**
+     * Remove all children of this [Node]
+     */
     fun sterilize() {
         if (children != null) {
             for (child in children!!) {
@@ -274,7 +281,7 @@ class Node {
     }
 
     companion object {
-        /** Magic Bytes. No idea.  */
+        /* Magic Bytes. No idea.  */
         private const val BitWidth_512: Byte = 9
         private const val BitWidth_128: Byte = 7
         private const val Mask_Passibility = 3.toByte()
@@ -290,6 +297,8 @@ class Node {
         private const val Mask_128 = MAX_PATH_DISTANCE.toInt()
         private const val Mask_512 = (1 shl BitWidth_512.toInt()) - 1
         const val MAX_INDICES: Int = (1 shl BitWidth_512.toInt()) - 1
+
+
         private fun wordReset(copy: Node): Int =
             copy.word and ((Mask_Passibility or ((1 shl Volatile_BitOffs.toInt()).toByte()) or (Mask_Gravitation shl Gravitation_BitOffs)).toInt()) or (Mask_512 shl Index_BitOffs.toInt() or (1 shl LengthDirty_BitOffs.toInt()))
 

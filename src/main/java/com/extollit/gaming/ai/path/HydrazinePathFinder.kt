@@ -1,7 +1,9 @@
 package com.extollit.gaming.ai.path
 
 import com.extollit.gaming.ai.path.model.*
-import com.extollit.gaming.ai.path.node.*
+import com.extollit.gaming.ai.path.node.INodeCalculator
+import com.extollit.gaming.ai.path.node.Node
+import com.extollit.gaming.ai.path.node.NodeMap
 import com.extollit.gaming.ai.path.node.path.IPath
 import com.extollit.gaming.ai.path.node.path.IPathProcessor
 import com.extollit.gaming.ai.path.num.FloatingRange
@@ -397,7 +399,7 @@ class HydrazinePathFinder internal constructor(
         passiblePointPathTimeLimit = PASSIBLE_POINT_TIME_LIMIT!!.next(random)
     }
 
-    protected fun refinePassibility(sourcePoint: ThreeDimensionalIntVector): Boolean {
+    fun refinePassibility(sourcePoint: ThreeDimensionalIntVector): Boolean {
         unreachableFromSource.clear()
         if (!fuzzyPassibility(sourcePoint.x, sourcePoint.y, sourcePoint.z)) return false
         val blockObject = instanceSpace.blockObjectAt(sourcePoint.x, sourcePoint.y, sourcePoint.z)

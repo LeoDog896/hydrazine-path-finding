@@ -45,5 +45,5 @@ interface IColumnarSpace {
      *
      * @return parent instance that contains this columnar space
      */
-    fun instance(): IInstanceSpace?
+    fun instance(): IInstanceSpace
 }

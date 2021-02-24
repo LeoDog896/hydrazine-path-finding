@@ -292,9 +292,7 @@ class SortedNodeQueue {
         return false
     }
 
-    /**
-     * The size of this [SortedNodeQueue]
-     */
+    /** The size of this [SortedNodeQueue] */
     val size: Int
         get() = list.size
 

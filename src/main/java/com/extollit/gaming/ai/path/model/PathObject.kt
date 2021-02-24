@@ -14,7 +14,7 @@ import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
 
-class PathObject @JvmOverloads protected constructor(
+open class PathObject @JvmOverloads protected constructor(
     val speed: Float,
     val random: Random = Random(),
     @JvmField vararg val nodes: Node
@@ -202,9 +202,12 @@ class PathObject @JvmOverloads protected constructor(
                 val bdx0 = bdx
                 val bdy0 = bdy
                 val bdz0 = bdz
+
                 if (!(dx != 0).run { bdx = bdx xor this; bdx } && bdx0 ||
                     !(dy != 0).run { bdy = bdy xor this; bdy } && bdy0 ||
-                    !(dz != 0).run { bdz = bdz xor this; bdz } && bdz0) break else ++ii
+                    !(dz != 0).run { bdz = bdz xor this; bdz } && bdz0) break
+
+                ++ii
                 i0 = i - 1
             }
             xis[ii] = xi

@@ -615,7 +615,7 @@ open class OcclusionField : IOcclusionProvider {
         val cx = x shr DIMENSION_ORDER.toInt()
         val cy = y shr DIMENSION_ORDER.toInt()
         val cz = z shr DIMENSION_ORDER.toInt()
-        val instance = columnarSpace.instance()
+        val instance = columnarSpace.instance() ?: return
         val center: OcclusionField = ColumnarOcclusionFieldList.optionalOcclusionFieldAt(instance, cx, cy, cz)
             ?: return
         val north = ColumnarOcclusionFieldList.optionalOcclusionFieldAt(
