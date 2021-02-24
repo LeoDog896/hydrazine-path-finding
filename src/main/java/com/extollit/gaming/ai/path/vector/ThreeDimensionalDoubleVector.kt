@@ -72,17 +72,6 @@ class ThreeDimensionalDoubleVector(
         )
     }
 
-    fun plusOf(other: ThreeDimensionalDoubleVector): ThreeDimensionalDoubleVector {
-        return ThreeDimensionalDoubleVector(
-            x + other.x,
-            y + other.y,
-            z + other.z
-        )
-    }
-
-    fun plusOf(dx: Double, dy: Double, dz: Double): ThreeDimensionalDoubleVector =
-        ThreeDimensionalDoubleVector(x + dx, y + dy, z + dz)
-
     fun dot(other: ThreeDimensionalDoubleVector): Double = x * other.x + y * other.y + z * other.z
 
     fun mulOf(s: Double): ThreeDimensionalDoubleVector = mulOf(s, s, s)
@@ -152,8 +141,6 @@ class ThreeDimensionalDoubleVector(
             z * z
         )
     }
-
-    fun negated(): ThreeDimensionalDoubleVector = ThreeDimensionalDoubleVector(-x, -y, -z)
 
     fun normalized(): ThreeDimensionalDoubleVector {
         val mg = mg()

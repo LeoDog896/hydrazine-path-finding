@@ -26,39 +26,6 @@ class VertexOffset @JvmOverloads constructor(
         )
     }
 
-    fun pcross(other: VertexOffset): VertexOffset {
-        val dx = deltaY * other.deltaZ - deltaZ * other.deltaY
-        val dy = deltaZ * other.deltaX - deltaX * other.deltaZ
-        val dz = deltaX * other.deltaY - deltaY * other.deltaX
-        return VertexOffset(dx, dy, dz)
-    }
-
-    fun orthog(): VertexOffset {
-        return VertexOffset(
-            deltaY xor deltaZ,
-            deltaX xor deltaZ,
-            deltaY xor deltaX
-        )
-    }
-
-    fun sq(): VertexOffset = VertexOffset(deltaX * deltaX, deltaY * deltaY, deltaZ * deltaZ)
-
-    fun mul(offset: VertexOffset): VertexOffset {
-        return VertexOffset(
-            deltaX * offset.deltaX,
-            deltaY * offset.deltaY,
-            deltaZ * offset.deltaZ
-        )
-    }
-
-    fun sub(offset: VertexOffset): VertexOffset {
-        return VertexOffset(
-            deltaX - offset.deltaX,
-            deltaY - offset.deltaY,
-            deltaZ - offset.deltaZ
-        )
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false

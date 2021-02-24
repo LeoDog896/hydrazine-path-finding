@@ -3,8 +3,6 @@ package com.extollit.gaming.ai.path.vector
 import com.extollit.linalg.AbstractSpatialRegion
 import com.extollit.linalg.ISpatialRegion
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 
 class ThreeDimensionalIIntBox(@JvmField val min: ThreeDimensionalIntVector, @JvmField val max: ThreeDimensionalIntVector) :
     AbstractSpatialRegion(), ISpatialRegion {
@@ -32,70 +30,11 @@ class ThreeDimensionalIIntBox(@JvmField val min: ThreeDimensionalIntVector, @Jvm
         // nope.
     }
 
-    fun center(): ThreeDimensionalDoubleVector {
-        val min = min
-        val max = max
-        return ThreeDimensionalDoubleVector(
-            ((max.x + min.x).toFloat() / 2).toDouble(),
-            ((max.y + min.y).toFloat() / 2).toDouble(),
-            ((max.z + min.z).toFloat() / 2).toDouble()
-        )
-    }
-
-    fun valid(): Boolean = min.x <= max.x && min.y <= max.y && min.z <= max.z
-
     override fun contains(x: Double, y: Double, z: Double): Boolean =
         x >= min.x && x <= max.x && y >= min.y && y <= max.y && z >= min.z && z <= max.z
 
     operator fun contains(other: ThreeDimensionalIIntBox): Boolean =
         contains(other.min.x, other.min.y, other.min.z) && contains(other.max.x, other.max.y, other.max.z)
-
-    fun intersects(other: ThreeDimensionalIIntBox): Boolean {
-        return lineDeltaFactor(min.x, max.x, other.min.x, other.max.x) or
-                lineDeltaFactor(min.y, max.y, other.min.y, other.max.y) or
-                lineDeltaFactor(min.z, max.z, other.min.z, other.max.z) == 0
-    }
-
-    fun intersection(other: ThreeDimensionalIIntBox): ThreeDimensionalIIntBox {
-        return ThreeDimensionalIIntBox(
-            max(min.x, other.min.x),
-            max(min.y, other.min.y),
-            max(min.z, other.min.z),
-            min(max.x, other.max.x),
-            min(max.y, other.max.y),
-            min(max.z, other.max.z)
-        )
-    }
-
-    fun midpoint(): ThreeDimensionalIntVector {
-        return ThreeDimensionalIntVector(
-            (max.x + min.x) / 2,
-            (max.y + min.y) / 2,
-            (max.z + min.z) / 2
-        )
-    }
-
-    fun union(other: ThreeDimensionalIIntBox): ThreeDimensionalIIntBox {
-        return ThreeDimensionalIIntBox(
-            min.x.coerceAtMost(other.min.x),
-            min.y.coerceAtMost(other.min.y),
-            min.z.coerceAtMost(other.min.z),
-            max.x.coerceAtLeast(other.max.x),
-            max.y.coerceAtLeast(other.max.y),
-            max.z.coerceAtLeast(other.max.z)
-        )
-    }
-
-    fun union(x: Int, y: Int, z: Int): ThreeDimensionalIIntBox {
-        return ThreeDimensionalIIntBox(
-            min.x.coerceAtMost(x),
-            min.y.coerceAtMost(y),
-            min.z.coerceAtMost(z),
-            max.x.coerceAtLeast(x),
-            max.y.coerceAtLeast(y),
-            max.z.coerceAtLeast(z)
-        )
-    }
 
     companion object {
         private fun lineDeltaFactor(leftMin: Int, leftMax: Int, rightMin: Int, rightMax: Int): Int {

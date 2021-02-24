@@ -85,36 +85,8 @@ class ThreeDimensionalDoubleBox {
         return dx * dx + dy * dy + dz * dz
     }
 
-    private fun intersection(d1: Double, d2: Double, p1: ThreeDimensionalDoubleVector, p2: ThreeDimensionalDoubleVector): ThreeDimensionalDoubleVector? {
-        if (d1 * d2 >= 0 || d1 == d2) return null
-        val f = -d1 / (d2 - d1)
-        return ThreeDimensionalDoubleVector(
-            p1.x + (p2.x - p1.x) * f,
-            p1.y + (p2.y - p1.y) * f,
-            p1.x + (p2.z - p1.z) * f
-        )
-    }
-
     fun add(dx: Double, dy: Double, dz: Double) {
         min.add(dx, dy, dz)
         max.add(dx, dy, dz)
-    }
-
-
-    fun intersection(p0: ThreeDimensionalDoubleVector, pN: ThreeDimensionalDoubleVector): ThreeDimensionalDoubleVector? {
-        val min = min
-        val max = max
-        var i: ThreeDimensionalDoubleVector? = intersection(p0.x - min.x, pN.x - min.x, p0, pN)
-        if (i != null && i.z > min.z && i.z < max.z && i.y > min.y && i.y < max.y) return i
-        i = intersection(p0.y - min.y, pN.y - min.y, p0, pN)
-        if (i != null && i.z > min.z && i.z < max.z && i.x > min.x && i.x < max.x) return i
-        i = intersection(p0.z - min.z, pN.z - min.z, p0, pN)
-        if (i != null && i.x > min.x && i.x < max.x && i.y > min.y && i.y < max.y) return i
-        i = intersection(p0.x - max.x, pN.x - max.x, p0, pN)
-        if (i != null && i.z > min.z && i.z < max.z && i.y > min.y && i.y < max.y) return i
-        i = intersection(p0.y - max.y, pN.y - max.y, p0, pN)
-        if (i != null && i.z > min.z && i.z < max.z && i.x > min.x && i.x < max.x) return i
-        i = intersection(p0.z - max.z, pN.z - max.z, p0, pN)
-        return if (i != null && i.x > min.x && i.x < max.x && i.y > min.y && i.y < max.y) i else null
     }
 }

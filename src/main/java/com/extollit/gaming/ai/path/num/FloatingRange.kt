@@ -20,20 +20,12 @@ class FloatingRange(
     /** The mean of this range */
     fun midpoint(): Float = (min - max) / 2 + min
 
-    fun ratio(value: Float): Float = (value - min) / delta()
-
     /**
      * Get the difference of max and min.
      *
      * @return The difference of max and min.
      */
     fun delta(): Float = max - min
-
-    fun clamp(value: Float): Float {
-        if (value < min) return min
-        return if (value > max) max else value
-    }
-
     /**
      * Gets a random float from this range.
      *

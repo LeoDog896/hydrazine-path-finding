@@ -1,8 +1,6 @@
 package com.extollit.gaming.ai.path.vector
 
 import com.extollit.linalg.immutable.VertexOffset
-import kotlin.math.abs
-import kotlin.math.sqrt
 
 /**
  * Represents a position in 3D space, not meant to be per-exact but per voxel in a voxel world.
@@ -41,38 +39,6 @@ class ThreeDimensionalIntVector(
     override fun toString(): String =
         "<{0,$x,#}, {1,$y,#}, {2,$z,#}>"
 
-    fun plusOf(other: VertexOffset): ThreeDimensionalIntVector {
-        return ThreeDimensionalIntVector(
-            x + other.dx,
-            y + other.dy,
-            z + other.dz
-        )
-    }
-
-    fun subOf(other: VertexOffset): ThreeDimensionalIntVector {
-        return ThreeDimensionalIntVector(
-            x - other.dx,
-            y - other.dy,
-            z - other.dz
-        )
-    }
-
-    fun plusOf(other: ThreeDimensionalIntVector): ThreeDimensionalIntVector {
-        return ThreeDimensionalIntVector(
-            x + other.x,
-            y + other.y,
-            z + other.z
-        )
-    }
-
-    fun plusOf(delta: Int): ThreeDimensionalIntVector {
-        return ThreeDimensionalIntVector(
-            x + delta,
-            y + delta,
-            z + delta
-        )
-    }
-
     fun subOf(other: ThreeDimensionalIntVector): ThreeDimensionalIntVector {
         return ThreeDimensionalIntVector(
             x - other.x,
@@ -81,28 +47,11 @@ class ThreeDimensionalIntVector(
         )
     }
 
-    fun subOf(delta: Int): ThreeDimensionalIntVector {
-        return ThreeDimensionalIntVector(
-            x - delta,
-            y - delta,
-            z - delta
-        )
-    }
-
     fun dot(other: ThreeDimensionalIntVector): Int =
         x * other.x + y * other.y + z * other.z
 
     fun contains(x: Double, y: Double, z: Double): Boolean =
         this.x.toDouble() == x && this.y.toDouble() == y && this.z.toDouble() == z
-
-    fun magnitude(): Double =
-        sqrt((x * x + y * y + z * z).toDouble())
-
-    fun taxiTo(other: ThreeDimensionalIntVector): Int =
-        abs(other.x - x) + abs(other.y - y) + abs(other.z - z)
-
-    fun truncatedEquals(x: Double, y: Double, z: Double): Boolean =
-        this.x == x.toInt() && this.y == y.toInt() && this.z == z.toInt()
 
     companion object {
         @JvmField
