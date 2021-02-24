@@ -158,7 +158,7 @@ class SortedNodeQueue {
      *
      * @return The node at the top of the stack.
      */
-    fun top(): Node? = list[0]
+    fun top(): Node = list[0]
 
     /**
      * Removes and returns the oldest element in this stack.

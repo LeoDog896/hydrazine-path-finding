@@ -1,7 +1,5 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.collect.CollectionsExt
-
 class NodeLinkedList(
     val self: Node,
     private var next: NodeLinkedList? = null
@@ -95,5 +93,5 @@ class NodeLinkedList(
 
     override fun hashCode(): Int = self.hashCode()
 
-    override fun toString(): String = CollectionsExt.toList(this).toString()
+    override fun toString(): String = this.toList().toString()
 }

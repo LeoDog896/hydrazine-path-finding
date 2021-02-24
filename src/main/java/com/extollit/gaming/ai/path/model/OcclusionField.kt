@@ -1,6 +1,6 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.linalg.immutable.VertexOffset
+import com.extollit.gaming.ai.path.vector.VertexOffset
 import java.util.*
 import kotlin.experimental.and
 import kotlin.experimental.or
