@@ -1,6 +1,6 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.linalg.immutable.Vec3i
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import java.text.MessageFormat
 import kotlin.experimental.inv
 import kotlin.experimental.or
@@ -16,7 +16,7 @@ class Node : INode {
     /**
      * The coordinates of this node in Space.
      */
-    override val coordinates: Vec3i
+    override val coordinates: ThreeDimensionalIntVector
 
     private var word = 0
 
@@ -26,14 +26,14 @@ class Node : INode {
 
     private var children: NodeLinkedList? = null
 
-    constructor(coordinates: Vec3i) {
+    constructor(coordinates: ThreeDimensionalIntVector) {
         this.coordinates = coordinates
         unassign()
     }
 
     @JvmOverloads
     constructor(
-        key: Vec3i,
+        key: ThreeDimensionalIntVector,
         passibility: Passibility,
         volatility: Boolean = false,
         gravitation: Gravitation? = Gravitation.grounded
@@ -138,7 +138,7 @@ class Node : INode {
 
     fun assigned(): Boolean = index().toInt() != -1
 
-    fun target(targetPoint: Vec3i?): Boolean {
+    fun target(targetPoint: ThreeDimensionalIntVector?): Boolean {
         val distance = sqrt(squareDelta(this, targetPoint).toDouble())
             .toInt()
         if (distance > Mask_128) return false
@@ -283,7 +283,7 @@ class Node : INode {
 
         fun squareDelta(left: Node?, right: Node?): Int = squareDelta(left, right!!.coordinates)
 
-        fun squareDelta(left: Node?, rightCoords: Vec3i?): Int {
+        fun squareDelta(left: Node?, rightCoords: ThreeDimensionalIntVector?): Int {
             val leftCoords = left!!.coordinates
             val dx = leftCoords.x - rightCoords!!.x
             val dy = leftCoords.y - rightCoords.y

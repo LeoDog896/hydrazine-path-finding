@@ -1,6 +1,6 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.linalg.immutable.Vec3i
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.sqrt
@@ -248,7 +248,7 @@ class SortedNodeQueue {
         originalPoint.index(mutableIndex)
     }
 
-    fun appendTo(point: Node, parent: Node, targetPoint: Vec3i?): Boolean =
+    fun appendTo(point: Node, parent: Node, targetPoint: ThreeDimensionalIntVector?): Boolean =
         appendTo(
             point, parent, sqrt(Node.squareDelta(point, targetPoint).toDouble())
                 .toInt()

@@ -1,6 +1,6 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.linalg.immutable.Vec3d
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector
 
 /**
  * Abstraction for entities, this could potentially be a covariant pathing entity or an entity that a pathing
@@ -22,7 +22,7 @@ interface IDynamicMovableObject {
      *
      * @return a three-dimensional double floating-point vector of the entity's position.
      */
-    fun coordinates(): Vec3d?
+    fun coordinates(): ThreeDimensionalDoubleVector?
 
     /**
      * The width and depth of the entity along the x and z axes measured in blocks.

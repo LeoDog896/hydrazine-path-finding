@@ -1,7 +1,7 @@
 package com.extollit.gaming.ai.path
 
 import com.extollit.gaming.ai.path.model.*
-import com.extollit.linalg.immutable.Vec3i
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import kotlin.math.floor
 
 internal abstract class AbstractNodeCalculator(protected val instanceSpace: IInstanceSpace) : INodeCalculator {
@@ -21,7 +21,7 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
         sampler: FlagSampler,
         max: Int, flags: Byte,
         passibility: Passibility?,
-        delta: Vec3i,
+        delta: ThreeDimensionalIntVector,
         x: Int, y: Int, z: Int,
         partY: Float
     ): Passibility? {
@@ -82,7 +82,7 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
     protected fun originHeadClearance(
         sampler: FlagSampler,
         passibility: Passibility?,
-        origin: Vec3i,
+        origin: ThreeDimensionalIntVector,
         minY: Int,
         minPartY: Float
     ): Passibility? {

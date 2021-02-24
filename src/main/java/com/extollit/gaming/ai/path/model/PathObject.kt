@@ -2,8 +2,8 @@ package com.extollit.gaming.ai.path.model
 
 import com.extollit.collect.ArrayIterable
 import com.extollit.gaming.ai.path.IConfigModel
-import com.extollit.linalg.immutable.Vec3d
-import com.extollit.linalg.immutable.Vec3i
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import com.extollit.num.FloatRange
 import java.text.MessageFormat
 import java.util.*
@@ -109,7 +109,10 @@ class PathObject @JvmOverloads protected constructor(
         val currentPosition = subject.coordinates()
         val width = subject.width()
         val offset = pointToPositionOffset(width)
-        val d = com.extollit.linalg.mutable.Vec3d(currentPosition)
+
+        require(currentPosition != null)
+
+        val d = ThreeDimensionalDoubleVector(currentPosition)
         val end = unlevelIndex + 1
         let {
             var i = it.adjacentIndex.apply { nextAdjacentIndex = this }
@@ -124,7 +127,9 @@ class PathObject @JvmOverloads protected constructor(
                     nextAdjacentIndex = i
                     minDistanceSquared = distanceSquared
                 }
-                d.set(currentPosition)
+                d.x = currentPosition.x
+                d.y = currentPosition.y
+                d.z = currentPosition.z
                 ++i
             }
         }
@@ -133,7 +138,7 @@ class PathObject @JvmOverloads protected constructor(
     }
 
     private fun moveSubjectTo(subject: IPathingEntity, pathPoint: INode) {
-        val d = com.extollit.linalg.mutable.Vec3d(subject.coordinates())
+        val d = ThreeDimensionalDoubleVector(subject.coordinates()!!)
         val position = positionFor(subject, pathPoint.coordinates)
         d.sub(position)
         if (d.mg2() > PATHPOINT_SNAP_MARGIN_SQ) subject.moveTo(
@@ -258,7 +263,7 @@ class PathObject @JvmOverloads protected constructor(
         return --i
     }
 
-    private fun unlevelIndex(from: Int, position: Vec3d?): Int {
+    private fun unlevelIndex(from: Int, position: ThreeDimensionalDoubleVector?): Int {
         val y0 = floor(position!!.y).toInt()
         val nodes = nodes
         var levelIndex = length()
@@ -377,9 +382,9 @@ class PathObject @JvmOverloads protected constructor(
         fun active(path: IPath?): Boolean = path != null && !path.done()
 
         @JvmStatic
-        fun positionFor(subject: IPathingEntity, point: Vec3i?): Vec3d {
+        fun positionFor(subject: IPathingEntity, point: ThreeDimensionalIntVector?): ThreeDimensionalDoubleVector {
             val offset = pointToPositionOffset(subject.width())
-            return Vec3d(
+            return ThreeDimensionalDoubleVector(
                 (point!!.x + offset).toDouble(),
                 point.y.toDouble(),
                 (point.z + offset).toDouble()

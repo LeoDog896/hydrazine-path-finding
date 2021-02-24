@@ -1,7 +1,7 @@
 package com.extollit.gaming.ai.path.model
 
 import com.extollit.gaming.ai.path.IConfigModel
-import com.extollit.linalg.immutable.Vec3d
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector
 
 /**
  * Abstraction for an entity that requires path-finding support.
@@ -47,7 +47,7 @@ interface IPathingEntity : IDynamicMovableObject {
      * @param passibility the passibility of getting to this location (other than [Passibility.impassible])
      * @param gravitation whether the entity must walk, fly or swim to this location
      */
-    fun moveTo(position: Vec3d?, passibility: Passibility?, gravitation: Gravitation?)
+    fun moveTo(position: ThreeDimensionalDoubleVector?, passibility: Passibility?, gravitation: Gravitation?)
 
     /**
      * Expresses the movement capabilities of an entity, the engine loads these flags once per path-finding session and

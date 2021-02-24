@@ -1,7 +1,8 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.collect.SparseSpatialMap
-import com.extollit.linalg.immutable.IntAxisAlignedBox
+import com.extollit.gaming.ai.path.vector.SparseThreeDimensionalSpatialMap
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntAxisAlignedBox
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import com.extollit.linalg.immutable.Vec3i
 
 class NodeMap(
@@ -9,7 +10,7 @@ class NodeMap(
     private var calculator: INodeCalculator?,
     private val occlusionProviderFactory: IOcclusionProviderFactory
 ) {
-    private val internalMap = SparseSpatialMap<Node?>(3)
+    private val internalMap = SparseThreeDimensionalSpatialMap<Node?>(3)
     private var filter: IGraphNodeFilter? = null
     private var occlusionProvider: IOcclusionProvider? = null
     private var centerX0 = 0
@@ -39,7 +40,7 @@ class NodeMap(
         queue.clear()
     }
 
-    fun cullBranchAt(coordinates: Vec3i?, queue: SortedNodeQueue) {
+    fun cullBranchAt(coordinates: ThreeDimensionalIntVector?, queue: SortedNodeQueue) {
         val node = internalMap[coordinates] ?: return
         val parent = node.parent
         queue.cullBranch(node)
@@ -94,7 +95,7 @@ class NodeMap(
 
     fun cullOutside(x0: Int, z0: Int, xN: Int, zN: Int) {
         for (p in internalMap.cullOutside(
-            IntAxisAlignedBox(
+            ThreeDimensionalIntAxisAlignedBox(
                 x0,
                 Int.MIN_VALUE,
                 z0,
@@ -106,11 +107,11 @@ class NodeMap(
     }
 
     fun cachedPointAt(x: Int, y: Int, z: Int): Node {
-        val coords = Vec3i(x, y, z)
+        val coords = ThreeDimensionalIntVector(x, y, z)
         return cachedPointAt(coords)
     }
 
-    fun cachedPointAt(coords: Vec3i): Node {
+    fun cachedPointAt(coords: ThreeDimensionalIntVector): Node {
         var point = internalMap[coords]
         if (point == null) {
             point = passibleNodeNear(coords, null)
@@ -122,12 +123,12 @@ class NodeMap(
 
     fun cachedPassiblePointNear(x: Int, y: Int, z: Int): Node = cachedPassiblePointNear(x, y, z, null)
 
-    fun cachedPassiblePointNear(x0: Int, y0: Int, z0: Int, origin: Vec3i?): Node {
-        val coords0 = Vec3i(x0, y0, z0)
+    fun cachedPassiblePointNear(x0: Int, y0: Int, z0: Int, origin: ThreeDimensionalIntVector?): Node {
+        val coords0 = ThreeDimensionalIntVector(x0, y0, z0)
         return cachedPassiblePointNear(coords0, origin)
     }
 
-    fun cachedPassiblePointNear(coords: Vec3i, origin: Vec3i?): Node {
+    fun cachedPassiblePointNear(coords: ThreeDimensionalIntVector, origin: ThreeDimensionalIntVector?): Node {
         val nodeMap = internalMap
         val point0 = nodeMap[coords]
         var point = point0
@@ -147,7 +148,7 @@ class NodeMap(
         return point
     }
 
-    private fun passibleNodeNear(coordinates: Vec3i, origin: Vec3i?): Node {
+    private fun passibleNodeNear(coordinates: ThreeDimensionalIntVector, origin: ThreeDimensionalIntVector?): Node {
         val node = calculator!!.passibleNodeNear(coordinates, origin, FlagSampler(occlusionProvider))
         val filter = filter
         if (filter != null) {
@@ -168,7 +169,7 @@ class NodeMap(
         return false
     }
 
-    override fun toString(): String = internalMap.toString()
+    override fun toString(): String = "$internalMap"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

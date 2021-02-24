@@ -1,18 +1,18 @@
 package com.extollit.gaming.ai.path
 
 import com.extollit.gaming.ai.path.model.*
-import com.extollit.linalg.immutable.Vec3i
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import kotlin.math.roundToInt
 
 internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNodeCalculator(instanceSpace) {
-    override fun passibleNodeNear(coordinates0: Vec3i, origin: Vec3i?, flagSampler: FlagSampler): Node {
+    override fun passibleNodeNear(coords0: ThreeDimensionalIntVector, origin: ThreeDimensionalIntVector?, flagSampler: FlagSampler): Node {
         val point: Node
         val capabilities = capabilities
-        val x0 = coordinates0.x
-        val y0 = coordinates0.y
-        val z0 = coordinates0.z
-        val delta: Vec3i = if (origin != null) coordinates0.subOf(origin) else Vec3i.ZERO
-        val hasOrigin = delta != Vec3i.ZERO
+        val x0 = coords0.x
+        val y0 = coords0.y
+        val z0 = coords0.z
+        val delta: ThreeDimensionalIntVector = if (origin != null) coords0.subOf(origin) else ThreeDimensionalIntVector.ZERO
+        val hasOrigin = delta != ThreeDimensionalIntVector.ZERO
         val climbsLadders = this.capabilities!!.climber()
         var passibility: Passibility? = Passibility.Passible
         var minY = Int.MIN_VALUE
@@ -37,7 +37,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
                     val partialDisparity = partY - topOffsetAt(flags, x, y++, z)
                     flags = flagSampler.flagsAt(x, y, z)
                     if (partialDisparity < 0 || PassibilityHelpers.impedesMovement(flags, capabilities)) {
-                        if (!hasOrigin) return Node(coordinates0, Passibility.impassible, flagSampler.volatility > 0)
+                        if (!hasOrigin) return Node(coords0, Passibility.impassible, flagSampler.volatility > 0)
                         if (delta.x * delta.x + delta.z * delta.z <= 1) {
                             y -= delta.y + 1
                             do flags = flagSampler.flagsAt(
@@ -53,7 +53,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
                                 flagSampler.flagsAt(x, ++y, z).apply { flags = this },
                                 capabilities
                             ) || partY < 0)
-                        ) return Node(coordinates0, Passibility.impassible, flagSampler.volatility > 0)
+                        ) return Node(coords0, Passibility.impassible, flagSampler.volatility > 0)
                     }
                 }
                 partY = topOffsetAt(flagSampler, x, y - 1, z)
@@ -109,7 +109,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
                     )
                 )
                 if (passibility.impassible(capabilities)) return Node(
-                    coordinates0,
+                    coords0,
                     Passibility.impassible,
                     flagSampler.volatility > 0
                 )
@@ -121,7 +121,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
             originHeadClearance(flagSampler, passibility, origin!!, minY, minPartY)
         passibility = fallingSafety(passibility, y0, minY)
         if (passibility!!.impassible(capabilities)) passibility = Passibility.impassible
-        point = Node(Vec3i(x0, minY + minPartY.roundToInt(), z0))
+        point = Node(ThreeDimensionalIntVector(x0, minY + minPartY.roundToInt(), z0))
         point.passibility(passibility)
         point.volatile_(flagSampler.volatility > 0)
         return point

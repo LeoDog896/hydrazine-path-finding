@@ -1,6 +1,6 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.linalg.immutable.Vec3i
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 
 /**
  * Represents a node in an A* graph which is used by a path to move an entity between points
@@ -12,7 +12,7 @@ interface INode {
     /**
      * Coordinates relative to the instance space of the path point
      */
-    val coordinates: Vec3i
+    val coordinates: ThreeDimensionalIntVector
 
     /**
      * Passibility of this path point, which expresses how likely an entity can survive pathing to this point

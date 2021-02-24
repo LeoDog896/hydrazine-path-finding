@@ -1,9 +1,9 @@
 package com.extollit.gaming.ai.path
 
 import com.extollit.gaming.ai.path.model.*
-import com.extollit.linalg.immutable.Vec3i
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import com.extollit.linalg.mutable.AxisAlignedBBox
-import com.extollit.linalg.mutable.Vec3d
 import com.extollit.num.FloatRange
 import java.util.*
 import kotlin.math.ceil
@@ -31,9 +31,9 @@ class HydrazinePathFinder internal constructor(
     @JvmField
     val queue: SortedNodeQueue = SortedNodeQueue()
     val nodeMap: NodeMap = NodeMap(instanceSpace, occlusionProviderFactory)
-    private val unreachableFromSource: MutableSet<Vec3i> = HashSet(3)
-    private var sourcePosition: Vec3d? = null
-    private var destinationPosition: Vec3d? = null
+    private val unreachableFromSource: MutableSet<ThreeDimensionalIntVector> = HashSet(3)
+    private var sourcePosition: ThreeDimensionalDoubleVector? = null
+    private var destinationPosition: ThreeDimensionalDoubleVector? = null
     private var destinationEntity: IDynamicMovableObject? = null
     private var pathPointCalculator: INodeCalculator? = null
     private var pathProcessor: IPathProcessor? = null
@@ -83,7 +83,7 @@ class HydrazinePathFinder internal constructor(
      *
      * @return an approximate (rounded) position near the destination entity being tracked, null if this is not tracking an entity destination
      */
-    fun trackingDestination(): Vec3i? {
+    fun trackingDestination(): ThreeDimensionalIntVector? {
         return if (destinationEntity != null && destinationPosition != null) {
             val pointAtDestination = edgeAtDestination()
             pointAtDestination?.coordinates
@@ -96,7 +96,7 @@ class HydrazinePathFinder internal constructor(
      *
      * @return the current target destination, can be null if there is no target available.
      */
-    fun currentTarget(): Vec3i? = if (target == null) null else target!!.coordinates
+    fun currentTarget(): ThreeDimensionalIntVector? = if (target == null) null else target!!.coordinates
 
     /**
      * Begin path-finding to a destination entity and update the path as necessary as the destination entity changes
@@ -109,7 +109,10 @@ class HydrazinePathFinder internal constructor(
      */
     fun trackPathTo(target: IDynamicMovableObject): IPath? {
         destinationEntity = target
-        return initiatePathTo(target.coordinates(), true)
+
+        target.coordinates() ?: return null
+
+        return initiatePathTo(target.coordinates()!!, true)
     }
 
     /**
@@ -122,7 +125,7 @@ class HydrazinePathFinder internal constructor(
      * @param coordinates the target destination to path-find to
      * @return the complete path to the destination, or null if the destination is unreachable from the current location
      */
-    fun computePathTo(coordinates: com.extollit.linalg.immutable.Vec3d): IPath? =
+    fun computePathTo(coordinates: ThreeDimensionalDoubleVector): IPath? =
         computePathTo(coordinates.x, coordinates.y, coordinates.z)
 
     /**
@@ -158,7 +161,8 @@ class HydrazinePathFinder internal constructor(
      * cannot be computed at all from the current location
      * @see .initiatePathTo
      */
-    fun initiatePathTo(coordinates: com.extollit.linalg.immutable.Vec3d): IPath? =
+    fun initiatePathTo(coordinates: ThreeDimensionalDoubleVector
+    ): IPath? =
         initiatePathTo(coordinates.x, coordinates.y, coordinates.z)
 
     /**
@@ -175,7 +179,7 @@ class HydrazinePathFinder internal constructor(
      * algorithm is not used then this is more likely to return immediately with null if it is determined the
      * destination is unreachable.
      */
-    fun initiatePathTo(coordinates: com.extollit.linalg.immutable.Vec3d?, bestEffort: Boolean): IPath? =
+    fun initiatePathTo(coordinates: ThreeDimensionalDoubleVector, bestEffort: Boolean): IPath? =
         initiatePathTo(coordinates!!.x, coordinates.y, coordinates.z, bestEffort)
     /**
      * Starts path-finding to the specified destination using either best-effort or not.
@@ -205,8 +209,11 @@ class HydrazinePathFinder internal constructor(
 
     private fun tooFarTo(x: Double, y: Double, z: Double): Boolean {
         val rangeSquared = searchRangeSquared
-        val sourcePos = com.extollit.linalg.immutable.Vec3d(sourcePosition)
-        return sourcePos.subOf(x, y, z).mg2() > rangeSquared
+
+        sourcePosition ?: return false
+
+        val sourcePos = ThreeDimensionalDoubleVector(sourcePosition!!)
+        return (sourcePos.subOf(ThreeDimensionalDoubleVector(x, y, z))).mg2() > rangeSquared
     }
 
     private fun initializeOperation() {
@@ -231,7 +238,10 @@ class HydrazinePathFinder internal constructor(
         }
         val last = path.last()
         return if (last != null) {
-            val dd = Vec3d(destinationPosition)
+
+            destinationPosition ?: return null
+
+            val dd = ThreeDimensionalDoubleVector(destinationPosition!!)
             dd.sub(last.coordinates)
             if (dd.mg2() < 1) null else IncompletePath(last)
         } else null
@@ -291,8 +301,11 @@ class HydrazinePathFinder internal constructor(
     }
 
     private fun destinationDeviatedFromTarget(): Boolean {
-        val dt = Vec3d(target!!.coordinates)
-        val dd = Vec3d(destinationPosition)
+        val dt = ThreeDimensionalDoubleVector(target!!.coordinates)
+
+        destinationPosition ?: return false
+
+        val dd = ThreeDimensionalDoubleVector(destinationPosition!!)
         dd.x = floor(dd.x)
         dd.y = ceil(dd.y)
         dd.z = floor(dd.z)
@@ -300,8 +313,8 @@ class HydrazinePathFinder internal constructor(
         dt.sub(source)
         dd.sub(source)
         if (dt.mg2() > dd.mg2()) return true
-        dt.normalize()
-        dd.normalize()
+        dt.normalized()
+        dd.normalized()
         return dt.dot(dd) < DOT_THRESHOLD
     }
 
@@ -363,28 +376,31 @@ class HydrazinePathFinder internal constructor(
         passiblePointPathTimeLimit = PASSIBLE_POINT_TIME_LIMIT!!.next(random)
     }
 
-    protected fun refinePassibility(sourcePoint: Vec3i): Boolean {
+    protected fun refinePassibility(sourcePoint: ThreeDimensionalIntVector): Boolean {
         unreachableFromSource.clear()
         if (!fuzzyPassibility(sourcePoint.x, sourcePoint.y, sourcePoint.z)) return false
         val blockObject = instanceSpace.blockObjectAt(sourcePoint.x, sourcePoint.y, sourcePoint.z)
         if (!blockObject.impeding) return false
         val bounds = blockObject.bounds()
-        val c = Vec3d(subject.coordinates())
+
+        subject.coordinates() ?: return false
+
+        val c = ThreeDimensionalDoubleVector(subject.coordinates()!!)
         c.sub(sourcePoint)
-        val delta = com.extollit.linalg.immutable.Vec3d(c)
-        c.sub(bounds.center())
+        val delta = ThreeDimensionalDoubleVector(c)
+        c.sub(bounds.center().x, bounds.center().y, bounds.center().z)
         var mutated = false
         if (delta.z >= bounds.min.z && delta.z <= bounds.max.z) {
             val x = sourcePoint.x + if (c.x < 0) +1 else -1
             for (dz in -1..+1) unreachableFromSource.add(
-                Vec3i(x, sourcePoint.y, sourcePoint.z + dz)
+                ThreeDimensionalIntVector(x, sourcePoint.y, sourcePoint.z + dz)
             )
             mutated = true
         }
         if (delta.x >= bounds.min.x && delta.x <= bounds.max.x) {
             val z = sourcePoint.z + if (c.z < 0) +1 else -1
             for (dx in -1..+1) unreachableFromSource.add(
-                Vec3i(sourcePoint.x + dx, sourcePoint.y, z)
+                ThreeDimensionalIntVector(sourcePoint.x + dx, sourcePoint.y, z)
             )
             mutated = true
         }
@@ -426,11 +442,14 @@ class HydrazinePathFinder internal constructor(
             bestEffort -> {
                 var distance: Int = Node.MAX_PATH_DISTANCE.toInt()
                 while (distance > 0 && !source.target(target!!.coordinates)) {
-                    val v = Vec3d(destinationPosition)
-                    val init = Vec3d(source.coordinates)
+
+                    destinationPosition ?: return false
+
+                    val v = ThreeDimensionalDoubleVector(destinationPosition)
+                    val init = ThreeDimensionalDoubleVector(source.coordinates)
                     distance--
                     v.sub(init)
-                    v.normalize()
+                    v.normalized()
                     v.mul(distance.toDouble())
                     v.add(init)
                     target = edgeAtTarget(v.x, v.y, v.z)
@@ -455,8 +474,8 @@ class HydrazinePathFinder internal constructor(
     private fun updateFieldWindow(path: IPath) {
         var node: INode = path.last() ?: return
         var pp = node.coordinates
-        val min = com.extollit.linalg.mutable.Vec3i(pp.x, pp.y, pp.z)
-        val max = com.extollit.linalg.mutable.Vec3i(pp.x, pp.y, pp.z)
+        val min = ThreeDimensionalIntVector(pp.x, pp.y, pp.z)
+        val max = ThreeDimensionalIntVector(pp.x, pp.y, pp.z)
         if (!path.done()) for (c in path.cursor() until path.length()) {
             node = path.at(c)
             pp = node.coordinates
@@ -516,8 +535,8 @@ class HydrazinePathFinder internal constructor(
         } else {
             node = nodeMap.cachedPassiblePointNear(nx, ny, nz)
             if (impassible(node)) return null
-            val dl = Vec3d(node.coordinates)
-            dl.sub(destinationPosition)
+            val dl = ThreeDimensionalDoubleVector(node.coordinates)
+            destinationPosition?.let(dl::sub)
             if (dl.mg2() > 1) return null
         }
         return node
@@ -547,18 +566,23 @@ class HydrazinePathFinder internal constructor(
             destinationPosition.z = z
             modified
         } else {
-            destinationPosition = Vec3d(x, y, z)
+            destinationPosition = ThreeDimensionalDoubleVector(x, y, z)
             true
         }
     }
 
-    private fun updateDestination(coordinates: com.extollit.linalg.immutable.Vec3d?): Boolean {
+    private fun updateDestination(coordinates: ThreeDimensionalDoubleVector?): Boolean {
         return if (destinationPosition != null) {
             val modified = differs(coordinates, destinationPosition)
-            destinationPosition!!.set(coordinates)
+            destinationPosition!!.x = coordinates!!.x
+            destinationPosition!!.y = coordinates.y
+            destinationPosition!!.z = coordinates.z
             modified
         } else {
-            destinationPosition = Vec3d(coordinates)
+
+            coordinates ?: return false
+
+            destinationPosition = ThreeDimensionalDoubleVector(coordinates)
             true
         }
     }
@@ -572,11 +596,11 @@ class HydrazinePathFinder internal constructor(
     private fun updateSourcePosition() {
         val coordinates = subject.coordinates()
         if (sourcePosition != null) {
-            val sourcePosition: Vec3d? = sourcePosition
+            val sourcePosition: ThreeDimensionalDoubleVector? = sourcePosition
             sourcePosition!!.x = coordinates!!.x
             sourcePosition.y = coordinates.y
             sourcePosition.z = coordinates.z
-        } else sourcePosition = Vec3d(coordinates!!.x, coordinates.y, coordinates.z)
+        } else sourcePosition = ThreeDimensionalDoubleVector(coordinates!!.x, coordinates.y, coordinates.z)
         val x = floor(coordinates.x).toInt()
         val z = floor(coordinates.z).toInt()
         updateFieldWindow(x, z, x, z, false)
@@ -762,7 +786,7 @@ class HydrazinePathFinder internal constructor(
         }
     }
 
-    private fun blockBounds(coords: Vec3i?, dx: Int, dy: Int, dz: Int): AxisAlignedBBox? {
+    private fun blockBounds(coords: ThreeDimensionalIntVector?, dx: Int, dy: Int, dz: Int): AxisAlignedBBox? {
         val x = coords!!.x + dx
         val y = coords.y + dy
         val z = coords.z + dz
@@ -805,8 +829,8 @@ class HydrazinePathFinder internal constructor(
     private fun impassible(alternative: Node?): Boolean =
         alternative == null || alternative.passibility().impassible(capabilities)
 
-    private fun cachedPassiblePointNear(xOrigin: Int, yOrigin: Int, zOrigin: Int, origin: Vec3i? = null): Node? {
-        val coordsFrom = Vec3i(xOrigin, yOrigin, zOrigin)
+    private fun cachedPassiblePointNear(xOrigin: Int, yOrigin: Int, zOrigin: Int, origin: ThreeDimensionalIntVector? = null): Node? {
+        val coordsFrom = ThreeDimensionalIntVector(xOrigin, yOrigin, zOrigin)
         val result = nodeMap.cachedPassiblePointNear(coordsFrom, origin)
         return if (Node.passible(result) && origin != null && unreachableFromSource(
                 origin,
@@ -824,12 +848,12 @@ class HydrazinePathFinder internal constructor(
         ) && (Logic.fuzzy.flagsIn(flags) || Logic.doorway.flagsIn(flags))
     }
 
-    fun unreachableFromSource(current: Vec3i, target: Vec3i): Boolean {
+    fun unreachableFromSource(current: ThreeDimensionalIntVector, target: ThreeDimensionalIntVector): Boolean {
         val sourcePoint = source!!.coordinates
         return current == sourcePoint && unreachableFromSource.contains(target)
     }
 
-    fun sameDestination(delegate: IPath, target: com.extollit.linalg.immutable.Vec3d): Boolean {
+    fun sameDestination(delegate: IPath, target: ThreeDimensionalDoubleVector): Boolean {
         if (currentPath == null) return false
         if (currentPath !== delegate && !currentPath!!.sameAs(delegate)) return false
         val dest = destinationPosition ?: return false
@@ -840,7 +864,7 @@ class HydrazinePathFinder internal constructor(
 
     private fun pathTimeAge(): Float = subject.age() * capabilities!!.speed()
 
-    fun passibilityNear(tx: Int, ty: Int, tz: Int): Pair<Passibility, Vec3i> {
+    fun passibilityNear(tx: Int, ty: Int, tz: Int): Pair<Passibility, ThreeDimensionalIntVector> {
         updateSourcePosition()
         val x = floor(sourcePosition!!.x).toInt()
         val z = floor(sourcePosition!!.z).toInt()
@@ -872,9 +896,10 @@ class HydrazinePathFinder internal constructor(
             GroundNodeCalculator.configureFrom(configModel)
         }
 
-        private fun differs(a: com.extollit.linalg.immutable.Vec3d?, b: Vec3d?): Boolean = differs(a!!.x, a.y, a.z, b)
+        private fun differs(a: ThreeDimensionalDoubleVector?, b: ThreeDimensionalDoubleVector?): Boolean = differs(a!!.x, a.y, a.z, b)
 
-        private fun differs(x: Double, y: Double, z: Double, other: Vec3d?): Boolean {
+        private fun differs(x: Double, y: Double, z: Double, other: ThreeDimensionalDoubleVector
+        ?): Boolean {
             return floor(other!!.x) != floor(x) || floor(other.y) != floor(y) || floor(
                 other.z
             ) != floor(z)
