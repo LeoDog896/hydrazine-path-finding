@@ -6,6 +6,8 @@ import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import kotlin.math.roundToInt
 
 internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNodeCalculator(instanceSpace) {
+
+    // TODO hmmmmmm
     override fun passibleNodeNear(coords0: ThreeDimensionalIntVector, origin: ThreeDimensionalIntVector?, flagSampler: FlagSampler): Node {
         val point: Node
         val capabilities = capabilities
@@ -118,6 +120,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
             }
             ++x
         }
+
         if (hasOrigin && !passibility!!.impassible(capabilities)) passibility =
             originHeadClearance(flagSampler, passibility, origin!!, minY, minPartY)
         passibility = fallingSafety(passibility, y0, minY)

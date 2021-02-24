@@ -169,7 +169,7 @@ open class OcclusionField : IOcclusionProvider {
     }
 
     fun areaInitNorthWest(horizontal: OcclusionField?, depth: OcclusionField?) {
-        areaInitVerticalEdge(horizontal, depth, false, false)
+        areaInitVerticalEdge(horizontal, depth, horizEnd = false, depthEnd = false)
         areaInit = AreaInit.northWest.to(areaInit)
     }
 
@@ -615,7 +615,7 @@ open class OcclusionField : IOcclusionProvider {
         val cx = x shr DIMENSION_ORDER.toInt()
         val cy = y shr DIMENSION_ORDER.toInt()
         val cz = z shr DIMENSION_ORDER.toInt()
-        val instance = columnarSpace.instance() ?: return
+        val instance = columnarSpace.instance()
         val center: OcclusionField = ColumnarOcclusionFieldList.optionalOcclusionFieldAt(instance, cx, cy, cz)
             ?: return
         val north = ColumnarOcclusionFieldList.optionalOcclusionFieldAt(
@@ -703,7 +703,7 @@ open class OcclusionField : IOcclusionProvider {
         var flags: Byte = 0
         val instance = columnarSpace.instance()
         val doorway = block!!.door
-        flags = if (doorway) flags or (if (instance!!.blockObjectAt(
+        flags = if (doorway) flags or (if (instance.blockObjectAt(
                 x,
                 y,
                 z
