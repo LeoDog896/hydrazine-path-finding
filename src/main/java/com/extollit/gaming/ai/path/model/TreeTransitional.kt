@@ -7,7 +7,7 @@ internal class TreeTransitional(nextRoot: Node) {
 
     class RotateNodeOp(val root: Node, val diff: Int) {
 
-        val heads: MutableList<Node?> = LinkedList()
+        val heads: MutableList<Node> = LinkedList()
 
         override fun toString(): String =
             "$diff" + ": " + this.root
@@ -16,7 +16,7 @@ internal class TreeTransitional(nextRoot: Node) {
 
     private var nextRoot: Node? = null
     private val dequeue: Deque<RotateNodeOp>
-    fun queue(head: Node?, root: Node?): Boolean {
+    fun queue(head: Node, root: Node?): Boolean {
         for (op in dequeue) {
             if (op.root === root) {
                 op.heads.add(head)
@@ -34,7 +34,7 @@ internal class TreeTransitional(nextRoot: Node) {
             val next = op.root
             next.bindParent(prev)
             for (head in op.heads) {
-                if (head!!.dirty()) queue.addLength(head, op.diff)
+                if (head.dirty()) queue.addLength(head, op.diff)
                 var curr = head.parent
                 while (curr != null && curr !== next && curr.dirty()) {
                     curr.addLength(op.diff)
