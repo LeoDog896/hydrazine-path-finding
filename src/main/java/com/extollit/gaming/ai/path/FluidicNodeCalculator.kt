@@ -19,7 +19,7 @@ internal class FluidicNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNo
         val z0 = coords0.z
         val d: ThreeDimensionalIntVector = if (origin != null) coords0.subOf(origin) else ThreeDimensionalIntVector.ZERO
         val hasOrigin = d != ThreeDimensionalIntVector.ZERO
-        var passibility: Passibility? = Passibility.Passible
+        var passibility: Passibility = Passibility.Passible
         var gravitation: Gravitation = Gravitation.airborne
         var minY = Int.MIN_VALUE
         var minPartY = 0f
@@ -41,14 +41,14 @@ internal class FluidicNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNo
                         Passibility.impassible,
                         flagSampler.volatility > 0,
                         gravitation
-                    ) else passibility!!.between(PassibilityHelpers.passibilityFrom(flags, capabilities))
+                    ) else passibility.between(PassibilityHelpers.passibilityFrom(flags, capabilities))
                 val partY = topOffsetAt(flagsBeneath, x, yb, z)
                 passibility = verticalClearanceAt(flagSampler, tall, flags, passibility, d, x, y0, z, partY)
                 if (y0 > minY) {
                     minY = y0
                     minPartY = partY
                 } else if (partY > minPartY) minPartY = partY
-                if (passibility!!.impassible(capabilities)) return Node(
+                if (passibility.impassible(capabilities)) return Node(
                     coords0,
                     Passibility.impassible,
                     flagSampler.volatility > 0,
@@ -58,7 +58,7 @@ internal class FluidicNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNo
             }
             ++x
         }
-        if (passibility!!.impassible(capabilities)) passibility =
+        if (passibility.impassible(capabilities)) passibility =
             Passibility.impassible else if (hasOrigin) passibility =
             originHeadClearance(flagSampler, passibility, origin!!, minY, minPartY)
         point = Node(ThreeDimensionalIntVector(x0, minY + minPartY.roundToInt(), z0))

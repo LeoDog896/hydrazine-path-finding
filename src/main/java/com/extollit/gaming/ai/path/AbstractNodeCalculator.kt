@@ -21,24 +21,24 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
     protected fun verticalClearanceAt(
         sampler: FlagSampler,
         max: Int, flags: Byte,
-        passibility: Passibility?,
+        passibility: Passibility,
         delta: ThreeDimensionalIntVector,
         x: Int, y: Int, z: Int,
         partY: Float
-    ): Passibility? {
-        var passibility = passibility
+    ): Passibility {
+        var mutablePassibility = passibility
         var clearanceFlags = flags
         val yMax = y + max
         val yN = y.coerceAtLeast(y - delta.y) + tall
         var yt = y
         val yNa = yN + floor(partY.toDouble()).toInt()
         while (yt < yNa && yt < yMax) {
-            passibility = passibility!!.between(clearance(clearanceFlags))
+            mutablePassibility = mutablePassibility.between(clearance(clearanceFlags))
             clearanceFlags = sampler.flagsAt(x, ++yt, z)
         }
-        if (yt < yN && yt < yMax && insufficientHeadClearance(clearanceFlags, partY, x, yt, z)) passibility =
-            passibility!!.between(clearance(clearanceFlags))
-        return passibility
+        if (yt < yN && yt < yMax && insufficientHeadClearance(clearanceFlags, partY, x, yt, z)) mutablePassibility =
+            mutablePassibility.between(clearance(clearanceFlags))
+        return mutablePassibility
     }
 
     protected fun insufficientHeadClearance(flags: Byte, partialY0: Float, x: Int, yN: Int, z: Int): Boolean =
@@ -82,11 +82,11 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
 
     protected fun originHeadClearance(
         sampler: FlagSampler,
-        passibility: Passibility?,
+        passibility: Passibility,
         origin: ThreeDimensionalIntVector,
         minY: Int,
         minPartY: Float
-    ): Passibility? {
+    ): Passibility {
         var mutablePassibility = passibility
         val yN = minY + tall
         val yNa = yN + floor(minPartY.toDouble()).toInt()
@@ -97,7 +97,7 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
             val zN = origin.z + discreteSize
             while (z < zN) {
                 for (y in origin.y + tall until yNa) mutablePassibility =
-                    mutablePassibility?.between(clearance(sampler.flagsAt(x, y, z)))
+                    mutablePassibility.between(clearance(sampler.flagsAt(x, y, z)))
                 ++z
             }
             ++x
@@ -111,7 +111,7 @@ internal abstract class AbstractNodeCalculator(protected val instanceSpace: IIns
                 while (z < zN) {
                     val flags = sampler.flagsAt(x, yNa, z)
                     if (insufficientHeadClearance(flags, minPartY, x, yNa, z)) mutablePassibility =
-                        mutablePassibility?.between(clearance(flags))
+                        mutablePassibility.between(clearance(flags))
                     ++z
                 }
                 ++x

@@ -17,7 +17,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
         val delta: ThreeDimensionalIntVector = if (origin != null) coords0.subOf(origin) else ThreeDimensionalIntVector.ZERO
         val hasOrigin = delta != ThreeDimensionalIntVector.ZERO
         val climbsLadders = this.capabilities!!.climber()
-        var passibility: Passibility? = Passibility.Passible
+        var passibility: Passibility = Passibility.Passible
         var minY = Int.MIN_VALUE
         var minPartY = 0f
         val r = discreteSize / 2
@@ -105,7 +105,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
                     minY = y
                     minPartY = partY
                 } else if (y == minY && partY > minPartY) minPartY = partY
-                passibility = passibility!!.between(
+                passibility = passibility.between(
                     PassibilityHelpers.passibilityFrom(
                         flagSampler.flagsAt(x, y, z),
                         capabilities
@@ -121,10 +121,10 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
             ++x
         }
 
-        if (hasOrigin && !passibility!!.impassible(capabilities)) passibility =
+        if (hasOrigin && !passibility.impassible(capabilities)) passibility =
             originHeadClearance(flagSampler, passibility, origin!!, minY, minPartY)
         passibility = fallingSafety(passibility, y0, minY)
-        if (passibility!!.impassible(capabilities)) passibility = Passibility.impassible
+        if (passibility.impassible(capabilities)) passibility = Passibility.impassible
         point = Node(ThreeDimensionalIntVector(x0, minY + minPartY.roundToInt(), z0))
         point.passibility(passibility)
         point.volatile_(flagSampler.volatility > 0)
@@ -133,10 +133,10 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
 
     override fun omnidirectional(): Boolean = false
 
-    private fun fallingSafety(passibility: Passibility?, y0: Int, minY: Int): Passibility? {
+    private fun fallingSafety(passibility: Passibility, y0: Int, minY: Int): Passibility {
         var passibility = passibility
         val dy = y0 - minY
-        if (dy > 1) passibility = passibility!!.between(
+        if (dy > 1) passibility = passibility.between(
             if (dy > MAX_SAFE_FALL_DISTANCE) Passibility.Dangerous else Passibility.Risky
         )
         return passibility

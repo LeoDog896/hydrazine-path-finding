@@ -132,10 +132,7 @@ class HydrazinePathFinder internal constructor(
      */
     fun trackPathTo(target: IDynamicMovableObject): IPath? {
         destinationEntity = target
-
-        target.coordinates() ?: return null
-
-        return initiatePathTo(target.coordinates()!!, true)
+        return initiatePathTo(target.coordinates(), true)
     }
 
     /**
@@ -204,6 +201,7 @@ class HydrazinePathFinder internal constructor(
      */
     fun initiatePathTo(coordinates: ThreeDimensionalDoubleVector, bestEffort: Boolean): IPath? =
         initiatePathTo(coordinates.x, coordinates.y, coordinates.z, bestEffort)
+
     /**
      * Starts path-finding to the specified destination using either best-effort or not.
      * Best-effort means that the algorithm will try it's best to get as close as possible to the target
@@ -401,18 +399,19 @@ class HydrazinePathFinder internal constructor(
 
     fun refinePassibility(sourcePoint: ThreeDimensionalIntVector): Boolean {
         unreachableFromSource.clear()
+
         if (!fuzzyPassibility(sourcePoint.x, sourcePoint.y, sourcePoint.z)) return false
         val blockObject = instanceSpace.blockObjectAt(sourcePoint.x, sourcePoint.y, sourcePoint.z)
         if (!blockObject.impeding) return false
+
         val bounds = blockObject.bounds()
 
-        subject.coordinates() ?: return false
-
-        val c = ThreeDimensionalDoubleVector(subject.coordinates()!!)
+        val c = ThreeDimensionalDoubleVector(subject.coordinates())
         c.subtract(sourcePoint)
         val delta = ThreeDimensionalDoubleVector(c)
         c.subtract(bounds.center().x, bounds.center().y, bounds.center().z)
         var mutated = false
+
         if (delta.z >= bounds.min.z && delta.z <= bounds.max.z) {
             val x = sourcePoint.x + if (c.x < 0) +1 else -1
             for (dz in -1..+1) unreachableFromSource.add(
@@ -420,6 +419,7 @@ class HydrazinePathFinder internal constructor(
             )
             mutated = true
         }
+
         if (delta.x >= bounds.min.x && delta.x <= bounds.max.x) {
             val z = sourcePoint.z + if (c.z < 0) +1 else -1
             for (dx in -1..+1) unreachableFromSource.add(
@@ -427,6 +427,7 @@ class HydrazinePathFinder internal constructor(
             )
             mutated = true
         }
+
         return mutated
     }
 
@@ -620,10 +621,10 @@ class HydrazinePathFinder internal constructor(
         val coordinates = subject.coordinates()
         if (sourcePosition != null) {
             val sourcePosition: ThreeDimensionalDoubleVector? = sourcePosition
-            sourcePosition!!.x = coordinates!!.x
+            sourcePosition!!.x = coordinates.x
             sourcePosition.y = coordinates.y
             sourcePosition.z = coordinates.z
-        } else sourcePosition = ThreeDimensionalDoubleVector(coordinates!!.x, coordinates.y, coordinates.z)
+        } else sourcePosition = ThreeDimensionalDoubleVector(coordinates.x, coordinates.y, coordinates.z)
         val x = floor(coordinates.x).toInt()
         val z = floor(coordinates.z).toInt()
         updateFieldWindow(x, z, x, z, false)
