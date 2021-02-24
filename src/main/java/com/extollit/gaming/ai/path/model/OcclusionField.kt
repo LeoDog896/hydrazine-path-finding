@@ -30,7 +30,7 @@ open class OcclusionField : IOcclusionProvider {
         fun to(flags: Short): Short = (flags or mask)
 
         companion object {
-            @kotlin.jvm.JvmStatic
+            @JvmStatic
             fun given(dx: Int, dy: Int, dz: Int): AreaInit? {
                 if (dx == -1 && dz == -1) return northWest else if (dx == 0 && dz == -1) return north else if (dx == +1 && dz == -1) return northEast else if (dx == +1 && dz == 0) return east else if (dx == +1 && dz == +1) return southEast else if (dx == 0 && dz == +1) return south else if (dx == -1 && dz == +1) return southWest else if (dx == -1 && dz == 0) return west else if (dx == 0 && dz == 0) if (dy == -1) return down else if (dy == +1) return up
                 return null
