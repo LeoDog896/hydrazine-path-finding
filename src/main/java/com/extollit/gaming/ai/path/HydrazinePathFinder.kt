@@ -1,10 +1,11 @@
 package com.extollit.gaming.ai.path
 
 import com.extollit.gaming.ai.path.model.*
+import com.extollit.gaming.ai.path.num.FloatingRange
+import com.extollit.gaming.ai.path.num.range
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import com.extollit.linalg.mutable.AxisAlignedBBox
-import com.extollit.num.FloatRange
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -180,7 +181,7 @@ class HydrazinePathFinder internal constructor(
      * destination is unreachable.
      */
     fun initiatePathTo(coordinates: ThreeDimensionalDoubleVector, bestEffort: Boolean): IPath? =
-        initiatePathTo(coordinates!!.x, coordinates.y, coordinates.z, bestEffort)
+        initiatePathTo(coordinates.x, coordinates.y, coordinates.z, bestEffort)
     /**
      * Starts path-finding to the specified destination using either best-effort or not.
      * Best-effort means that the algorithm will try it's best to get as close as possible to the target
@@ -877,8 +878,8 @@ class HydrazinePathFinder internal constructor(
     companion object {
         private val FULL_BOUNDS = com.extollit.linalg.immutable.AxisAlignedBBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
         private var DOT_THRESHOLD = 0.6
-        private var PROBATIONARY_TIME_LIMIT: FloatRange? = FloatRange(36f, 64f)
-        private var PASSIBLE_POINT_TIME_LIMIT: FloatRange? = FloatRange(24f, 48f)
+        private var PROBATIONARY_TIME_LIMIT: FloatingRange? = 36f range 64f
+        private var PASSIBLE_POINT_TIME_LIMIT: FloatingRange? = 24f range 48f
         private var FAULT_COUNT_THRESHOLD: Byte = 3
         private var FAULT_LIMIT = 23
 

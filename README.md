@@ -7,7 +7,7 @@ Then the primary entry-point for using the engine is `com.extollit.gaming.ai.pat
 
     final HydrazinePathFinder pathFinder = new HydrazinePathFinder(myEntity, myWorld);
 
-    final IPath path = pathFinder.initiatePathTo(new Vec3d(1, 3.2, 5.8));
+    final IPath path = pathFinder.initiatePathTo(new ThreeDimensionalDoubleVector(1, 3.2, 5.8));
 
     if (path != null)
     do {
@@ -38,7 +38,7 @@ with most traditional A* path-finding algorithms use the `computePathTo` method:
     
     final HydrazinePathFinder pathFinder = new HydrazinePathFinder(myEntity, myWorld);
 
-    final IPath path = pathFinder.computePathTo(new Vec3d(1, 3.2, 5.8));
+    final IPath path = pathFinder.computePathTo(new ThreeDimensionalDoubleVector(1, 3.2, 5.8));
 
     if (path == null)
         ; // Destination is definitely unreachable

@@ -1,6 +1,5 @@
 package com.extollit.gaming.ai.path.vector
 
-import com.extollit.linalg.mutable.Vec3i
 import java.text.MessageFormat
 import kotlin.experimental.and
 import kotlin.experimental.or
@@ -41,13 +40,6 @@ class VertexOffset @JvmOverloads constructor(
             dx xor dz,
             dy xor dx
         )
-    }
-
-    fun offset(vec: Vec3i): Vec3i {
-        vec.x += dx.toInt()
-        vec.y += dy.toInt()
-        vec.z += dz.toInt()
-        return vec
     }
 
     fun sq(): VertexOffset {

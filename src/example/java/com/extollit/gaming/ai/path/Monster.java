@@ -4,7 +4,6 @@ import com.extollit.gaming.ai.path.model.Gravitation;
 import com.extollit.gaming.ai.path.model.IPathingEntity;
 import com.extollit.gaming.ai.path.model.Passibility;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector;
-import com.extollit.linalg.immutable.Vec3d;
 
 public class Monster implements IPathingEntity, IPathingEntity.Capabilities {
     public boolean fireResistant, cautious, climber, swimmer, aquatic, avian, aquaphobic, avoidsDoorways, opensDoors;

@@ -1,6 +1,6 @@
 package com.extollit.gaming.ai.path
 
-import com.extollit.num.FloatRange
+import com.extollit.gaming.ai.path.num.FloatingRange
 
 /**
  * Data abstraction used for globally configuring (once per class-loader) the Hydrazine path-finding engine.  It contains
@@ -72,7 +72,7 @@ interface IConfigModel {
      * @return minium and maximum path time period before stuck before the entity's engine increases its failure count.
      * @see .faultCountThreshold
      */
-    fun passiblePointTimeLimit(): FloatRange?
+    fun passiblePointTimeLimit(): FloatingRange?
 
     /**
      * The number of faults permitted before a pathing entity's engine proceeds to perform additional steps to aid the
@@ -110,7 +110,7 @@ interface IConfigModel {
      * @return the pre-configured minimum and maximum possible time-limit in path time units
      * @see .faultCountThreshold
      */
-    fun probationaryTimeLimit(): FloatRange?
+    fun probationaryTimeLimit(): FloatingRange?
 
     /**
      * Hydrazine tries to optimize pathing by telling entities to move to the furthest path point in a path from its
@@ -130,7 +130,7 @@ interface IConfigModel {
      * @return the pre-configured minimum and maximum time-limit in path time units to cope with direct-line
      * optimization errors
      */
-    fun directLineTimeLimit(): FloatRange?
+    fun directLineTimeLimit(): FloatingRange?
 
     /**
      * Determines the dynamically configured co-routine-like schedule for the given priority rating.

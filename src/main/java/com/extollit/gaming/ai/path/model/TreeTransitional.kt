@@ -9,7 +9,7 @@ internal class TreeTransitional(nextRoot: Node) {
         val heads: MutableList<Node?> = LinkedList()
 
         override fun toString(): String =
-            diff.toString() + ": " + this.root
+            "$diff" + ": " + this.root
 
     }
 

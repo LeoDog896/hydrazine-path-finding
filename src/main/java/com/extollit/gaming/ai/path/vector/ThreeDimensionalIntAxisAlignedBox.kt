@@ -3,6 +3,8 @@ package com.extollit.gaming.ai.path.vector
 import com.extollit.linalg.AbstractSpatialRegion
 import com.extollit.linalg.ISpatialRegion
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class ThreeDimensionalIntAxisAlignedBox(@JvmField val min: ThreeDimensionalIntVector, @JvmField val max: ThreeDimensionalIntVector) :
     AbstractSpatialRegion(), ISpatialRegion {
@@ -56,12 +58,12 @@ class ThreeDimensionalIntAxisAlignedBox(@JvmField val min: ThreeDimensionalIntVe
 
     fun intersection(other: ThreeDimensionalIntAxisAlignedBox): ThreeDimensionalIntAxisAlignedBox {
         return ThreeDimensionalIntAxisAlignedBox(
-            Math.max(min.x, other.min.x),
-            Math.max(min.y, other.min.y),
-            Math.max(min.z, other.min.z),
-            Math.min(max.x, other.max.x),
-            Math.min(max.y, other.max.y),
-            Math.min(max.z, other.max.z)
+            max(min.x, other.min.x),
+            max(min.y, other.min.y),
+            max(min.z, other.min.z),
+            min(max.x, other.max.x),
+            min(max.y, other.max.y),
+            min(max.z, other.max.z)
         )
     }
 

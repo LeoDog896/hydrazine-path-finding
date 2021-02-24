@@ -1,6 +1,7 @@
 package com.extollit.gaming.ai.path.vector
 
 import java.text.MessageFormat
+import kotlin.math.sqrt
 
 
 class ThreeDimensionalDoubleVector {
@@ -9,12 +10,6 @@ class ThreeDimensionalDoubleVector {
     var z: Double
 
     constructor(copy: ThreeDimensionalDoubleVector) {
-        x = copy.x
-        y = copy.y
-        z = copy.z
-    }
-
-    constructor(copy: com.extollit.linalg.mutable.Vec3d) {
         x = copy.x
         y = copy.y
         z = copy.z
@@ -48,8 +43,7 @@ class ThreeDimensionalDoubleVector {
 
     override fun hashCode(): Int {
         var result: Int
-        var temp: Long
-        temp = java.lang.Double.doubleToLongBits(x)
+        var temp: Long = java.lang.Double.doubleToLongBits(x)
         result = (temp xor (temp ushr 32)).toInt()
         temp = java.lang.Double.doubleToLongBits(z)
         result = 31 * result + (temp xor (temp ushr 32)).toInt()
@@ -82,10 +76,6 @@ class ThreeDimensionalDoubleVector {
         this.z = other.z
     }
 
-    fun subOf(other: com.extollit.linalg.mutable.Vec3d): ThreeDimensionalDoubleVector {
-        return subOf(other.x, other.y, other.z)
-    }
-
     fun subOf(x: Double, y: Double, z: Double): ThreeDimensionalDoubleVector {
         return ThreeDimensionalDoubleVector(
             this.x - x,
@@ -102,19 +92,11 @@ class ThreeDimensionalDoubleVector {
         )
     }
 
-    fun plusOf(other: com.extollit.linalg.mutable.Vec3d): ThreeDimensionalDoubleVector {
-        return plusOf(other.x, other.y, other.z)
-    }
-
     fun plusOf(dx: Double, dy: Double, dz: Double): ThreeDimensionalDoubleVector {
         return ThreeDimensionalDoubleVector(x + dx, y + dy, z + dz)
     }
 
     fun dot(other: ThreeDimensionalDoubleVector): Double {
-        return x * other.x + y * other.y + z * other.z
-    }
-
-    fun dot(other: com.extollit.linalg.mutable.Vec3d): Double {
         return x * other.x + y * other.y + z * other.z
     }
 
@@ -172,25 +154,8 @@ class ThreeDimensionalDoubleVector {
         )
     }
 
-    fun mutableCrossOf(other: ThreeDimensionalDoubleVector): com.extollit.linalg.mutable.Vec3d {
-        return com.extollit.linalg.mutable.Vec3d(
-            y * other.z - z * other.y,
-            z * other.x - x * other.z,
-            x * other.y - y * other.x
-        )
-    }
-
-    fun cross(other: com.extollit.linalg.mutable.Vec3d) {
-        val x = y * other.z - z * other.y
-        val y = z * other.x - this.x * other.z
-        val z = this.x * other.y - this.y * other.x
-        other.x = x
-        other.y = y
-        other.z = z
-    }
-
     fun mg(): Double {
-        return Math.sqrt(mg2())
+        return sqrt(mg2())
     }
 
     fun squared(): ThreeDimensionalDoubleVector {
@@ -214,19 +179,11 @@ class ThreeDimensionalDoubleVector {
         return this.x == x && this.y == y && this.z == z
     }
 
-    fun contains(coordinates: com.extollit.linalg.immutable.Vec3d): Boolean {
-        return contains(coordinates.x, coordinates.y, coordinates.z)
-    }
-
-    fun contains(coordinates: com.extollit.linalg.mutable.Vec3d): Boolean {
-        return contains(coordinates.x, coordinates.y, coordinates.z)
-    }
-
     fun contains(x: Int, y: Int, z: Int): Boolean {
         return this.x == x.toDouble() && this.y == y.toDouble() && this.z == z.toDouble()
     }
 
-    fun contains(coordinates: ThreeDimensionalIntVector): Boolean {
+    operator fun contains(coordinates: ThreeDimensionalIntVector): Boolean {
         return contains(coordinates.x, coordinates.y, coordinates.z)
     }
 }

@@ -1,6 +1,5 @@
 package com.extollit.gaming.ai.path.vector
 
-import com.extollit.linalg.immutable.Vec3d
 import com.extollit.linalg.immutable.VertexOffset
 import java.text.MessageFormat
 import kotlin.math.abs
@@ -97,9 +96,6 @@ class ThreeDimensionalIntVector(
     fun contains(x: Double, y: Double, z: Double): Boolean =
         this.x.toDouble() == x && this.y.toDouble() == y && this.z.toDouble() == z
 
-    fun contains(coordinates: Vec3d): Boolean =
-        contains(coordinates.x, coordinates.y, coordinates.z)
-
     fun magnitude(): Double =
         sqrt((x * x + y * y + z * z).toDouble())
 
@@ -111,9 +107,7 @@ class ThreeDimensionalIntVector(
 
     companion object {
         @JvmField
-        val ZERO = ThreeDimensionalIntVector(0, 0, 0)
-
-        fun truncated(other: Vec3d): ThreeDimensionalIntVector =
-            ThreeDimensionalIntVector(other.x.toInt(), other.y.toInt(), other.z.toInt())
+        /** Represents a [ThreeDimensionalIntVector] with all positions set to 0. */
+        val ZERO: ThreeDimensionalIntVector = ThreeDimensionalIntVector(0, 0, 0)
     }
 }

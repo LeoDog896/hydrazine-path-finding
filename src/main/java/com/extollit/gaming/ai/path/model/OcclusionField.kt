@@ -164,7 +164,7 @@ open class OcclusionField : IOcclusionProvider {
     }
 
     fun areaInitSouthEast(horizontal: OcclusionField?, depth: OcclusionField?) {
-        areaInitVerticalEdge(horizontal, depth, true, true)
+        areaInitVerticalEdge(horizontal, depth, horizEnd = true, depthEnd = true)
         areaInit = AreaInit.southEast.to(areaInit)
     }
 
@@ -756,7 +756,7 @@ open class OcclusionField : IOcclusionProvider {
                 }
                 sb.append(System.lineSeparator())
             }
-            return sb.toString()
+            return "$sb"
         }
     }
 }

@@ -2,9 +2,10 @@ package com.extollit.gaming.ai.path.model
 
 import com.extollit.collect.ArrayIterable
 import com.extollit.gaming.ai.path.IConfigModel
+import com.extollit.gaming.ai.path.num.FloatingRange
+import com.extollit.gaming.ai.path.num.range
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
-import com.extollit.num.FloatRange
 import java.text.MessageFormat
 import java.util.*
 import kotlin.math.abs
@@ -310,7 +311,7 @@ class PathObject @JvmOverloads protected constructor(
             sb.append(pp.coordinates)
             sb.append(System.lineSeparator())
         }
-        return sb.toString()
+        return "$sb"
     }
 
     fun adjustPathPosition(formerPath: IPath, pathingEntity: IPathingEntity) {
@@ -351,7 +352,7 @@ class PathObject @JvmOverloads protected constructor(
 
     companion object {
         private const val PATHPOINT_SNAP_MARGIN_SQ = 0.25
-        private var DIRECT_LINE_TIME_LIMIT: FloatRange? = FloatRange(1f, 2f)
+        private var DIRECT_LINE_TIME_LIMIT: FloatingRange? = 1f range 2f
         fun configureFrom(configModel: IConfigModel) {
             DIRECT_LINE_TIME_LIMIT = configModel.directLineTimeLimit()
         }
