@@ -120,9 +120,9 @@ class SortedNodeQueue {
 
     fun cullBranch(ancestor: Node) {
         val list: MutableList<Node> = list
-        val stack = Stack<Node?>()
+        val stack = Stack<Node>()
         val i = list.listIterator()
-        val culled: MutableList<Node?> = LinkedList()
+        val culled: MutableList<Node> = LinkedList()
         while (i.hasNext()) {
             val head = i.next()
             var point = head
@@ -140,7 +140,7 @@ class SortedNodeQueue {
             stack.clear()
         }
         for (node in culled) {
-            node!!.reset()
+            node.reset()
             node.visited(false)
         }
     }
@@ -248,7 +248,7 @@ class SortedNodeQueue {
         originalPoint.index(mutableIndex)
     }
 
-    fun appendTo(point: Node, parent: Node, targetPoint: ThreeDimensionalIntVector?): Boolean =
+    fun appendTo(point: Node, parent: Node, targetPoint: ThreeDimensionalIntVector): Boolean =
         appendTo(
             point, parent, sqrt(Node.squareDelta(point, targetPoint).toDouble())
                 .toInt()
@@ -278,10 +278,13 @@ class SortedNodeQueue {
 
     private fun resort(point: Node?, journey0: Byte): Boolean {
         val journey = point!!.journey().toInt()
+
         if (point.assigned()) {
             if (journey < journey0) sortBack(point.index().toInt()) else sortForward(point.index().toInt())
             return true
-        } else add(point)
+        }
+
+        add(point)
         return false
     }
 
@@ -291,8 +294,8 @@ class SortedNodeQueue {
     val size: Int
         get() = list.size
 
-    val roots: Set<Node?>
-        get() = list.mapTo<Node?, Node, HashSet<Node?>>(HashSet(1)) { it!!.root() }
+    val roots: Set<Node>
+        get() = list.mapTo(HashSet(1), Node::root)
 
     override fun toString(): String = "$list"
 

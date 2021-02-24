@@ -1,9 +1,9 @@
 package com.extollit.gaming.ai.path;
 
 import com.extollit.gaming.ai.path.model.*;
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalAxisAlignedBoundaryBox;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
-import com.extollit.linalg.immutable.AxisAlignedBBox;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -82,7 +82,7 @@ public abstract class AbstractHydrazinePathFinderTests {
 
         when(occlusionProvider.elementAt(x, y, z)).thenReturn(Logic.fuzzy.to(Element.earth.mask));
         when(instanceSpace.blockObjectAt(x, y, z)).thenReturn(block);
-        when(block.bounds()).thenReturn(new AxisAlignedBBox(0, 0, 0, 1, 1, 1));
+        when(block.bounds()).thenReturn(new ThreeDimensionalAxisAlignedBoundaryBox(0, 0, 0, 1, 1, 1));
         when(block.getImpeding()).thenReturn(true);
     }
     protected void slabDown(final int x, final int y, final int z) {
@@ -122,30 +122,30 @@ public abstract class AbstractHydrazinePathFinderTests {
     }
 
     protected void latFence(final int x, final int y, final int z) {
-        fence(new AxisAlignedBBox(0, 0, 0.45f, 1, 1.5f, 0.55f), x, y, z);
+        fence(new ThreeDimensionalAxisAlignedBoundaryBox(0, 0, 0.45f, 1, 1.5f, 0.55f), x, y, z);
     }
 
     protected void longFence(final int x, final int y, final int z) {
-        fence(new AxisAlignedBBox(0.45f, 0, 0, 0.55f, 1.5, 1), x, y, z);
+        fence(new ThreeDimensionalAxisAlignedBoundaryBox(0.45f, 0, 0, 0.55f, 1.5, 1), x, y, z);
     }
 
     protected void cornerFenceSouthEast(final int x, final int y, final int z) {
-        fence(new AxisAlignedBBox(0.45f, 0, 0.45f, 1, 1.5f, 1), x, y, z);
+        fence(new ThreeDimensionalAxisAlignedBoundaryBox(0.45f, 0, 0.45f, 1, 1.5f, 1), x, y, z);
     }
 
     protected void cornerFenceSouthWest(final int x, final int y, final int z) {
-        fence(new AxisAlignedBBox(0, 0, 0.45f, 0.55f, 1.5f, 1), x, y, z);
+        fence(new ThreeDimensionalAxisAlignedBoundaryBox(0, 0, 0.45f, 0.55f, 1.5f, 1), x, y, z);
     }
 
     protected void cornerFenceNorthEast(final int x, final int y, final int z) {
-        fence(new AxisAlignedBBox(0.45f, 0, 0, 1, 1.5f, 0.55f), x, y, z);
+        fence(new ThreeDimensionalAxisAlignedBoundaryBox(0.45f, 0, 0, 1, 1.5f, 0.55f), x, y, z);
     }
 
     protected void cornerFenceNorthWest(final int x, final int y, final int z) {
-        fence(new AxisAlignedBBox(0, 0, 0, 0.55f, 1.5f, 0.55f), x, y, z);
+        fence(new ThreeDimensionalAxisAlignedBoundaryBox(0, 0, 0, 0.55f, 1.5f, 0.55f), x, y, z);
     }
 
-    protected void fence(AxisAlignedBBox bounds, final int x, final int y, final int z) {
+    protected void fence(ThreeDimensionalAxisAlignedBoundaryBox bounds, final int x, final int y, final int z) {
         IBlockObject
             blockBelow = mock(IBlockObject.class),
             blockAbove = mock(IBlockObject.class);

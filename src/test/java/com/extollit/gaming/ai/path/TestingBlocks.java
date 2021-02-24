@@ -1,7 +1,7 @@
 package com.extollit.gaming.ai.path;
 
 import com.extollit.gaming.ai.path.model.IBlockObject;
-import com.extollit.linalg.immutable.AxisAlignedBBox;
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalAxisAlignedBoundaryBox;
 
 public class TestingBlocks {
     public static final IBlockObject
@@ -56,8 +56,8 @@ public class TestingBlocks {
         }
 
         @Override
-        public AxisAlignedBBox bounds() {
-            return new AxisAlignedBBox(
+        public ThreeDimensionalAxisAlignedBoundaryBox bounds() {
+            return new ThreeDimensionalAxisAlignedBoundaryBox(
                 0, 0, 0,
                 1, getFenceLike() ? 1.5f : 0, 1
             );
@@ -76,8 +76,8 @@ public class TestingBlocks {
         }
 
         @Override
-        public AxisAlignedBBox bounds() {
-            return new AxisAlignedBBox(
+        public ThreeDimensionalAxisAlignedBoundaryBox bounds() {
+            return new ThreeDimensionalAxisAlignedBoundaryBox(
                     0, 0, 0,
                     1, 1, 1
             );
@@ -124,8 +124,8 @@ public class TestingBlocks {
         }
 
         @Override
-        public AxisAlignedBBox bounds() {
-            return new AxisAlignedBBox(
+        public ThreeDimensionalAxisAlignedBoundaryBox bounds() {
+            return new ThreeDimensionalAxisAlignedBoundaryBox(
                     0, 0, 0,
                     1, 1, 1
             );
@@ -154,8 +154,8 @@ public class TestingBlocks {
             return true;
         }
         @Override
-        public AxisAlignedBBox bounds() {
-            return new AxisAlignedBBox(
+        public ThreeDimensionalAxisAlignedBoundaryBox bounds() {
+            return new ThreeDimensionalAxisAlignedBoundaryBox(
                     0, 0, 0,
                     1, 0.5, 1
             );
@@ -169,8 +169,8 @@ public class TestingBlocks {
         }
 
         @Override
-        public AxisAlignedBBox bounds() {
-            return new AxisAlignedBBox(
+        public ThreeDimensionalAxisAlignedBoundaryBox bounds() {
+            return new ThreeDimensionalAxisAlignedBoundaryBox(
                     0, 0.5, 0,
                     1, 1, 1
             );

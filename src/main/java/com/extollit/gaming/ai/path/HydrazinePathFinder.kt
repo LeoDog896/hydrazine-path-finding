@@ -3,9 +3,9 @@ package com.extollit.gaming.ai.path
 import com.extollit.gaming.ai.path.model.*
 import com.extollit.gaming.ai.path.num.FloatingRange
 import com.extollit.gaming.ai.path.num.range
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalAxisAlignedBoundaryBox
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
-import com.extollit.linalg.mutable.AxisAlignedBBox
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -787,11 +787,11 @@ class HydrazinePathFinder internal constructor(
         }
     }
 
-    private fun blockBounds(coords: ThreeDimensionalIntVector?, dx: Int, dy: Int, dz: Int): AxisAlignedBBox? {
+    private fun blockBounds(coords: ThreeDimensionalIntVector?, dx: Int, dy: Int, dz: Int): ThreeDimensionalAxisAlignedBoundaryBox? {
         val x = coords!!.x + dx
         val y = coords.y + dy
         val z = coords.z + dz
-        val bounds: com.extollit.linalg.immutable.AxisAlignedBBox
+        val bounds: ThreeDimensionalAxisAlignedBoundaryBox
         val flags = nodeMap.flagsAt(x, y, z)
         bounds = when {
             fuzzyPassibility(flags) -> {
@@ -805,7 +805,7 @@ class HydrazinePathFinder internal constructor(
             ) -> FULL_BOUNDS
             else -> return null
         }
-        val result = AxisAlignedBBox(bounds)
+        val result = ThreeDimensionalAxisAlignedBoundaryBox(bounds)
         result.add(dx.toDouble(), dy.toDouble(), dz.toDouble())
         return result
     }
@@ -876,7 +876,7 @@ class HydrazinePathFinder internal constructor(
     }
 
     companion object {
-        private val FULL_BOUNDS = com.extollit.linalg.immutable.AxisAlignedBBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+        private val FULL_BOUNDS = ThreeDimensionalAxisAlignedBoundaryBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
         private var DOT_THRESHOLD = 0.6
         private var PROBATIONARY_TIME_LIMIT: FloatingRange? = 36f range 64f
         private var PASSIBLE_POINT_TIME_LIMIT: FloatingRange? = 24f range 48f

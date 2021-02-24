@@ -135,6 +135,12 @@ class ThreeDimensionalDoubleVector {
         z += vector.z
     }
 
+    fun add(x: Double, y: Double, z: Double) {
+        this.x += x
+        this.y += y
+        this.z += z
+    }
+
     fun mulOf(other: ThreeDimensionalIntVector): ThreeDimensionalDoubleVector {
         return ThreeDimensionalDoubleVector(
             x * other.x.toDouble(),

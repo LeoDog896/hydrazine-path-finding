@@ -1,7 +1,7 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.collect.ArrayIterable
 import com.extollit.gaming.ai.path.IConfigModel
+import com.extollit.gaming.ai.path.iterable.ArrayIterable
 import com.extollit.gaming.ai.path.num.FloatingRange
 import com.extollit.gaming.ai.path.num.range
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector
@@ -16,9 +16,9 @@ import kotlin.math.max
 class PathObject @JvmOverloads protected constructor(
     val speed: Float,
     val random: Random = Random(),
-    @kotlin.jvm.JvmField vararg val nodes: Node
+    @JvmField vararg val nodes: Node
 ) : IPath {
-    @kotlin.jvm.JvmField
+    @JvmField
     var index: Int = 0
     private var taxiUntil = 0
     private var adjacentIndex = 0

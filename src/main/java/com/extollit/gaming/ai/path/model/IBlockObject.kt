@@ -1,6 +1,6 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.linalg.immutable.AxisAlignedBBox
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalAxisAlignedBoundaryBox
 
 /**
  * Description of a block at a specific location in an instance, this is a more comprehensive type than the
@@ -24,5 +24,5 @@ interface IBlockObject : IBlockDescription {
      * @return The maximum axis-aligned bounds for the block, must be non-null
      * @see IBlockDescription.impeding
      */
-    fun bounds(): AxisAlignedBBox
+    fun bounds(): ThreeDimensionalAxisAlignedBoundaryBox
 }
