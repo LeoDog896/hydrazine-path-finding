@@ -50,17 +50,11 @@ class ThreeDimensionalDoubleVector {
         return result
     }
 
-    override fun toString(): String {
-        return MessageFormat.format("<{0,number,#.#}, {1,number,#.#}, {2,number,#.#}>", x, y, z)
-    }
+    override fun toString(): String = MessageFormat.format("<{0,number,#.#}, {1,number,#.#}, {2,number,#.#}>", x, y, z)
 
-    fun proj(other: ThreeDimensionalDoubleVector): ThreeDimensionalDoubleVector {
-        return mulOf(dot(other) / mg2())
-    }
+    fun proj(other: ThreeDimensionalDoubleVector): ThreeDimensionalDoubleVector = mulOf(dot(other) / mg2())
 
-    fun mg2(): Double {
-        return x * x + y * y + z * z
-    }
+    fun mg2(): Double = x * x + y * y + z * z
 
     fun subOf(other: ThreeDimensionalDoubleVector): ThreeDimensionalDoubleVector {
         return ThreeDimensionalDoubleVector(
@@ -71,9 +65,9 @@ class ThreeDimensionalDoubleVector {
     }
 
     fun set(other: ThreeDimensionalDoubleVector) {
-        this.x = other.x
-        this.y = other.y
-        this.z = other.z
+        x = other.x
+        y = other.y
+        z = other.z
     }
 
     fun subOf(x: Double, y: Double, z: Double): ThreeDimensionalDoubleVector {
@@ -92,17 +86,12 @@ class ThreeDimensionalDoubleVector {
         )
     }
 
-    fun plusOf(dx: Double, dy: Double, dz: Double): ThreeDimensionalDoubleVector {
-        return ThreeDimensionalDoubleVector(x + dx, y + dy, z + dz)
-    }
+    fun plusOf(dx: Double, dy: Double, dz: Double): ThreeDimensionalDoubleVector =
+        ThreeDimensionalDoubleVector(x + dx, y + dy, z + dz)
 
-    fun dot(other: ThreeDimensionalDoubleVector): Double {
-        return x * other.x + y * other.y + z * other.z
-    }
+    fun dot(other: ThreeDimensionalDoubleVector): Double = x * other.x + y * other.y + z * other.z
 
-    fun mulOf(s: Double): ThreeDimensionalDoubleVector {
-        return mulOf(s, s, s)
-    }
+    fun mulOf(s: Double): ThreeDimensionalDoubleVector = mulOf(s, s, s)
 
     fun mulOf(x: Double, y: Double, z: Double): ThreeDimensionalDoubleVector {
         return ThreeDimensionalDoubleVector(
@@ -129,21 +118,21 @@ class ThreeDimensionalDoubleVector {
     }
 
     fun sub(vector: ThreeDimensionalDoubleVector) {
-        this.x -= vector.x
-        this.y -= vector.y
-        this.z -= vector.z
+        x -= vector.x
+        y -= vector.y
+        z -= vector.z
     }
 
     fun sub(vector: ThreeDimensionalIntVector) {
-        this.x -= vector.x
-        this.y -= vector.y
-        this.z -= vector.z
+        x -= vector.x
+        y -= vector.y
+        z -= vector.z
     }
 
     fun add(vector: ThreeDimensionalDoubleVector) {
-        this.x += vector.x
-        this.y += vector.y
-        this.z += vector.z
+        x += vector.x
+        y += vector.y
+        z += vector.z
     }
 
     fun mulOf(other: ThreeDimensionalIntVector): ThreeDimensionalDoubleVector {
@@ -154,9 +143,7 @@ class ThreeDimensionalDoubleVector {
         )
     }
 
-    fun mg(): Double {
-        return sqrt(mg2())
-    }
+    fun mg(): Double = sqrt(mg2())
 
     fun squared(): ThreeDimensionalDoubleVector {
         return ThreeDimensionalDoubleVector(
@@ -166,24 +153,18 @@ class ThreeDimensionalDoubleVector {
         )
     }
 
-    fun negated(): ThreeDimensionalDoubleVector {
-        return ThreeDimensionalDoubleVector(-x, -y, -z)
-    }
+    fun negated(): ThreeDimensionalDoubleVector = ThreeDimensionalDoubleVector(-x, -y, -z)
 
     fun normalized(): ThreeDimensionalDoubleVector {
         val mg = mg()
         return ThreeDimensionalDoubleVector(x / mg, y / mg, z / mg)
     }
 
-    fun contains(x: Double, y: Double, z: Double): Boolean {
-        return this.x == x && this.y == y && this.z == z
-    }
+    fun contains(x: Double, y: Double, z: Double): Boolean = this.x == x && this.y == y && this.z == z
 
-    fun contains(x: Int, y: Int, z: Int): Boolean {
-        return this.x == x.toDouble() && this.y == y.toDouble() && this.z == z.toDouble()
-    }
+    fun contains(x: Int, y: Int, z: Int): Boolean =
+        this.x == x.toDouble() && this.y == y.toDouble() && this.z == z.toDouble()
 
-    operator fun contains(coordinates: ThreeDimensionalIntVector): Boolean {
-        return contains(coordinates.x, coordinates.y, coordinates.z)
-    }
+    operator fun contains(coordinates: ThreeDimensionalIntVector): Boolean =
+        contains(coordinates.x, coordinates.y, coordinates.z)
 }

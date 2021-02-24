@@ -42,9 +42,7 @@ class VertexOffset @JvmOverloads constructor(
         )
     }
 
-    fun sq(): VertexOffset {
-        return VertexOffset(dx * dx, dy * dy, dz * dz)
-    }
+    fun sq(): VertexOffset = VertexOffset(dx * dx, dy * dy, dz * dz)
 
     fun mul(offset: VertexOffset): VertexOffset {
         return VertexOffset(

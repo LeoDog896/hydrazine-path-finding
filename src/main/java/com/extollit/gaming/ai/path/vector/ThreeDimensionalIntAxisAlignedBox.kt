@@ -8,7 +8,7 @@ import kotlin.math.min
 
 class ThreeDimensionalIntAxisAlignedBox(@JvmField val min: ThreeDimensionalIntVector, @JvmField val max: ThreeDimensionalIntVector) :
     AbstractSpatialRegion(), ISpatialRegion {
-    constructor(x0: Int, y0: Int, z0: Int, xN: Int, yN: Int, zN: Int) : this(ThreeDimensionalIntVector(x0, y0, z0), ThreeDimensionalIntVector(xN, yN, zN)) {}
+    constructor(x0: Int, y0: Int, z0: Int, xN: Int, yN: Int, zN: Int) : this(ThreeDimensionalIntVector(x0, y0, z0), ThreeDimensionalIntVector(xN, yN, zN))
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

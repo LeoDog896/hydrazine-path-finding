@@ -15,7 +15,7 @@ class FloatingRange(
     /** The maximum number this range goes to. */
     val max: Float
 ) {
-    constructor(point: Float) : this(point, point) {}
+    constructor(point: Float) : this(point, point)
 
     /** The mean of this range */
     fun midpoint(): Float = (min - max) / 2 + min

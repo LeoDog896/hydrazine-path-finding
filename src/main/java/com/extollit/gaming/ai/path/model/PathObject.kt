@@ -325,7 +325,10 @@ class PathObject @JvmOverloads protected constructor(
         val z = coordinates.z
         var minSquareDistFromSource = Double.MAX_VALUE
         var c = -1
+
+        // TODO wizardry
         while (++c < formerPath.cursor() && c < length && nodes[c].coordinates == formerPath.at(c).coordinates);
+
         c--
         while (++c < length) {
             val node: INode = nodes[c]
@@ -353,6 +356,12 @@ class PathObject @JvmOverloads protected constructor(
     companion object {
         private const val PATHPOINT_SNAP_MARGIN_SQ = 0.25
         private var DIRECT_LINE_TIME_LIMIT: FloatingRange? = 1f range 2f
+
+        /**
+         * Sets the settings of this [PathObject]'s Companion via an [IConfigModel]
+         *
+         * @param configModel The [IConfigModel] to base this pathfinding's settings off of.
+         */
         fun configureFrom(configModel: IConfigModel) {
             DIRECT_LINE_TIME_LIMIT = configModel.directLineTimeLimit()
         }
