@@ -11,7 +11,7 @@ interface IOcclusionProviderFactory {
      * Creates an [AreaOcclusionProvider] from an instance space.
      *
      * @param instance The instance where it will grab columnar spaces from.
-     * @param centerXFrom The
+     * //TODO define paramaters
      */
     fun fromInstanceSpace(
         instance: IInstanceSpace,

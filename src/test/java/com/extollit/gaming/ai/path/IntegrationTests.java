@@ -1,6 +1,8 @@
 package com.extollit.gaming.ai.path;
 
 import com.extollit.gaming.ai.path.model.*;
+import com.extollit.gaming.ai.path.node.Node;
+import com.extollit.gaming.ai.path.node.path.IPath;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import org.junit.Test;
@@ -248,7 +250,7 @@ public class IntegrationTests extends AbstractHydrazinePathFinderTests {
         IPath pathObject = pathFinder.trackPathTo(destinationEntity);
 
         assertNotNull(pathObject);
-        INode last = pathObject.last();
+        Node last = pathObject.last();
         assertNotNull(last);
         assertEquals(new ThreeDimensionalIntVector(3, 10, 1), last.getCoordinates());
 

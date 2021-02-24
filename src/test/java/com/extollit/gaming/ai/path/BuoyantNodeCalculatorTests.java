@@ -2,7 +2,7 @@ package com.extollit.gaming.ai.path;
 
 import com.extollit.gaming.ai.path.model.Gravitation;
 import com.extollit.gaming.ai.path.model.IInstanceSpace;
-import com.extollit.gaming.ai.path.model.Node;
+import com.extollit.gaming.ai.path.node.Node;
 import com.extollit.gaming.ai.path.model.Passibility;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import org.junit.Test;

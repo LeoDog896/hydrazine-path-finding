@@ -1,5 +1,7 @@
-package com.extollit.gaming.ai.path.model
+package com.extollit.gaming.ai.path.node
 
+import com.extollit.gaming.ai.path.model.FlagSampler
+import com.extollit.gaming.ai.path.model.IPathingEntity
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 
 interface INodeCalculator {

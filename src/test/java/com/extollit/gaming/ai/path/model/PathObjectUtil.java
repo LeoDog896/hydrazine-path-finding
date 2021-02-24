@@ -1,6 +1,8 @@
 package com.extollit.gaming.ai.path.model;
 
 import com.extollit.collect.CollectionsExt;
+import com.extollit.gaming.ai.path.node.Node;
+import com.extollit.gaming.ai.path.node.path.IPath;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 
 import java.text.MessageFormat;
@@ -36,7 +38,7 @@ public class PathObjectUtil {
         compareCoordinates(coordinates, nodesFrom(path));
     }
 
-    private static void compareCoordinates(ThreeDimensionalIntVector[] coordinates, INode[] nodes) {
+    private static void compareCoordinates(ThreeDimensionalIntVector[] coordinates, Node[] nodes) {
         final ThreeDimensionalIntVector[] otherCoords = new ThreeDimensionalIntVector[nodes.length];
         for (int c = 0; c < otherCoords.length; ++c)
             otherCoords[c] = nodes[c].getCoordinates();
@@ -44,7 +46,7 @@ public class PathObjectUtil {
         assertArrayEquals(coordinates, otherCoords);
     }
 
-    private static INode[] nodesFrom(IPath path) {
-        return CollectionsExt.toList(path).toArray(new INode[path.length()]);
+    private static Node[] nodesFrom(IPath path) {
+        return CollectionsExt.toList(path).toArray(new Node[path.length()]);
     }
 }

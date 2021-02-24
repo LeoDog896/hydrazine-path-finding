@@ -1,6 +1,9 @@
 package com.extollit.gaming.ai.path
 
 import com.extollit.gaming.ai.path.model.*
+import com.extollit.gaming.ai.path.node.*
+import com.extollit.gaming.ai.path.node.path.IPath
+import com.extollit.gaming.ai.path.node.path.IPathProcessor
 import com.extollit.gaming.ai.path.num.FloatingRange
 import com.extollit.gaming.ai.path.num.range
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleBox
@@ -490,7 +493,7 @@ class HydrazinePathFinder internal constructor(
     }
 
     private fun updateFieldWindow(path: IPath) {
-        var node: INode = path.last() ?: return
+        var node: Node = path.last() ?: return
         var pp = node.coordinates
         val min = ThreeDimensionalIntVector(pp.x, pp.y, pp.z)
         val max = ThreeDimensionalIntVector(pp.x, pp.y, pp.z)

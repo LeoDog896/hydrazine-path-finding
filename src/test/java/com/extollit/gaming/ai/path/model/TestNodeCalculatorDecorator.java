@@ -1,5 +1,7 @@
 package com.extollit.gaming.ai.path.model;
 
+import com.extollit.gaming.ai.path.node.INodeCalculator;
+import com.extollit.gaming.ai.path.node.Node;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 
 public class TestNodeCalculatorDecorator implements INodeCalculator {

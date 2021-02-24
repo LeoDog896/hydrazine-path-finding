@@ -1,6 +1,7 @@
 package com.extollit.gaming.ai.path.model;
 
 import com.extollit.collect.CollectionsExt;
+import com.extollit.gaming.ai.path.node.Node;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import org.junit.Before;
 import org.junit.Test;

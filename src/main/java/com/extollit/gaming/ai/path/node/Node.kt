@@ -1,5 +1,8 @@
-package com.extollit.gaming.ai.path.model
+package com.extollit.gaming.ai.path.node
 
+import com.extollit.gaming.ai.path.model.Gravitation
+import com.extollit.gaming.ai.path.model.Passibility
+import com.extollit.gaming.ai.path.model.shl
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import java.text.MessageFormat
 import kotlin.experimental.inv
@@ -11,12 +14,12 @@ import kotlin.math.sqrt
  *
  * @see PathObject
  */
-class Node : INode {
+class Node {
 
     /**
-     * The coordinates of this node in Space.
+     * Coordinates relative to the instance space of the path point
      */
-    override val coordinates: ThreeDimensionalIntVector
+    val coordinates: ThreeDimensionalIntVector
 
     private var word = 0
 
@@ -71,7 +74,14 @@ class Node : INode {
         return node
     }
 
-    override fun passibility(): Passibility = Passibility.values()[word and Mask_Passibility.toInt()]
+    /**
+     * Passibility of this path point, which expresses how likely an entity can survive pathing to this point
+     *
+     * @see Passibility
+     *
+     * @return whether this entity can path to this point
+     */
+    fun passibility(): Passibility = Passibility.values()[word and Mask_Passibility.toInt()]
 
     fun passibility(passibility: Passibility?) {
         var mutablePassibility = passibility
@@ -79,7 +89,13 @@ class Node : INode {
         word = word and Mask_Passibility.inv().toInt() or mutablePassibility!!.ordinal
     }
 
-    override fun gravitation(): Gravitation = Gravitation.values()[word shr Gravitation_BitOffs.toInt() and Mask_Gravitation.toInt()]
+    /**
+     * Orientation about gravity for an entity to path to this point, whether the entity must walk, fly or swim to get
+     * to this point
+     *
+     * @return the gravitation of the path point
+     */
+    fun gravitation(): Gravitation = Gravitation.values()[word shr Gravitation_BitOffs.toInt() and Mask_Gravitation.toInt()]
 
     fun gravitation(gravitation: Gravitation?) {
         word =

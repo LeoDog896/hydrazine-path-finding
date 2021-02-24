@@ -1,5 +1,6 @@
 package com.extollit.gaming.ai.path.model
 
+import com.extollit.gaming.ai.path.node.Node
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import java.util.*
 import kotlin.math.ceil
@@ -262,10 +263,13 @@ class SortedNodeQueue {
             )
         ) {
             val distance0 = point.journey()
-            if (point.appendTo(parent, sqrt(squareDelta.toDouble()).toInt(), remaining)) return resort(
-                point,
-                distance0
-            ) else point.orphan()
+            if (point.appendTo(parent, sqrt(squareDelta.toDouble()).toInt(), remaining))
+                return resort(
+                    point,
+                    distance0
+                )
+
+            point.orphan()
         }
         return false
     }

@@ -1,5 +1,6 @@
-package com.extollit.gaming.ai.path.model
+package com.extollit.gaming.ai.path.node
 
+import com.extollit.gaming.ai.path.model.*
 import com.extollit.gaming.ai.path.vector.SparseThreeDimensionalSpatialMap
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIIntBox
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector

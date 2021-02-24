@@ -82,11 +82,11 @@ enum class Logic {
          * representation.
          * @return whether the flags map to both [.ladder] and [Element.earth]
          */
-        @kotlin.jvm.JvmStatic
+        @JvmStatic
         fun climbable(flags: Byte): Boolean = ladder.flagsIn(flags) && Element.earth.flagsIn(flags)
     }
 
-    // TODO Unexpected const error?
+    // TODO Unexpected const error? (BIT_OFFSET)
     @JvmField
     val mask: Byte = (ordinal shl 2).toByte()
 

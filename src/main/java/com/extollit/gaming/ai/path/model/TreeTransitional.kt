@@ -1,5 +1,6 @@
 package com.extollit.gaming.ai.path.model
 
+import com.extollit.gaming.ai.path.node.Node
 import java.util.*
 
 internal class TreeTransitional(nextRoot: Node) {

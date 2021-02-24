@@ -1,5 +1,8 @@
 package com.extollit.gaming.ai.path.model;
 
+import com.extollit.gaming.ai.path.node.Node;
+import com.extollit.gaming.ai.path.node.INodeCalculator;
+import com.extollit.gaming.ai.path.node.NodeMap;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import org.junit.Before;
 import org.junit.Test;
@@ -167,11 +170,11 @@ public class NodeMapTests {
 
     @Test
     public void filter() {
-        when(this.filter.mapPassibility(any(INode.class))).thenReturn(Passibility.impassible);
+        when(this.filter.mapPassibility(any(Node.class))).thenReturn(Passibility.impassible);
 
         this.nodeMap.filter(this.filter);
 
-        final INode node = this.nodeMap.cachedPassiblePointNear(1, 2, 3);
+        final Node node = this.nodeMap.cachedPassiblePointNear(1, 2, 3);
 
         verify(this.filter).mapPassibility(node);
 
@@ -183,7 +186,7 @@ public class NodeMapTests {
     public void filterNoMap() {
         this.nodeMap.filter(this.filter);
 
-        final INode node = this.nodeMap.cachedPassiblePointNear(1, 2, 3);
+        final Node node = this.nodeMap.cachedPassiblePointNear(1, 2, 3);
 
         verify(this.filter).mapPassibility(node);
 

@@ -1,10 +1,25 @@
-package com.extollit.gaming.ai.path.model
+package com.extollit.gaming.ai.path.node
 
+/**
+ * A linked list designed for extra utility functions for [Node].
+ *
+ * Each [NodeLinkedList] has a reference to a [Node] and its next [NodeLinkedList].
+ *
+ * When adding a new [Node], it'll get the (looped) next node that doesn't have a [next] element,
+ * and sets the child as so.
+ *
+ * Same for removal, except it'll re-link the separated nodes where that node is removed.
+ */
 class NodeLinkedList(
+    /** Gets the node that is in this [NodeLinkedList]. Used as a reference to see what item is in here. */
     val self: Node,
+    /** Reference to the next element in the linked list. */
     private var next: NodeLinkedList? = null
 ) : Iterable<Node> {
 
+    /**
+     * Represents an iterable for [NodeLinkedList]. Goes from one node to the next using references.
+     */
     private class NodeIterable(private var head: NodeLinkedList?) : MutableIterator<Node> {
         override fun hasNext() = head != null
 
@@ -57,12 +72,20 @@ class NodeLinkedList(
      * @return If the addition operation was successful or not (will be unsuccessful if the node is already in the list)
      */
     fun add(child: Node): Boolean {
-        var e: NodeLinkedList? = this
+
+        // Initialize this loop with [this], an element that may or may not have a next element.
+        var element: NodeLinkedList? = this
         var last: NodeLinkedList?
+
         do {
-            if (e?.self === child) return false
-            last = e
-        } while (e?.next.apply { e = this } != null)
+            // If this iteration's [Node] is the same as the child, then this child is already in this linked list
+            if (element?.self === child) return false
+
+            // Else, move to the next element.
+            last = element
+        } while (element?.next.also { element = it } != null) // Sets [element] to element's [next] [Node], then loop if the next node is not null
+
+        // If the child ([next]) node is null, that means the last element has no children and its child can be set..
         last?.next = NodeLinkedList(child)
         return true
     }
@@ -71,7 +94,7 @@ class NodeLinkedList(
      *
      * @param child The child to add to this [NodeLinkedList]
      */
-    operator fun plusAssign(child: Node): Unit {
+    operator fun plusAssign(child: Node) {
         add(child)
     }
 

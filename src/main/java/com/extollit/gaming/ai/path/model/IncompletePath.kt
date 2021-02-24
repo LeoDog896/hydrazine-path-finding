@@ -1,8 +1,10 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.gaming.ai.path.legacy.OneIterator
+import com.extollit.gaming.ai.path.iterable.OneIterator
+import com.extollit.gaming.ai.path.node.Node
+import com.extollit.gaming.ai.path.node.path.IPath
 
-class IncompletePath(val node: INode) : IPath {
+class IncompletePath(val node: Node) : IPath {
     override fun truncateTo(length: Int): Nothing =
         throw ArrayIndexOutOfBoundsException("Cannot truncate incomplete paths")
 
@@ -12,11 +14,11 @@ class IncompletePath(val node: INode) : IPath {
 
     override fun cursor(): Int = 0
 
-    override fun at(i: Int): INode = node
+    override fun at(i: Int): Node = node
 
-    override fun current(): INode = node
+    override fun current(): Node = node
 
-    override fun last(): INode = node
+    override fun last(): Node = node
 
     override fun done(): Boolean = false
 
@@ -26,7 +28,7 @@ class IncompletePath(val node: INode) : IPath {
 
     override fun sameAs(other: IPath): Boolean {
         if (other is IncompletePath) return other.node.coordinates == node.coordinates
-        val i: Iterator<INode?> = other.iterator()
+        val i: Iterator<Node?> = other.iterator()
         return (!i.hasNext() || node.coordinates == i.next()!!.coordinates) && !i.hasNext()
     }
 
@@ -45,5 +47,5 @@ class IncompletePath(val node: INode) : IPath {
 
     override fun toString(): String = "*" + node.coordinates + "...?"
 
-    override fun iterator(): MutableIterator<INode> = OneIterator(node)
+    override fun iterator(): MutableIterator<Node> = OneIterator(node)
 }

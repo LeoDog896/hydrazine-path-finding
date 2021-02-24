@@ -1,4 +1,7 @@
-package com.extollit.gaming.ai.path.model
+package com.extollit.gaming.ai.path.node.path
+
+import com.extollit.gaming.ai.path.model.IPathingEntity
+import com.extollit.gaming.ai.path.node.Node
 
 /**
  * Represents a linear set of contiguous points that can be traversed by a pathing entity.  This object also maintains
@@ -10,11 +13,11 @@ package com.extollit.gaming.ai.path.model
  * off ledges, for this reason if the engine determines the entity is struggling it will force the entity to taxi for a
  * short while until some progress has been made
  *
- * @see INode
+ * @see Node
  *
  * @see .taxiing
  */
-interface IPath : Iterable<INode?> {
+interface IPath : Iterable<Node?> {
     /**
      * Truncate (limit) the path to a new length.  This is useful to prevent pathing into undesirable areas as
      * determined by the caller.
@@ -52,7 +55,7 @@ interface IPath : Iterable<INode?> {
      * @param i index of the node in this path to retrieve
      * @return a read-only node descriptor
      */
-    fun at(i: Int): INode
+    fun at(i: Int): Node
 
     /**
      * The current path node in this path at the cursor
@@ -60,7 +63,7 @@ interface IPath : Iterable<INode?> {
      * @return the node at the cursor where the pathing entity should move to next
      * @see .cursor
      */
-    fun current(): INode
+    fun current(): Node
 
     /**
      * The last path node in this path, when the entity moves to this positon the path is done
@@ -68,7 +71,7 @@ interface IPath : Iterable<INode?> {
      * @return the node at the end of this path
      * @see .done
      */
-    fun last(): INode?
+    fun last(): Node?
 
     /**
      * Whether there is no more progress left on this path and the entity should stop pathing

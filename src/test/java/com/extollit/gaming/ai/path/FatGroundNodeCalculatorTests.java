@@ -3,7 +3,7 @@ package com.extollit.gaming.ai.path;
 import com.extollit.gaming.ai.path.model.FlagSampler;
 import com.extollit.gaming.ai.path.model.IInstanceSpace;
 import com.extollit.gaming.ai.path.model.IPathingEntity;
-import com.extollit.gaming.ai.path.model.Node;
+import com.extollit.gaming.ai.path.node.Node;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -2,6 +2,8 @@ package com.extollit.gaming.ai.path.model
 
 import com.extollit.gaming.ai.path.IConfigModel
 import com.extollit.gaming.ai.path.iterable.ArrayIterable
+import com.extollit.gaming.ai.path.node.Node
+import com.extollit.gaming.ai.path.node.path.IPath
 import com.extollit.gaming.ai.path.num.FloatingRange
 import com.extollit.gaming.ai.path.num.range
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector
@@ -37,7 +39,7 @@ class PathObject @JvmOverloads protected constructor(
         length = nodes.size
     }
 
-    override fun iterator(): MutableIterator<INode> = ArrayIterable.Iter<INode>(nodes, length)
+    override fun iterator(): MutableIterator<Node> = ArrayIterable.Iter<Node>(nodes, length)
 
     override fun length(): Int = length
 
@@ -47,7 +49,7 @@ class PathObject @JvmOverloads protected constructor(
 
     override fun current(): Node = nodes[index]
 
-    override fun last(): INode? {
+    override fun last(): Node? {
         val nodes = nodes
         val length = length
         return if (length > 0) nodes[length - 1] else null
@@ -138,7 +140,7 @@ class PathObject @JvmOverloads protected constructor(
         return minDistanceSquared
     }
 
-    private fun moveSubjectTo(subject: IPathingEntity, pathPoint: INode) {
+    private fun moveSubjectTo(subject: IPathingEntity, pathPoint: Node) {
         val d = ThreeDimensionalDoubleVector(subject.coordinates()!!)
         val position = positionFor(subject, pathPoint.coordinates)
         d.subtract(position)
@@ -281,7 +283,7 @@ class PathObject @JvmOverloads protected constructor(
     override fun sameAs(other: IPath): Boolean {
         val length = length
         var c = 0
-        val i: Iterator<INode?> = other.iterator()
+        val i: Iterator<Node?> = other.iterator()
         while (c < length && i.hasNext()) {
             if (nodes[c].coordinates != i.next()!!.coordinates) return false
             c++
@@ -331,7 +333,7 @@ class PathObject @JvmOverloads protected constructor(
 
         c--
         while (++c < length) {
-            val node: INode = nodes[c]
+            val node: Node = nodes[c]
             val p = node.coordinates
             if (p == lastPointVisited.coordinates) {
                 index = c

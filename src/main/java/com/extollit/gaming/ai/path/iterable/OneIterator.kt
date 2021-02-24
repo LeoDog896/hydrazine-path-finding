@@ -1,4 +1,4 @@
-package com.extollit.gaming.ai.path.legacy
+package com.extollit.gaming.ai.path.iterable
 
 /**
  * Represents an [Iterator] with only one iteration.

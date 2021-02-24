@@ -2,7 +2,7 @@ package com.extollit.gaming.ai.path;
 
 import com.extollit.gaming.ai.path.model.FlagSampler;
 import com.extollit.gaming.ai.path.model.IInstanceSpace;
-import com.extollit.gaming.ai.path.model.INodeCalculator;
+import com.extollit.gaming.ai.path.node.INodeCalculator;
 import org.junit.Before;
 
 public abstract class AbstractNodeCalculatorTests extends AbstractHydrazinePathFinderTests {

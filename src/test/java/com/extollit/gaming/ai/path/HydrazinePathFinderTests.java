@@ -1,6 +1,9 @@
 package com.extollit.gaming.ai.path;
 
 import com.extollit.gaming.ai.path.model.*;
+import com.extollit.gaming.ai.path.node.path.IPath;
+import com.extollit.gaming.ai.path.node.path.IPathProcessor;
+import com.extollit.gaming.ai.path.node.Node;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import org.junit.Test;
 import org.junit.runner.RunWith;
