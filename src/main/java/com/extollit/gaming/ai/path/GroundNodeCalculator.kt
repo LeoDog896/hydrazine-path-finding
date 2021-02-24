@@ -134,12 +134,12 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
     override fun omnidirectional(): Boolean = false
 
     private fun fallingSafety(passibility: Passibility, y0: Int, minY: Int): Passibility {
-        var passibility = passibility
+        var mutablePassibility = passibility
         val dy = y0 - minY
-        if (dy > 1) passibility = passibility.between(
+        if (dy > 1) mutablePassibility = mutablePassibility.between(
             if (dy > MAX_SAFE_FALL_DISTANCE) Passibility.Dangerous else Passibility.Risky
         )
-        return passibility
+        return mutablePassibility
     }
 
     private fun swimable(flags: Byte): Boolean {

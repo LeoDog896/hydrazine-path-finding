@@ -8,7 +8,8 @@ class SparseThreeDimensionalSpatialMap<T>(private val order: Int) : MutableMap<T
         val x: Byte = (x and 0xFF).toByte()
         val y: Byte = (y and 0xFF).toByte()
         val z: Byte = (z and 0xFF).toByte()
-        private val hashCode: Int
+        private val hashCode: Int = (31 * (31 * (31 + z)) + y) + x
+
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || javaClass != other.javaClass) return false
@@ -17,14 +18,6 @@ class SparseThreeDimensionalSpatialMap<T>(private val order: Int) : MutableMap<T
         }
 
         override fun hashCode(): Int = hashCode
-
-        init {
-            var result = 1
-            result = 31 * result + z
-            result = 31 * result + y
-            result = 31 * result + x
-            hashCode = result
-        }
     }
 
     private class LesserCoarseKey(val x: Int, val y: Int, val z: Int) {
@@ -137,7 +130,7 @@ class SparseThreeDimensionalSpatialMap<T>(private val order: Int) : MutableMap<T
         val max = lesserKey(bounds.max)
         val size0 = size
         val cullees: MutableList<Collection<T>> = LinkedList()
-        val i: MutableIterator<Map.Entry<LesserCoarseKey, Map<GreaterCoarseKey, T>>> = space.entries.iterator()
+        val i = space.entries.iterator()
         while (i.hasNext()) {
             val entry = i.next()
             val key = entry.key

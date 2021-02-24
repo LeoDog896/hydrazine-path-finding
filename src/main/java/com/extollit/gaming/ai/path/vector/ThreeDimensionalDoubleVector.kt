@@ -40,8 +40,6 @@ class ThreeDimensionalDoubleVector(
 
     override fun toString(): String = "<$x, $y, $z>"
 
-    fun proj(other: ThreeDimensionalDoubleVector): ThreeDimensionalDoubleVector = mulOf(dot(other) / mg2())
-
     /**
      * Multiplies coordinates by itself and adds the sum of all of them
      * EX if the position is (2, 2, 2) the result would be 2^2 + 2^2 + 2^2 or 4 + 4 + 4 = 12
@@ -64,25 +62,7 @@ class ThreeDimensionalDoubleVector(
         z = other.z
     }
 
-    fun subOf(x: Double, y: Double, z: Double): ThreeDimensionalDoubleVector {
-        return ThreeDimensionalDoubleVector(
-            this.x - x,
-            this.y - y,
-            this.z - z
-        )
-    }
-
     fun dot(other: ThreeDimensionalDoubleVector): Double = x * other.x + y * other.y + z * other.z
-
-    fun mulOf(s: Double): ThreeDimensionalDoubleVector = mulOf(s, s, s)
-
-    fun mulOf(x: Double, y: Double, z: Double): ThreeDimensionalDoubleVector {
-        return ThreeDimensionalDoubleVector(
-            this.x * x,
-            this.y * y,
-            this.z * z
-        )
-    }
 
     fun multiply(amount: Double) {
         multiply(amount, amount, amount)
@@ -134,14 +114,6 @@ class ThreeDimensionalDoubleVector(
 
     fun mg(): Double = sqrt(mg2())
 
-    fun squared(): ThreeDimensionalDoubleVector {
-        return ThreeDimensionalDoubleVector(
-            x * x,
-            y * y,
-            z * z
-        )
-    }
-
     fun normalized(): ThreeDimensionalDoubleVector {
         val mg = mg()
         return ThreeDimensionalDoubleVector(x / mg, y / mg, z / mg)
@@ -151,14 +123,4 @@ class ThreeDimensionalDoubleVector(
 
     fun contains(x: Int, y: Int, z: Int): Boolean =
         this.x == x.toDouble() && this.y == y.toDouble() && this.z == z.toDouble()
-
-    /**
-     * Check if this [ThreeDimensionalDoubleVector] is the same as another [ThreeDimensionalDoubleVector]
-     *
-     * @param coordinates The coordinates to crosscheck over this one
-     *
-     * @return If [coordinates] has the same x, y, and z as this [ThreeDimensionalDoubleVector]
-     */
-    fun sameAs(coordinates: ThreeDimensionalIntVector): Boolean =
-        contains(coordinates.x, coordinates.y, coordinates.z)
 }
