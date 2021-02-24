@@ -22,7 +22,7 @@ open class PathObject @JvmOverloads protected constructor(
 
     @JvmField
     var index: Int = 0
-    
+
     private var taxiUntil = 0
     private var adjacentIndex = 0
     private var length: Int = nodes.size
