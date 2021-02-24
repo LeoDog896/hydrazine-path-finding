@@ -3,7 +3,7 @@ package com.extollit.gaming.ai.path;
 import com.extollit.gaming.ai.path.model.FlagSampler;
 import com.extollit.gaming.ai.path.model.Node;
 import com.extollit.gaming.ai.path.model.Passibility;
-import com.extollit.linalg.immutable.Vec3i;
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public class FatFluidicNodeCalculatorTests extends AbstractHydrazinePathFinderTe
 
         solid(0, 0, 1);
 
-        final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 1), ORIGIN, this.flagSampler);
+        final Node actual = calculator.passibleNodeNear(new ThreeDimensionalIntVector(1, 0, 1), ORIGIN, this.flagSampler);
         assertNotNull(actual);
         assertEquals(Passibility.impassible, actual.passibility());
         assertEquals(1, actual.getCoordinates().z);

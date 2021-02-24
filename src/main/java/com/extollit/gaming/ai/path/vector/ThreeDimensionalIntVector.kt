@@ -110,7 +110,9 @@ class ThreeDimensionalIntVector(
         this.x == x.toInt() && this.y == y.toInt() && this.z == z.toInt()
 
     companion object {
+        @JvmField
         val ZERO = ThreeDimensionalIntVector(0, 0, 0)
+
         fun truncated(other: Vec3d): ThreeDimensionalIntVector =
             ThreeDimensionalIntVector(other.x.toInt(), other.y.toInt(), other.z.toInt())
     }

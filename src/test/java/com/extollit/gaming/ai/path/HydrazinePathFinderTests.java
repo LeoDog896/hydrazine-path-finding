@@ -1,7 +1,7 @@
 package com.extollit.gaming.ai.path;
 
 import com.extollit.gaming.ai.path.model.*;
-import com.extollit.linalg.immutable.Vec3i;
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -34,8 +34,8 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
 
         assertNull(path);
 
-        assertTrue(pathFinder.unreachableFromSource(Vec3i.ZERO, new Vec3i(+1, 0, 0)));
-        assertFalse(pathFinder.unreachableFromSource(Vec3i.ZERO, new Vec3i(-1, 0, 0)));
+        assertTrue(pathFinder.unreachableFromSource(ThreeDimensionalIntVector.ZERO, new ThreeDimensionalIntVector(+1, 0, 0)));
+        assertFalse(pathFinder.unreachableFromSource(ThreeDimensionalIntVector.ZERO, new ThreeDimensionalIntVector(-1, 0, 0)));
     }
 
     @Test
@@ -51,8 +51,8 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
 
         assertNull(path);
 
-        assertTrue(pathFinder.unreachableFromSource(Vec3i.ZERO, new Vec3i(+1, 0, 0)));
-        assertFalse(pathFinder.unreachableFromSource(Vec3i.ZERO, new Vec3i(-1, 0, 0)));
+        assertTrue(pathFinder.unreachableFromSource(ThreeDimensionalIntVector.ZERO, new ThreeDimensionalIntVector(+1, 0, 0)));
+        assertFalse(pathFinder.unreachableFromSource(ThreeDimensionalIntVector.ZERO, new ThreeDimensionalIntVector(-1, 0, 0)));
     }
 
     @Test
@@ -68,8 +68,8 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
 
         assertNull(path);
 
-        assertTrue(pathFinder.unreachableFromSource(Vec3i.ZERO, new Vec3i(-1, 0, 0)));
-        assertFalse(pathFinder.unreachableFromSource(Vec3i.ZERO, new Vec3i(+1, 0, 0)));
+        assertTrue(pathFinder.unreachableFromSource(ThreeDimensionalIntVector.ZERO, new ThreeDimensionalIntVector(-1, 0, 0)));
+        assertFalse(pathFinder.unreachableFromSource(ThreeDimensionalIntVector.ZERO, new ThreeDimensionalIntVector(+1, 0, 0)));
     }
 
     @Test
@@ -85,8 +85,8 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
 
         assertNull(path);
 
-        assertTrue(pathFinder.unreachableFromSource(Vec3i.ZERO, new Vec3i(0, 0, +1)));
-        assertFalse(pathFinder.unreachableFromSource(Vec3i.ZERO, new Vec3i(0, 0, -1)));
+        assertTrue(pathFinder.unreachableFromSource(ThreeDimensionalIntVector.ZERO, new ThreeDimensionalIntVector(0, 0, +1)));
+        assertFalse(pathFinder.unreachableFromSource(ThreeDimensionalIntVector.ZERO, new ThreeDimensionalIntVector(0, 0, -1)));
     }
 
     @Test
@@ -102,8 +102,8 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
 
         assertNull(path);
 
-        assertTrue(pathFinder.unreachableFromSource(Vec3i.ZERO, new Vec3i(0, 0, -1)));
-        assertFalse(pathFinder.unreachableFromSource(Vec3i.ZERO, new Vec3i(0, 0, +1)));
+        assertTrue(pathFinder.unreachableFromSource(ThreeDimensionalIntVector.ZERO, new ThreeDimensionalIntVector(0, 0, -1)));
+        assertFalse(pathFinder.unreachableFromSource(ThreeDimensionalIntVector.ZERO, new ThreeDimensionalIntVector(0, 0, +1)));
     }
 
     @Test
@@ -135,26 +135,26 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
 
         IPath path = pathFinder.initiatePathTo(0, 0, 7);
         assertPath(path,
-                new Vec3i(0, 0, 0),
-                new Vec3i(0, 0, 1),
-                new Vec3i(0, 0, 2)
+                new ThreeDimensionalIntVector(0, 0, 0),
+                new ThreeDimensionalIntVector(0, 0, 1),
+                new ThreeDimensionalIntVector(0, 0, 2)
         );
 
         pos(0, 0, 2);
         pathFinder.updatePathFor(this.pathingEntity);
         path = pathFinder.updatePathFor(this.pathingEntity);
         assertPath(path,
-            new Vec3i(0, 0, 2),
-            new Vec3i(0, 0, 3),
-            new Vec3i(0, 0, 4),
-            new Vec3i(0, 0, 5)
+            new ThreeDimensionalIntVector(0, 0, 2),
+            new ThreeDimensionalIntVector(0, 0, 3),
+            new ThreeDimensionalIntVector(0, 0, 4),
+            new ThreeDimensionalIntVector(0, 0, 5)
         );
         pos(0, 0, 4);
         this.pathFinder.schedulingPriority(SchedulingPriority.high);
         path = pathFinder.updatePathFor(this.pathingEntity);
         assertPath(path,
-            new Vec3i(0, 0, 4),
-            new Vec3i(0, 0, 5)
+            new ThreeDimensionalIntVector(0, 0, 4),
+            new ThreeDimensionalIntVector(0, 0, 5)
         );
 
         path = pathFinder.updatePathFor(this.pathingEntity);
@@ -166,18 +166,18 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
 
         path = pathFinder.updatePathFor(this.pathingEntity);
         assertPath(path,
-            new Vec3i(0, 0, 4),
-            new Vec3i(0, 0, 3),
-            new Vec3i(0, 0, 2),
-            new Vec3i(1, 0, 2),
-            new Vec3i(2, 0, 2),
-            new Vec3i(2, 0, 3),
-            new Vec3i(2, 0, 4),
-            new Vec3i(2, 0, 5),
-            new Vec3i(2, 0, 6),
-            new Vec3i(2, 0, 7),
-            new Vec3i(1, 0, 7),
-            new Vec3i(0, 0, 7)
+            new ThreeDimensionalIntVector(0, 0, 4),
+            new ThreeDimensionalIntVector(0, 0, 3),
+            new ThreeDimensionalIntVector(0, 0, 2),
+            new ThreeDimensionalIntVector(1, 0, 2),
+            new ThreeDimensionalIntVector(2, 0, 2),
+            new ThreeDimensionalIntVector(2, 0, 3),
+            new ThreeDimensionalIntVector(2, 0, 4),
+            new ThreeDimensionalIntVector(2, 0, 5),
+            new ThreeDimensionalIntVector(2, 0, 6),
+            new ThreeDimensionalIntVector(2, 0, 7),
+            new ThreeDimensionalIntVector(1, 0, 7),
+            new ThreeDimensionalIntVector(0, 0, 7)
         );
     }
 
@@ -210,43 +210,43 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
 
         assertNotNull(path);
         assertPath(path,
-            new Vec3i(0, 0, 5),
-            new Vec3i(0, 0, 4)
+            new ThreeDimensionalIntVector(0, 0, 5),
+            new ThreeDimensionalIntVector(0, 0, 4)
         );
 
         pos(0, 0, 4);
 
         path = pathFinder.updatePathFor(this.pathingEntity);
         assertPath(path,
-                new Vec3i(0, 0, 5),
-                new Vec3i(0, 0, 4),
-                new Vec3i(0, 0, 3),
-                new Vec3i(0, 0, 2),
-                new Vec3i(-1, 0, 2),
-                new Vec3i(-2, 0, 2),
-                new Vec3i(-2, 0, 3),
-                new Vec3i(-2, 0, 4),
-                new Vec3i(-2, 0, 5),
-                new Vec3i(-2, 0, 6)
+                new ThreeDimensionalIntVector(0, 0, 5),
+                new ThreeDimensionalIntVector(0, 0, 4),
+                new ThreeDimensionalIntVector(0, 0, 3),
+                new ThreeDimensionalIntVector(0, 0, 2),
+                new ThreeDimensionalIntVector(-1, 0, 2),
+                new ThreeDimensionalIntVector(-2, 0, 2),
+                new ThreeDimensionalIntVector(-2, 0, 3),
+                new ThreeDimensionalIntVector(-2, 0, 4),
+                new ThreeDimensionalIntVector(-2, 0, 5),
+                new ThreeDimensionalIntVector(-2, 0, 6)
         );
         path = pathFinder.updatePathFor(this.pathingEntity);
         assertNotNull(path);
         path = pathFinder.updatePathFor(this.pathingEntity);
 
         assertPath(path,
-                new Vec3i(0, 0, 5),
-                new Vec3i(0, 0, 4),
-                new Vec3i(0, 0, 3),
-                new Vec3i(0, 0, 2),
-                new Vec3i(1, 0, 2),
-                new Vec3i(2, 0, 2),
-                new Vec3i(2, 0, 3),
-                new Vec3i(2, 0, 4),
-                new Vec3i(2, 0, 5),
-                new Vec3i(2, 0, 6),
-                new Vec3i(2, 0, 7),
-                new Vec3i(1, 0, 7),
-                new Vec3i(0, 0, 7)
+                new ThreeDimensionalIntVector(0, 0, 5),
+                new ThreeDimensionalIntVector(0, 0, 4),
+                new ThreeDimensionalIntVector(0, 0, 3),
+                new ThreeDimensionalIntVector(0, 0, 2),
+                new ThreeDimensionalIntVector(1, 0, 2),
+                new ThreeDimensionalIntVector(2, 0, 2),
+                new ThreeDimensionalIntVector(2, 0, 3),
+                new ThreeDimensionalIntVector(2, 0, 4),
+                new ThreeDimensionalIntVector(2, 0, 5),
+                new ThreeDimensionalIntVector(2, 0, 6),
+                new ThreeDimensionalIntVector(2, 0, 7),
+                new ThreeDimensionalIntVector(1, 0, 7),
+                new ThreeDimensionalIntVector(0, 0, 7)
         );
     }
 
@@ -258,16 +258,16 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
         assertNotNull(path);
 
         assertPath(path,
-            new Vec3i(1, 0, 3),
-            new Vec3i(2, 0, 3)
+            new ThreeDimensionalIntVector(1, 0, 3),
+            new ThreeDimensionalIntVector(2, 0, 3)
         );
 
         pos(2, 0, 3);
         path = pathFinder.updatePathFor(this.pathingEntity);
 
         assertPathNot(path,
-            new Vec3i(2, 0, 3),
-            new Vec3i(1, 0, 3)
+            new ThreeDimensionalIntVector(2, 0, 3),
+            new ThreeDimensionalIntVector(1, 0, 3)
         );
     }
 
@@ -279,15 +279,15 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
         assertNotNull(path);
 
         assertPath(path,
-                new Vec3i(1, 0, 3),
-                new Vec3i(2, 0, 3)
+                new ThreeDimensionalIntVector(1, 0, 3),
+                new ThreeDimensionalIntVector(2, 0, 3)
         );
 
         path = pathFinder.updatePathFor(this.pathingEntity);
 
         assertPath(path,
-                new Vec3i(1, 0, 3),
-                new Vec3i(2, 0, 3)
+                new ThreeDimensionalIntVector(1, 0, 3),
+                new ThreeDimensionalIntVector(2, 0, 3)
         );
     }
 
@@ -318,8 +318,8 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
 
         final IPath path = pathFinder.initiatePathTo(3, 3, 0);
         assertPath(path,
-                new Vec3i(2, 3, 0),
-                new Vec3i(3, 3, 0)
+                new ThreeDimensionalIntVector(2, 3, 0),
+                new ThreeDimensionalIntVector(3, 3, 0)
         );
     }
 
@@ -345,9 +345,9 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
         pathFinder.resetTriage();
         path = pathFinder.updatePathFor(pathingEntity);
         assertPath(path,
-                new Vec3i(0, 0, -1),
-                new Vec3i(0, 0, 0),
-                new Vec3i(0, 0, +1)
+                new ThreeDimensionalIntVector(0, 0, -1),
+                new ThreeDimensionalIntVector(0, 0, 0),
+                new ThreeDimensionalIntVector(0, 0, +1)
         );
     }
 
@@ -370,8 +370,8 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
 
         assertPath(
                 path,
-                new Vec3i(0, 1, 0),
-                new Vec3i(1, 1, 0)
+                new ThreeDimensionalIntVector(0, 1, 0),
+                new ThreeDimensionalIntVector(1, 1, 0)
         );
     }
     
@@ -449,7 +449,7 @@ public class HydrazinePathFinderTests extends AbstractHydrazinePathFinderTests {
         final List<Node> q = pathFinder.queue.view();
         final Node
             parent = q.get(7),
-            enigma = new Node(new Vec3i(-20, 0, 1));
+            enigma = new Node(new ThreeDimensionalIntVector(-20, 0, 1));
 
         boolean lengthSetResult = parent.length(109);
         assertTrue(lengthSetResult);

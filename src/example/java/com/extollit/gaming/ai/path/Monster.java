@@ -3,12 +3,13 @@ package com.extollit.gaming.ai.path;
 import com.extollit.gaming.ai.path.model.Gravitation;
 import com.extollit.gaming.ai.path.model.IPathingEntity;
 import com.extollit.gaming.ai.path.model.Passibility;
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector;
 import com.extollit.linalg.immutable.Vec3d;
 
 public class Monster implements IPathingEntity, IPathingEntity.Capabilities {
     public boolean fireResistant, cautious, climber, swimmer, aquatic, avian, aquaphobic, avoidsDoorways, opensDoors;
 
-    private final com.extollit.linalg.mutable.Vec3d position = new com.extollit.linalg.mutable.Vec3d(0, 0, 0);
+    private final ThreeDimensionalDoubleVector position = new ThreeDimensionalDoubleVector(0, 0, 0);
 
     private int age;
 
@@ -28,13 +29,13 @@ public class Monster implements IPathingEntity, IPathingEntity.Capabilities {
     }
 
     @Override
-    public void moveTo(Vec3d position, Passibility passibility, Gravitation gravitation) {
+    public void moveTo(ThreeDimensionalDoubleVector position, Passibility passibility, Gravitation gravitation) {
         this.position.set(position);
     }
 
     @Override
-    public Vec3d coordinates() {
-        return new Vec3d(this.position);
+    public ThreeDimensionalDoubleVector coordinates() {
+        return new ThreeDimensionalDoubleVector(this.position);
     }
 
     @Override

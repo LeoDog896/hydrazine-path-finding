@@ -1,6 +1,6 @@
 package com.extollit.gaming.ai.path.model;
 
-import com.extollit.linalg.immutable.Vec3i;
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,11 +47,11 @@ public class SortedPointQueueTests {
         add(add(middle, 1, 0, 3), 2, 0, 3);
 
         assertQueuePoints(
-                new Vec3i(0, 0, 3),
-                new Vec3i(0, 0, 4),
-                new Vec3i(0, 0, 5),
-                new Vec3i(1, 0, 3),
-                new Vec3i(2, 0, 3)
+                new ThreeDimensionalIntVector(0, 0, 3),
+                new ThreeDimensionalIntVector(0, 0, 4),
+                new ThreeDimensionalIntVector(0, 0, 5),
+                new ThreeDimensionalIntVector(1, 0, 3),
+                new ThreeDimensionalIntVector(2, 0, 3)
         );
     }
 
@@ -76,9 +76,9 @@ public class SortedPointQueueTests {
         assertTrue(up.infecund() && !up.orphaned());
 
         assertQueuePoints(
-            new Vec3i(0, 0, 5),
-            new Vec3i(2, 0, 3),
-            new Vec3i(2, 0, 1)
+            new ThreeDimensionalIntVector(0, 0, 5),
+            new ThreeDimensionalIntVector(2, 0, 3),
+            new ThreeDimensionalIntVector(2, 0, 1)
         );
     }
 
@@ -129,12 +129,12 @@ public class SortedPointQueueTests {
     public void addLimit() {
         int c;
         for (c = 0; c < Node.MAX_INDICES; ++c) {
-            final Node node = new Node(new Vec3i(0, 0, c));
+            final Node node = new Node(new ThreeDimensionalIntVector(0, 0, c));
             node.remaining((c % (Node.MAX_PATH_DISTANCE - 1)) + 1);
             q.add(node);
         }
 
-        final Node pivot = new Node(new Vec3i(1, 0, c));
+        final Node pivot = new Node(new ThreeDimensionalIntVector(1, 0, c));
         pivot.remaining(Node.MAX_PATH_DISTANCE);
         q.add(pivot);
 
@@ -163,9 +163,9 @@ public class SortedPointQueueTests {
         graph.cullBranchAt(leftRoot.getCoordinates(), q);
 
         assertQueuePoints(
-            new Vec3i(-1, 0, 0),
-            new Vec3i(2, 0, 1),
-            new Vec3i(1, 0, 1)
+            new ThreeDimensionalIntVector(-1, 0, 0),
+            new ThreeDimensionalIntVector(2, 0, 1),
+            new ThreeDimensionalIntVector(1, 0, 1)
         );
 
         assertTrue(rightHead.assigned());
@@ -189,12 +189,12 @@ public class SortedPointQueueTests {
                 rightHead = add(right, +1, 0, 1),
                 rightOutlier = add(right, +2, 0, 1);
 
-        final Vec3i candidate = new Vec3i(5, 6, 7);
+        final ThreeDimensionalIntVector candidate = new ThreeDimensionalIntVector(5, 6, 7);
         graph.cullBranchAt(candidate, q);
 
         assertQueuePoints(
-                new Vec3i(+1, 0, 1),
-                new Vec3i(2, 0, 1)
+                new ThreeDimensionalIntVector(+1, 0, 1),
+                new ThreeDimensionalIntVector(2, 0, 1)
         );
 
         assertTrue(rightHead.assigned());
@@ -237,12 +237,12 @@ public class SortedPointQueueTests {
         assertQueuePoints(
                 prune.getCoordinates(),
                 next.getCoordinates(),
-                new Vec3i(-1, 0, -1),
+                new ThreeDimensionalIntVector(-1, 0, -1),
                 another.getCoordinates(),
-                new Vec3i(0, 0, -1),
-                new Vec3i(0, 0, -2),
-                new Vec3i(-1, 0, -2),
-                new Vec3i(1, 0, -2)
+                new ThreeDimensionalIntVector(0, 0, -1),
+                new ThreeDimensionalIntVector(0, 0, -2),
+                new ThreeDimensionalIntVector(-1, 0, -2),
+                new ThreeDimensionalIntVector(1, 0, -2)
         );
 
         assertEquals(3, test.length());
@@ -341,11 +341,11 @@ public class SortedPointQueueTests {
         assertArrayEquals(expected, actual);
     }
 
-    protected void assertQueuePoints(Vec3i... expected) {
+    protected void assertQueuePoints(ThreeDimensionalIntVector... expected) {
         assertQueueIndices();
 
         List<Node> view = q.view();
-        final Vec3i[] actual = new Vec3i[view.size()];
+        final ThreeDimensionalIntVector[] actual = new ThreeDimensionalIntVector[view.size()];
         {
             int c = 0;
             for (Node p : view)

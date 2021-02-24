@@ -7,7 +7,14 @@ import kotlin.experimental.or
 import kotlin.experimental.xor
 
 // TODO figure out what this is for!
-class VertexOffset @JvmOverloads constructor(val dx: Byte = 1, val dy: Byte = 0, val dz: Byte = 0) {
+class VertexOffset @JvmOverloads constructor(
+    @JvmField
+    val dx: Byte = 1,
+    @JvmField
+    val dy: Byte = 0,
+    @JvmField
+    val dz: Byte = 0
+) {
 
     constructor(dx: Int, dy: Int, dz: Int):
         this(dx.toByte(), dy.toByte(), dz.toByte())

@@ -1,9 +1,9 @@
 package com.extollit.gaming.ai.path;
 
 import com.extollit.gaming.ai.path.model.*;
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector;
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import com.extollit.linalg.immutable.AxisAlignedBBox;
-import com.extollit.linalg.immutable.Vec3d;
-import com.extollit.linalg.immutable.Vec3i;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractHydrazinePathFinderTests {
-    protected static final Vec3i ORIGIN = new Vec3i(0, 0, 0);
+    protected static final ThreeDimensionalIntVector ORIGIN = new ThreeDimensionalIntVector(0, 0, 0);
 
     protected HydrazinePathFinder pathFinder;
 
@@ -59,12 +59,12 @@ public abstract class AbstractHydrazinePathFinderTests {
     }
 
     protected void pos(IDynamicMovableObject mockedMob, double x, double y, double z) {
-        final Vec3d pos = new Vec3d(x, y, z);
+        final ThreeDimensionalDoubleVector pos = new ThreeDimensionalDoubleVector(x, y, z);
         when(mockedMob.coordinates()).thenReturn(pos);
     }
 
     protected void pos(double x, double y, double z) {
-        final Vec3d pos = new Vec3d(x, y, z);
+        final ThreeDimensionalDoubleVector pos = new ThreeDimensionalDoubleVector(x, y, z);
         when(pathingEntity.coordinates()).thenReturn(pos);
     }
 

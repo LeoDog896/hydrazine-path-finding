@@ -3,7 +3,6 @@ package com.extollit.gaming.ai.path.model
 import com.extollit.gaming.ai.path.vector.SparseThreeDimensionalSpatialMap
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntAxisAlignedBox
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
-import com.extollit.linalg.immutable.Vec3i
 
 class NodeMap(
     private val instanceSpace: IInstanceSpace,
@@ -158,9 +157,9 @@ class NodeMap(
         return node
     }
 
-    fun remove(x: Int, y: Int, z: Int): Boolean = remove(Vec3i(x, y, z))
+    fun remove(x: Int, y: Int, z: Int): Boolean = remove(ThreeDimensionalIntVector(x, y, z))
 
-    fun remove(coordinates: Vec3i?): Boolean {
+    fun remove(coordinates: ThreeDimensionalIntVector?): Boolean {
         val existing = internalMap.remove(coordinates)
         if (existing != null) {
             existing.rollback()

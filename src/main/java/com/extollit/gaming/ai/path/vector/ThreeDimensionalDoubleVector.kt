@@ -76,6 +76,12 @@ class ThreeDimensionalDoubleVector {
         )
     }
 
+    fun set(other: ThreeDimensionalDoubleVector) {
+        this.x = other.x
+        this.y = other.y
+        this.z = other.z
+    }
+
     fun subOf(other: com.extollit.linalg.mutable.Vec3d): ThreeDimensionalDoubleVector {
         return subOf(other.x, other.y, other.z)
     }

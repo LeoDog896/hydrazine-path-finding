@@ -4,7 +4,7 @@ import com.extollit.gaming.ai.path.model.FlagSampler;
 import com.extollit.gaming.ai.path.model.IInstanceSpace;
 import com.extollit.gaming.ai.path.model.IPathingEntity;
 import com.extollit.gaming.ai.path.model.Node;
-import com.extollit.linalg.immutable.Vec3i;
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -31,7 +31,7 @@ public class FatGroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         solid(1, -1, 0);
         solid(2, 0, 0);
 
-        final Node actual = calculator.passibleNodeNear(new Vec3i(1, 0, 0), ORIGIN, new FlagSampler(super.occlusionProvider));
+        final Node actual = calculator.passibleNodeNear(new ThreeDimensionalIntVector(1, 0, 0), ORIGIN, new FlagSampler(super.occlusionProvider));
         assertNotNull(actual);
         assertEquals(0, actual.getCoordinates().y);
     }
@@ -42,7 +42,7 @@ public class FatGroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         solid(-1, -1, 0);
         solid(-2, 0, 0);
 
-        final Node actual = calculator.passibleNodeNear(new Vec3i(-1, 0, 0), ORIGIN, new FlagSampler(super.occlusionProvider));
+        final Node actual = calculator.passibleNodeNear(new ThreeDimensionalIntVector(-1, 0, 0), ORIGIN, new FlagSampler(super.occlusionProvider));
         assertNotNull(actual);
         assertEquals(1, actual.getCoordinates().y);
     }
@@ -53,7 +53,7 @@ public class FatGroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         solid(0, -1, 1);
         solid(0, 0, 2);
 
-        final Node actual = calculator.passibleNodeNear(new Vec3i(0, 0, 1), ORIGIN, new FlagSampler(super.occlusionProvider));
+        final Node actual = calculator.passibleNodeNear(new ThreeDimensionalIntVector(0, 0, 1), ORIGIN, new FlagSampler(super.occlusionProvider));
         assertNotNull(actual);
         assertEquals(0, actual.getCoordinates().y);
     }
@@ -64,7 +64,7 @@ public class FatGroundNodeCalculatorTests extends AbstractNodeCalculatorTests {
         solid(0, -1, -1);
         solid(0, 0, -2);
 
-        final Node actual = calculator.passibleNodeNear(new Vec3i(0, 0, -1), ORIGIN, new FlagSampler(super.occlusionProvider));
+        final Node actual = calculator.passibleNodeNear(new ThreeDimensionalIntVector(0, 0, -1), ORIGIN, new FlagSampler(super.occlusionProvider));
         assertNotNull(actual);
         assertEquals(1, actual.getCoordinates().y);
     }

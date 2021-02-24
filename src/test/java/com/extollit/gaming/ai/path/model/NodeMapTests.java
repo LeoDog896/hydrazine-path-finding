@@ -1,6 +1,6 @@
 package com.extollit.gaming.ai.path.model;
 
-import com.extollit.linalg.immutable.Vec3i;
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,16 +52,16 @@ public class NodeMapTests {
 
     @Test
     public void passibleControl() {
-        when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(new Node(new Vec3i(1, 2, 3)));
+        when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(new Node(new ThreeDimensionalIntVector(1, 2, 3)));
 
         this.nodeMap.cachedPassiblePointNear(1, 2, 3);
 
-        verify(this.calculator).passibleNodeNear(eq(new Vec3i(1, 2, 3)), isNull(Vec3i.class), any());
+        verify(this.calculator).passibleNodeNear(eq(new ThreeDimensionalIntVector(1, 2, 3)), isNull(ThreeDimensionalIntVector.class), any());
     }
 
     @Test
     public void passibleCached() {
-        when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(new Node(new Vec3i(1, 2, 3)));
+        when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(new Node(new ThreeDimensionalIntVector(1, 2, 3)));
 
         final Node
             node = this.nodeMap.cachedPassiblePointNear(1, 2, 3),
@@ -72,7 +72,7 @@ public class NodeMapTests {
 
     @Test
     public void redundancyExistency() {
-        when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(new Node(new Vec3i(1, 2, 3)));
+        when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(new Node(new ThreeDimensionalIntVector(1, 2, 3)));
 
         final Node
             node = this.nodeMap.cachedPassiblePointNear(1, 2, 3),
@@ -83,7 +83,7 @@ public class NodeMapTests {
 
     @Test
     public void redundancyRemoveOriginal() {
-        when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(new Node(new Vec3i(1, 2, 3)));
+        when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(new Node(new ThreeDimensionalIntVector(1, 2, 3)));
 
         Node node = this.nodeMap.cachedPassiblePointNear(1, 2, 3);
 
@@ -91,7 +91,7 @@ public class NodeMapTests {
 
         assertTrue(removed);
 
-        when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(new Node(new Vec3i(1, 2, 3)));
+        when(this.calculator.passibleNodeNear(any(), any(), any())).thenReturn(new Node(new ThreeDimensionalIntVector(1, 2, 3)));
 
         final Node existing = this.nodeMap.cachedPassiblePointNear(3, 4, 5);
 
@@ -104,7 +104,7 @@ public class NodeMapTests {
 
     @Test
     public void alwaysVolatile() {
-        final Node initial = new Node(new Vec3i(1, 2, 3));
+        final Node initial = new Node(new ThreeDimensionalIntVector(1, 2, 3));
 
         initial.passibility(Passibility.Risky);
         initial.volatile_(true);
@@ -113,7 +113,7 @@ public class NodeMapTests {
 
         final Node result0 = this.nodeMap.cachedPassiblePointNear(1, 2, 3);
 
-        final Node second = new Node(new Vec3i(1, 2, 3));
+        final Node second = new Node(new ThreeDimensionalIntVector(1, 2, 3));
 
         second.passibility(Passibility.Dangerous);
         second.volatile_(true);
@@ -130,7 +130,7 @@ public class NodeMapTests {
 
     @Test
     public void becomeStable() {
-        final Node initial = new Node(new Vec3i(1, 2, 3));
+        final Node initial = new Node(new ThreeDimensionalIntVector(1, 2, 3));
 
         initial.passibility(Passibility.Risky);
         initial.volatile_(true);
@@ -139,7 +139,7 @@ public class NodeMapTests {
 
         final Node result0 = this.nodeMap.cachedPassiblePointNear(1, 2, 3);
 
-        final Node second = new Node(new Vec3i(1, 2, 3));
+        final Node second = new Node(new ThreeDimensionalIntVector(1, 2, 3));
 
         second.passibility(Passibility.Dangerous);
         second.volatile_(false);
@@ -153,7 +153,7 @@ public class NodeMapTests {
         assertEquals(Passibility.Dangerous, result1.passibility());
         assertFalse(result1.volatile_());
 
-        final Node third = new Node(new Vec3i(1, 2, 3));
+        final Node third = new Node(new ThreeDimensionalIntVector(1, 2, 3));
 
         third.passibility(Passibility.Risky);
         third.volatile_(true);
