@@ -160,7 +160,7 @@ class NodeMap(
 
     fun remove(x: Int, y: Int, z: Int): Boolean = remove(ThreeDimensionalIntVector(x, y, z))
 
-    fun remove(coordinates: ThreeDimensionalIntVector?): Boolean {
+    fun remove(coordinates: ThreeDimensionalIntVector): Boolean {
         val existing = internalMap.remove(coordinates)
         if (existing != null) {
             existing.rollback()
