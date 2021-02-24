@@ -1,11 +1,11 @@
 package com.extollit.gaming.ai.path.model;
 
-import com.extollit.collect.CollectionsExt;
 import com.extollit.gaming.ai.path.node.Node;
 import com.extollit.gaming.ai.path.node.path.IPath;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -47,6 +47,12 @@ public class PathObjectUtil {
     }
 
     private static Node[] nodesFrom(IPath path) {
-        return CollectionsExt.toList(path).toArray(new Node[path.length()]);
+
+        ArrayList<Node> list = new ArrayList<>(path.length());
+
+        for (Node item : path)
+            list.add(item);
+
+        return list.toArray(new Node[path.length()]);
     }
 }

@@ -1,7 +1,5 @@
 package com.extollit.gaming.ai.path.vector
 
-import com.extollit.collect.FilterIterable
-import com.extollit.collect.FlattenIterable
 import java.util.*
 import java.util.AbstractMap.SimpleEntry
 
@@ -154,14 +152,39 @@ class SparseThreeDimensionalSpatialMap<T>(private val order: Int) : MutableMap<T
             inner0 = null
             key0 = null
         }
-        return FlattenIterable(cullees)
+        return cullees.flatten().asIterable()
     }
 
-    private abstract inner class AbstractIterator<V> : FilterIterable.Iter<V>(), MutableIterator<V> {
+    private abstract inner class AbstractIterator<out V> : MutableIterator<V> {
+
+        private var current: V? = null
+        private var dead = false
+
+        override fun hasNext(): Boolean {
+            if (dead) return false
+            if (current == null) current = findNext()
+            dead = current == null
+            return !dead
+        }
+
+        override fun next(): V {
+            if (!hasNext()) throw NoSuchElementException(
+                "No more elements exist in this iterator $this"
+            )
+            val result: V = current!!
+            current = findNext()
+            dead = current == null
+            return result
+        }
+
+        override fun remove() {
+            throw UnsupportedOperationException()
+        }
+
         private val oi: Iterator<Map.Entry<LesserCoarseKey, Map<GreaterCoarseKey, T>>>
         private var ii: Iterator<Map.Entry<GreaterCoarseKey, T>>? = null
         private var lesserKey: LesserCoarseKey? = null
-        override fun findNext(): V? {
+        fun findNext(): V? {
             val oi = oi
             var ii = ii
             while (ii == null || !ii.hasNext()) {

@@ -1,6 +1,5 @@
 package com.extollit.gaming.ai.path.model;
 
-import com.extollit.collect.CollectionsExt;
 import com.extollit.gaming.ai.path.node.Node;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
@@ -207,7 +206,7 @@ public class PathObjectTests {
         assertEquals(5, pathObject.length());
         assertEquals(
                 Arrays.asList(pathObject.nodes),
-                CollectionsExt.toList(pathObject)
+                NodeTests.populate(new ArrayList<>(), pathObject)
         );
     }
 

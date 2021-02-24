@@ -1,14 +1,24 @@
 package com.extollit.gaming.ai.path.model;
 
-import com.extollit.collect.CollectionsExt;
 import com.extollit.gaming.ai.path.node.Node;
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import static org.junit.Assert.*;
 
 public class NodeTests {
+
+    public static <E, C extends Collection<E>> C populate(C target, Iterable<E> source)
+    {
+        for (E item : source)
+            target.add(item);
+        return target;
+    }
+
     private Node root;
 
     @Before
@@ -86,7 +96,7 @@ public class NodeTests {
         subject.appendTo(newNode, 1, 3);
 
         assertTrue(this.root.infecund());
-        assertTrue(CollectionsExt.toList(newNode.children()).contains(subject));
+        assertTrue(populate(new ArrayList<>(), newNode.children()).contains(subject));
     }
 
     @Test

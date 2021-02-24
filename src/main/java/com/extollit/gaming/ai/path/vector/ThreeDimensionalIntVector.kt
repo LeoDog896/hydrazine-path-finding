@@ -1,7 +1,5 @@
 package com.extollit.gaming.ai.path.vector
 
-import com.extollit.linalg.immutable.VertexOffset
-
 /**
  * Represents a position in 3D space, not meant to be per-exact but per voxel in a voxel world.
  */
@@ -18,8 +16,6 @@ class ThreeDimensionalIntVector(
 ) {
 
     constructor(copy: ThreeDimensionalIntVector): this(copy.x, copy.y, copy.z)
-
-    constructor(offset: VertexOffset): this(offset.dx.toInt(), offset.dy.toInt(), offset.dz.toInt())
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
