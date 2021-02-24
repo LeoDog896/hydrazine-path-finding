@@ -1,7 +1,6 @@
 package com.extollit.gaming.ai.path
 
 import com.extollit.gaming.ai.path.model.*
-import java.text.MessageFormat
 
 internal object PassibilityHelpers {
 
@@ -31,8 +30,7 @@ internal object PassibilityHelpers {
     @JvmStatic
     fun passibilityFrom(flags: Byte, capabilities: IPathingEntity.Capabilities?): Passibility {
         if (impassibleDoorway(flags, capabilities)) return Passibility.impassible
-        val kind: Element = Element.of(flags)
-        return when (kind) {
+        return when (Element.of(flags)) {
             Element.earth -> if (Logic.ladder.flagsIn(flags) || passibleDoorway(
                     flags,
                     capabilities
@@ -45,7 +43,6 @@ internal object PassibilityHelpers {
             }
             Element.fire -> if (!capabilities!!.fireResistant()) Passibility.Dangerous else Passibility.Risky
         }
-        throw IllegalArgumentException(MessageFormat.format("Unhandled element type ''{0}''", kind))
     }
 
     fun gravitationFrom(flags: Byte): Gravitation {

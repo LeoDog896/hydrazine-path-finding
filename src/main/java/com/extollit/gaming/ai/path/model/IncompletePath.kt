@@ -1,6 +1,6 @@
 package com.extollit.gaming.ai.path.model
 
-import com.extollit.collect.Option
+import com.extollit.gaming.ai.path.legacy.OneIterator
 
 class IncompletePath(val node: INode) : IPath {
     override fun truncateTo(length: Int): Nothing =
@@ -33,6 +33,7 @@ class IncompletePath(val node: INode) : IPath {
     override fun stagnantFor(subject: IPathingEntity): Float = 0f
 
     override fun update(pathingEntity: IPathingEntity) {}
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
@@ -44,5 +45,5 @@ class IncompletePath(val node: INode) : IPath {
 
     override fun toString(): String = "*" + node.coordinates + "...?"
 
-    override fun iterator(): MutableIterator<INode> = Option.of(node).iterator()
+    override fun iterator(): MutableIterator<INode> = OneIterator(node)
 }

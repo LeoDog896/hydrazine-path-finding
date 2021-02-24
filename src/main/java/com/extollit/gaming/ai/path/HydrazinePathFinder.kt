@@ -683,7 +683,10 @@ class HydrazinePathFinder internal constructor(
         var mutableIterations = iterations
         val currentPath = currentPath
         val queue = queue
-        if (queue.isEmpty) if (currentPath == null) return null else if (!currentPath.done()) return currentPath else resetTriage()
+        if (queue.isEmpty) if (currentPath == null) return null else if (!currentPath.done()) return currentPath
+
+        resetTriage()
+
         if (target == null) return null
         var nextPath: IPath? = null
         var trimmedToSource = trimmedToCurrent
@@ -731,10 +734,12 @@ class HydrazinePathFinder internal constructor(
     private fun processNode(current: Node?) {
         current!!.visited(true)
         val coords = current.coordinates
+
         val west = cachedPassiblePointNear(coords.x - 1, coords.y, coords.z, coords)
         val east = cachedPassiblePointNear(coords.x + 1, coords.y, coords.z, coords)
         val north = cachedPassiblePointNear(coords.x, coords.y, coords.z - 1, coords)
         val south = cachedPassiblePointNear(coords.x, coords.y, coords.z + 1, coords)
+
         val up: Node?
         val down: Node?
         val omnidirectional = pathPointCalculator!!.omnidirectional()
