@@ -1,6 +1,9 @@
 package com.extollit.gaming.ai.path
 
-import com.extollit.gaming.ai.path.model.*
+import com.extollit.gaming.ai.path.model.FlagSampler
+import com.extollit.gaming.ai.path.model.Gravitation
+import com.extollit.gaming.ai.path.model.IInstanceSpace
+import com.extollit.gaming.ai.path.model.Passibility
 import com.extollit.gaming.ai.path.node.INodeCalculator
 import com.extollit.gaming.ai.path.node.Node
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
@@ -17,7 +20,7 @@ internal class FluidicNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNo
         val d: ThreeDimensionalIntVector = if (origin != null) coords0.subOf(origin) else ThreeDimensionalIntVector.ZERO
         val hasOrigin = d != ThreeDimensionalIntVector.ZERO
         var passibility: Passibility? = Passibility.Passible
-        var gravitation: Gravitation? = Gravitation.airborne
+        var gravitation: Gravitation = Gravitation.airborne
         var minY = Int.MIN_VALUE
         var minPartY = 0f
         val r = discreteSize / 2
@@ -30,7 +33,7 @@ internal class FluidicNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNo
                 val flags = flagSampler.flagsAt(x, y0, z)
                 val yb = y0 - 1
                 val flagsBeneath = flagSampler.flagsAt(x, yb, z)
-                gravitation = gravitation!!.between(PassibilityHelpers.gravitationFrom(flags))
+                gravitation = gravitation.between(PassibilityHelpers.gravitationFrom(flags))
                 gravitation = gravitation.between(PassibilityHelpers.gravitationFrom(flagsBeneath))
                 passibility =
                     if (PassibilityHelpers.impedesMovement(flags, capabilities)) return Node(

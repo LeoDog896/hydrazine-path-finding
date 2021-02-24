@@ -4,7 +4,6 @@ import com.extollit.gaming.ai.path.model.Gravitation
 import com.extollit.gaming.ai.path.model.Passibility
 import com.extollit.gaming.ai.path.model.shl
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
-import java.text.MessageFormat
 import kotlin.experimental.inv
 import kotlin.experimental.or
 import kotlin.math.sqrt
@@ -97,7 +96,7 @@ class Node {
      */
     fun gravitation(): Gravitation = Gravitation.values()[word shr Gravitation_BitOffs.toInt() and Mask_Gravitation.toInt()]
 
-    fun gravitation(gravitation: Gravitation?) {
+    fun gravitation(gravitation: Gravitation) {
         word =
             word and (Mask_Gravitation shl Gravitation_BitOffs).toInt().inv() or (gravitation!!.ordinal shl Gravitation_BitOffs.toInt())
     }
@@ -177,6 +176,9 @@ class Node {
      */
     fun orphaned(): Boolean = parent == null
 
+    /**
+     * Makes this node an orphan (removes parent and sets parent's children to not include this node)
+     */
     fun orphan() {
         if (parent != null) parent!!.removeChild(this)
         parent = null
@@ -253,13 +255,7 @@ class Node {
         }
         var length = "${length()}"
         if (dirty()) length += '*'
-        return "$sb" + MessageFormat.format(
-            " ({0}) : length={1}, remaining={2}, journey={3}",
-            passibility(),
-            length,
-            remaining(),
-            journey()
-        )
+        return "$sb (${passibility()}) : length=$length, remaining=${remaining()}, journey=${journey()}"
     }
 
     override fun equals(other: Any?): Boolean {
