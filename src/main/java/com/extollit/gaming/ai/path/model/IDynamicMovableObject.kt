@@ -22,7 +22,7 @@ interface IDynamicMovableObject {
      *
      * @return a three-dimensional double floating-point vector of the entity's position.
      */
-    fun coordinates(): ThreeDimensionalDoubleVector?
+    fun coordinates(): ThreeDimensionalDoubleVector
 
     /**
      * The width and depth of the entity along the x and z axes measured in blocks.

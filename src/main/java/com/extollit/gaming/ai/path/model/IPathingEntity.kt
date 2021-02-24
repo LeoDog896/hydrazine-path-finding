@@ -35,7 +35,7 @@ interface IPathingEntity : IDynamicMovableObject {
      *
      * @return the pathing capabilities of this entity
      */
-    fun capabilities(): Capabilities?
+    fun capabilities(): Capabilities
 
     /**
      * Given a valid path, this is called by the path-finding engine to tell this entity to move in a continuous line from

@@ -8,7 +8,6 @@ infix fun Float.range(max: Float): FloatingRange = FloatingRange(this, max)
 /**
  * Type specific ranges for floats.
  */
-// TODO use Kotlin's float range.
 class FloatingRange(
     /** The minimum number this range goes to. */
     val min: Float,

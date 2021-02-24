@@ -19,8 +19,10 @@ open class PathObject @JvmOverloads protected constructor(
     val random: Random = Random(),
     @JvmField vararg val nodes: Node
 ) : IPath {
+
     @JvmField
     var index: Int = 0
+    
     private var taxiUntil = 0
     private var adjacentIndex = 0
     private var length: Int = nodes.size
@@ -38,7 +40,7 @@ open class PathObject @JvmOverloads protected constructor(
         length = nodes.size
     }
 
-    override fun iterator(): MutableIterator<Node> = ArrayIterable.Iter<Node>(nodes, length)
+    override fun iterator(): MutableIterator<Node> = ArrayIterable.Iter(nodes, length)
 
     override fun length(): Int = length
 
@@ -58,23 +60,28 @@ open class PathObject @JvmOverloads protected constructor(
 
     override fun update(pathingEntity: IPathingEntity) {
         var mutated = false
+
         try {
             if (done()) return
-            val unlevelIndex: Int
-            val capabilities = pathingEntity.capabilities()
-            val grounded = !(capabilities!!.avian() || capabilities.aquatic() && capabilities.swimmer())
-            val fy: Float
-            if (grounded) {
-                unlevelIndex = unlevelIndex(index, pathingEntity.coordinates())
-                fy = 0f
-            } else {
-                unlevelIndex = length
-                fy = 1f
+
+            // Grounded if this cant fly or swim.
+            val grounded = with(pathingEntity) {
+                !(capabilities().avian() || capabilities().aquatic() && capabilities().swimmer())
             }
+
+            val unlevelIndex: Int =
+                if (grounded) unlevelIndex(index, pathingEntity.coordinates())
+                else length
+
+            val fy: Float =
+                if (grounded) 0f
+                else 1f
+
             val adjacentIndex0 = adjacentIndex
             val minDistanceSquared = updateNearestAdjacentIndex(pathingEntity, unlevelIndex, fy)
             val adjacentIndex = adjacentIndex
             var targetIndex = index
+
             if (minDistanceSquared <= PATHPOINT_SNAP_MARGIN_SQ) {
                 var advanceTargetIndex: Int? = null
                 targetIndex = adjacentIndex
@@ -140,7 +147,7 @@ open class PathObject @JvmOverloads protected constructor(
     }
 
     private fun moveSubjectTo(subject: IPathingEntity, pathPoint: Node) {
-        val d = ThreeDimensionalDoubleVector(subject.coordinates()!!)
+        val d = ThreeDimensionalDoubleVector(subject.coordinates())
         val position = positionFor(subject, pathPoint.coordinates)
         d.subtract(position)
         if (d.mg2() > PATHPOINT_SNAP_MARGIN_SQ) subject.moveTo(
@@ -268,13 +275,12 @@ open class PathObject @JvmOverloads protected constructor(
         return --i
     }
 
-    private fun unlevelIndex(from: Int, position: ThreeDimensionalDoubleVector?): Int {
-        val y0 = floor(position!!.y).toInt()
-        val nodes = nodes
+    private fun unlevelIndex(from: Int, position: ThreeDimensionalDoubleVector): Int {
+        val flooredYPosition = floor(position.y).toInt()
         var levelIndex = length()
         for (i in from until length()) {
             val node = nodes[i]
-            if (node.coordinates.y - y0 != 0) {
+            if (node.coordinates.y - flooredYPosition != 0) {
                 levelIndex = i
                 break
             }
@@ -324,7 +330,7 @@ open class PathObject @JvmOverloads protected constructor(
         val nodes = nodes
         val lastPointVisited = formerPath.current()
         val coordinates = pathingEntity.coordinates()
-        val x = coordinates!!.x
+        val x = coordinates.x
         val y = coordinates.y
         val z = coordinates.z
         var minSquareDistFromSource = Double.MAX_VALUE
