@@ -120,8 +120,8 @@ class PathObject @JvmOverloads protected constructor(
             while (i < it.length && i < end) {
                 val node = it.nodes[i]
                 val pp = node.coordinates
-                d.sub(pp)
-                d.sub(offset.toDouble(), 0.0, offset.toDouble())
+                d.subtract(pp)
+                d.subtract(offset.toDouble(), 0.0, offset.toDouble())
                 d.y *= fy.toDouble()
                 val distanceSquared = d.mg2()
                 if (distanceSquared < minDistanceSquared) {
@@ -141,7 +141,7 @@ class PathObject @JvmOverloads protected constructor(
     private fun moveSubjectTo(subject: IPathingEntity, pathPoint: INode) {
         val d = ThreeDimensionalDoubleVector(subject.coordinates()!!)
         val position = positionFor(subject, pathPoint.coordinates)
-        d.sub(position)
+        d.subtract(position)
         if (d.mg2() > PATHPOINT_SNAP_MARGIN_SQ) subject.moveTo(
             position,
             pathPoint.passibility(),

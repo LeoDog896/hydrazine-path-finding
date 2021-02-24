@@ -3,8 +3,7 @@ package com.extollit.gaming.ai.path.vector
 import kotlin.math.max
 import kotlin.math.min
 
-// TODO isn't this the same as ThreeDimensionalIntAxisAlignedBox?
-class ThreeDimensionalAxisAlignedBoundaryBox {
+class ThreeDimensionalDoubleBox {
     val min: ThreeDimensionalDoubleVector
     val max: ThreeDimensionalDoubleVector
 
@@ -39,7 +38,7 @@ class ThreeDimensionalAxisAlignedBoundaryBox {
         }
     }
 
-    constructor(mutable: ThreeDimensionalAxisAlignedBoundaryBox) {
+    constructor(mutable: ThreeDimensionalDoubleBox) {
         min = ThreeDimensionalDoubleVector(mutable.min)
         max = ThreeDimensionalDoubleVector(mutable.max)
     }
@@ -47,7 +46,7 @@ class ThreeDimensionalAxisAlignedBoundaryBox {
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
-        val that = o as ThreeDimensionalAxisAlignedBoundaryBox
+        val that = o as ThreeDimensionalDoubleBox
         return if (min != that.min) false else max == that.max
     }
 
@@ -72,7 +71,7 @@ class ThreeDimensionalAxisAlignedBoundaryBox {
         )
     }
 
-    fun mg2(other: ThreeDimensionalAxisAlignedBoundaryBox): Double {
+    fun mg2(other: ThreeDimensionalDoubleBox): Double {
         val left0 = min
         val right0 = other.min
         val leftN = max

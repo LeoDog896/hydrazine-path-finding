@@ -1,7 +1,7 @@
 package com.extollit.gaming.ai.path.model
 
 import com.extollit.gaming.ai.path.vector.SparseThreeDimensionalSpatialMap
-import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntAxisAlignedBox
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalIIntBox
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 
 class NodeMap(
@@ -9,7 +9,7 @@ class NodeMap(
     private var calculator: INodeCalculator?,
     private val occlusionProviderFactory: IOcclusionProviderFactory
 ) {
-    private val internalMap = SparseThreeDimensionalSpatialMap<Node?>(3)
+    private val internalMap = SparseThreeDimensionalSpatialMap<Node>(3)
     private var filter: IGraphNodeFilter? = null
     private var occlusionProvider: IOcclusionProvider? = null
     private var centerX0 = 0
@@ -94,7 +94,7 @@ class NodeMap(
 
     fun cullOutside(x0: Int, z0: Int, xN: Int, zN: Int) {
         for (p in internalMap.cullOutside(
-            ThreeDimensionalIntAxisAlignedBox(
+            ThreeDimensionalIIntBox(
                 x0,
                 Int.MIN_VALUE,
                 z0,

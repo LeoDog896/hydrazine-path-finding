@@ -6,14 +6,14 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class ThreeDimensionalIntAxisAlignedBox(@JvmField val min: ThreeDimensionalIntVector, @JvmField val max: ThreeDimensionalIntVector) :
+class ThreeDimensionalIIntBox(@JvmField val min: ThreeDimensionalIntVector, @JvmField val max: ThreeDimensionalIntVector) :
     AbstractSpatialRegion(), ISpatialRegion {
     constructor(x0: Int, y0: Int, z0: Int, xN: Int, yN: Int, zN: Int) : this(ThreeDimensionalIntVector(x0, y0, z0), ThreeDimensionalIntVector(xN, yN, zN))
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other as ThreeDimensionalIntAxisAlignedBox
+        val that = other as ThreeDimensionalIIntBox
         return if (min != that.min) false else max == that.max
     }
 
@@ -47,17 +47,17 @@ class ThreeDimensionalIntAxisAlignedBox(@JvmField val min: ThreeDimensionalIntVe
     override fun contains(x: Double, y: Double, z: Double): Boolean =
         x >= min.x && x <= max.x && y >= min.y && y <= max.y && z >= min.z && z <= max.z
 
-    operator fun contains(other: ThreeDimensionalIntAxisAlignedBox): Boolean =
+    operator fun contains(other: ThreeDimensionalIIntBox): Boolean =
         contains(other.min.x, other.min.y, other.min.z) && contains(other.max.x, other.max.y, other.max.z)
 
-    fun intersects(other: ThreeDimensionalIntAxisAlignedBox): Boolean {
+    fun intersects(other: ThreeDimensionalIIntBox): Boolean {
         return lineDeltaFactor(min.x, max.x, other.min.x, other.max.x) or
                 lineDeltaFactor(min.y, max.y, other.min.y, other.max.y) or
                 lineDeltaFactor(min.z, max.z, other.min.z, other.max.z) == 0
     }
 
-    fun intersection(other: ThreeDimensionalIntAxisAlignedBox): ThreeDimensionalIntAxisAlignedBox {
-        return ThreeDimensionalIntAxisAlignedBox(
+    fun intersection(other: ThreeDimensionalIIntBox): ThreeDimensionalIIntBox {
+        return ThreeDimensionalIIntBox(
             max(min.x, other.min.x),
             max(min.y, other.min.y),
             max(min.z, other.min.z),
@@ -75,8 +75,8 @@ class ThreeDimensionalIntAxisAlignedBox(@JvmField val min: ThreeDimensionalIntVe
         )
     }
 
-    fun union(other: ThreeDimensionalIntAxisAlignedBox): ThreeDimensionalIntAxisAlignedBox {
-        return ThreeDimensionalIntAxisAlignedBox(
+    fun union(other: ThreeDimensionalIIntBox): ThreeDimensionalIIntBox {
+        return ThreeDimensionalIIntBox(
             min.x.coerceAtMost(other.min.x),
             min.y.coerceAtMost(other.min.y),
             min.z.coerceAtMost(other.min.z),
@@ -86,8 +86,8 @@ class ThreeDimensionalIntAxisAlignedBox(@JvmField val min: ThreeDimensionalIntVe
         )
     }
 
-    fun union(x: Int, y: Int, z: Int): ThreeDimensionalIntAxisAlignedBox {
-        return ThreeDimensionalIntAxisAlignedBox(
+    fun union(x: Int, y: Int, z: Int): ThreeDimensionalIIntBox {
+        return ThreeDimensionalIIntBox(
             min.x.coerceAtMost(x),
             min.y.coerceAtMost(y),
             min.z.coerceAtMost(z),

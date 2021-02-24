@@ -3,7 +3,7 @@ package com.extollit.gaming.ai.path
 import com.extollit.gaming.ai.path.model.*
 import com.extollit.gaming.ai.path.num.FloatingRange
 import com.extollit.gaming.ai.path.num.range
-import com.extollit.gaming.ai.path.vector.ThreeDimensionalAxisAlignedBoundaryBox
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleBox
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
 import java.util.*
@@ -32,6 +32,7 @@ class HydrazinePathFinder internal constructor(
     @JvmField
     val queue: SortedNodeQueue = SortedNodeQueue()
     val nodeMap: NodeMap = NodeMap(instanceSpace, occlusionProviderFactory)
+
     private val unreachableFromSource: MutableSet<ThreeDimensionalIntVector> = HashSet(3)
     private var sourcePosition: ThreeDimensionalDoubleVector? = null
     private var destinationPosition: ThreeDimensionalDoubleVector? = null
@@ -39,16 +40,32 @@ class HydrazinePathFinder internal constructor(
     private var pathPointCalculator: INodeCalculator? = null
     private var pathProcessor: IPathProcessor? = null
     private var currentPath: IPath? = null
+
+    // Capabilities
+
+    /**
+     * All capabilities of this mob.
+     *
+     * @see applySubject If you want to refresh [flying] and [aqua]
+     */
     private var capabilities: IPathingEntity.Capabilities? = null
+    /** If this mob can fly in the air freely*/
     private var flying = false
+    /** If this mob can swim, no drowning.*/
     private var aqua = false
+
+    // Node context
     private var pathPointCalculatorChanged = false
     private var trimmedToCurrent = false
     private var bestEffort = false
+
+    // Node-based pathfinding
     private var current: Node? = null
     private var source: Node? = null
     private var target: Node? = null
     private var closest: Node? = null
+
+    // TODO figure out what this is
     private var initComputeIterations = 0
     private var periodicComputeIterations = 0
     private var faultCount = 0
@@ -243,7 +260,7 @@ class HydrazinePathFinder internal constructor(
             destinationPosition ?: return null
 
             val dd = ThreeDimensionalDoubleVector(destinationPosition!!)
-            dd.sub(last.coordinates)
+            dd.subtract(last.coordinates)
             if (dd.mg2() < 1) null else IncompletePath(last)
         } else null
     }
@@ -311,8 +328,8 @@ class HydrazinePathFinder internal constructor(
         dd.y = ceil(dd.y)
         dd.z = floor(dd.z)
         val source = source!!.coordinates
-        dt.sub(source)
-        dd.sub(source)
+        dt.subtract(source)
+        dd.subtract(source)
         if (dt.mg2() > dd.mg2()) return true
         dt.normalized()
         dd.normalized()
@@ -387,9 +404,9 @@ class HydrazinePathFinder internal constructor(
         subject.coordinates() ?: return false
 
         val c = ThreeDimensionalDoubleVector(subject.coordinates()!!)
-        c.sub(sourcePoint)
+        c.subtract(sourcePoint)
         val delta = ThreeDimensionalDoubleVector(c)
-        c.sub(bounds.center().x, bounds.center().y, bounds.center().z)
+        c.subtract(bounds.center().x, bounds.center().y, bounds.center().z)
         var mutated = false
         if (delta.z >= bounds.min.z && delta.z <= bounds.max.z) {
             val x = sourcePoint.x + if (c.x < 0) +1 else -1
@@ -449,9 +466,9 @@ class HydrazinePathFinder internal constructor(
                     val v = ThreeDimensionalDoubleVector(destinationPosition)
                     val init = ThreeDimensionalDoubleVector(source.coordinates)
                     distance--
-                    v.sub(init)
+                    v.subtract(init)
                     v.normalized()
-                    v.mul(distance.toDouble())
+                    v.multiply(distance.toDouble())
                     v.add(init)
                     target = edgeAtTarget(v.x, v.y, v.z)
                 }
@@ -537,7 +554,7 @@ class HydrazinePathFinder internal constructor(
             node = nodeMap.cachedPassiblePointNear(nx, ny, nz)
             if (impassible(node)) return null
             val dl = ThreeDimensionalDoubleVector(node.coordinates)
-            destinationPosition?.let(dl::sub)
+            destinationPosition?.let(dl::subtract)
             if (dl.mg2() > 1) return null
         }
         return node
@@ -787,11 +804,11 @@ class HydrazinePathFinder internal constructor(
         }
     }
 
-    private fun blockBounds(coords: ThreeDimensionalIntVector?, dx: Int, dy: Int, dz: Int): ThreeDimensionalAxisAlignedBoundaryBox? {
+    private fun blockBounds(coords: ThreeDimensionalIntVector?, dx: Int, dy: Int, dz: Int): ThreeDimensionalDoubleBox? {
         val x = coords!!.x + dx
         val y = coords.y + dy
         val z = coords.z + dz
-        val bounds: ThreeDimensionalAxisAlignedBoundaryBox
+        val bounds: ThreeDimensionalDoubleBox
         val flags = nodeMap.flagsAt(x, y, z)
         bounds = when {
             fuzzyPassibility(flags) -> {
@@ -805,7 +822,7 @@ class HydrazinePathFinder internal constructor(
             ) -> FULL_BOUNDS
             else -> return null
         }
-        val result = ThreeDimensionalAxisAlignedBoundaryBox(bounds)
+        val result = ThreeDimensionalDoubleBox(bounds)
         result.add(dx.toDouble(), dy.toDouble(), dz.toDouble())
         return result
     }
@@ -876,7 +893,7 @@ class HydrazinePathFinder internal constructor(
     }
 
     companion object {
-        private val FULL_BOUNDS = ThreeDimensionalAxisAlignedBoundaryBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+        private val FULL_BOUNDS = ThreeDimensionalDoubleBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
         private var DOT_THRESHOLD = 0.6
         private var PROBATIONARY_TIME_LIMIT: FloatingRange? = 36f range 64f
         private var PASSIBLE_POINT_TIME_LIMIT: FloatingRange? = 24f range 48f

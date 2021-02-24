@@ -43,9 +43,9 @@ public abstract class AbstractAreaInitOcclusionFieldTesting extends AbstractOccl
             when(columnarSpace.toString()).thenReturn("Chunk to the " + area.name());
             when(columnarSpace.occlusionFields()).thenReturn(fieldList);
 
-            fieldList.occlusionFieldAt(area.offset.dx, area.offset.dy + cy0, area.offset.dz);
+            fieldList.occlusionFieldAt(area.offset.deltaX, area.offset.deltaY + cy0, area.offset.deltaZ);
 
-            when(instanceSpace.columnarSpaceAt(area.offset.dx, area.offset.dz)).thenReturn(columnarSpace);
+            when(instanceSpace.columnarSpaceAt(area.offset.deltaX, area.offset.deltaZ)).thenReturn(columnarSpace);
         }
         when(centerSpace.blockAt(anyInt(), anyInt(), anyInt())).thenReturn(air);
         when(centerSpace.toString()).thenReturn("Center space");
@@ -67,7 +67,7 @@ public abstract class AbstractAreaInitOcclusionFieldTesting extends AbstractOccl
     }
 
     protected final OcclusionField field(final OcclusionField.AreaInit area) {
-        return occlusionFieldList(area).occlusionFieldAt(area.offset.dx, area.offset.dy, area.offset.dz);
+        return occlusionFieldList(area).occlusionFieldAt(area.offset.deltaX, area.offset.deltaY, area.offset.deltaZ);
     }
 
     private ColumnarOcclusionFieldList occlusionFieldList(OcclusionField.AreaInit area) {

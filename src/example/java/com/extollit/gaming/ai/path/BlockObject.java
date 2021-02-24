@@ -1,14 +1,14 @@
 package com.extollit.gaming.ai.path;
 
 import com.extollit.gaming.ai.path.model.IBlockObject;
-import com.extollit.gaming.ai.path.vector.ThreeDimensionalAxisAlignedBoundaryBox;
+import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleBox;
 
 public class BlockObject implements IBlockObject {
-    public ThreeDimensionalAxisAlignedBoundaryBox bounds;
+    public ThreeDimensionalDoubleBox bounds;
     public boolean fenceLike, climbable, door, impeding, fullyBounded, liquid, incinerating;
 
     @Override
-    public ThreeDimensionalAxisAlignedBoundaryBox bounds() {
+    public ThreeDimensionalDoubleBox bounds() {
         return this.bounds;
     }
 

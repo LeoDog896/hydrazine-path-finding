@@ -198,7 +198,7 @@ public class SparseThreeDimensionalSpatialMap<T> implements Map<ThreeDimensional
         this.key0 = null;
     }
 
-    public Iterable<T> cullOutside(ThreeDimensionalIntAxisAlignedBox bounds) {
+    public Iterable<T> cullOutside(ThreeDimensionalIIntBox bounds) {
         final LesserCoarseKey
                 min = lesserKey(bounds.min),
                 max = lesserKey(bounds.max);

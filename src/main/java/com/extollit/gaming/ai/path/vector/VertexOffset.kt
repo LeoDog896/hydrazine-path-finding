@@ -1,6 +1,5 @@
 package com.extollit.gaming.ai.path.vector
 
-import java.text.MessageFormat
 import kotlin.experimental.and
 import kotlin.experimental.or
 import kotlin.experimental.xor
@@ -8,11 +7,11 @@ import kotlin.experimental.xor
 // TODO figure out what this is for!
 class VertexOffset @JvmOverloads constructor(
     @JvmField
-    val dx: Byte = 1,
+    val deltaX: Byte = 1,
     @JvmField
-    val dy: Byte = 0,
+    val deltaY: Byte = 0,
     @JvmField
-    val dz: Byte = 0
+    val deltaZ: Byte = 0
 ) {
 
     constructor(dx: Int, dy: Int, dz: Int):
@@ -21,64 +20,64 @@ class VertexOffset @JvmOverloads constructor(
 
     fun mask(): VertexOffset {
         return VertexOffset(
-            ((dx and 1) - 1).inv().inv(),
-            ((dy and 1) - 1).inv().inv(),
-            ((dz and 1) - 1).inv().inv()
+            ((deltaX and 1) - 1).inv().inv(),
+            ((deltaY and 1) - 1).inv().inv(),
+            ((deltaZ and 1) - 1).inv().inv()
         )
     }
 
     fun pcross(other: VertexOffset): VertexOffset {
-        val dx = dy * other.dz - dz * other.dy
-        val dy = dz * other.dx - this.dx * other.dz
-        val dz = this.dx * other.dy - this.dy * other.dx
+        val dx = deltaY * other.deltaZ - deltaZ * other.deltaY
+        val dy = deltaZ * other.deltaX - deltaX * other.deltaZ
+        val dz = deltaX * other.deltaY - deltaY * other.deltaX
         return VertexOffset(dx, dy, dz)
     }
 
     fun orthog(): VertexOffset {
         return VertexOffset(
-            dy xor dz,
-            dx xor dz,
-            dy xor dx
+            deltaY xor deltaZ,
+            deltaX xor deltaZ,
+            deltaY xor deltaX
         )
     }
 
-    fun sq(): VertexOffset = VertexOffset(dx * dx, dy * dy, dz * dz)
+    fun sq(): VertexOffset = VertexOffset(deltaX * deltaX, deltaY * deltaY, deltaZ * deltaZ)
 
     fun mul(offset: VertexOffset): VertexOffset {
         return VertexOffset(
-            dx * offset.dx,
-            dy * offset.dy,
-            dz * offset.dz
+            deltaX * offset.deltaX,
+            deltaY * offset.deltaY,
+            deltaZ * offset.deltaZ
         )
     }
 
     fun sub(offset: VertexOffset): VertexOffset {
         return VertexOffset(
-            dx - offset.dx,
-            dy - offset.dy,
-            dz - offset.dz
+            deltaX - offset.deltaX,
+            deltaY - offset.deltaY,
+            deltaZ - offset.deltaZ
         )
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as VertexOffset
-        return dx xor that.dx or (dy xor that.dy) or (dz xor that.dz) == 0.toByte()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as VertexOffset
+        return deltaX xor that.deltaX or (deltaY xor that.deltaY) or (deltaZ xor that.deltaZ) == 0.toByte()
     }
 
     override fun hashCode(): Int {
-        var result: Int = dx.toInt()
-        result = 31 * result + dy
-        result = 31 * result + dz
+        var result: Int = deltaX.toInt()
+        result = 31 * result + deltaY
+        result = 31 * result + deltaZ
         return result
     }
 
-    override fun toString(): String = MessageFormat.format("< {0}, {1}, {2} >", dx, dy, dz)
+    override fun toString(): String = "< $deltaX, $deltaY, $deltaZ >"
 
     init {
-        assert(dx >= -1 && dx <= 1)
-        assert(dy >= -1 && dy <= 1)
-        assert(dz >= -1 && dz <= 1)
+        assert(deltaX >= -1 && deltaX <= 1)
+        assert(deltaY >= -1 && deltaY <= 1)
+        assert(deltaZ >= -1 && deltaZ <= 1)
     }
 }

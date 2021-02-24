@@ -3,35 +3,24 @@ package com.extollit.gaming.ai.path.vector
 import java.text.MessageFormat
 import kotlin.math.sqrt
 
-
-class ThreeDimensionalDoubleVector {
-    var x: Double
-    var y: Double
+/**
+ * Represents a more specific point in 3D space.
+ * Not per voxel unit unlike ThreeDimensionalIntVector
+ */
+class ThreeDimensionalDoubleVector(
+    /** Represents the X position in 3d space. */
+    var x: Double,
+    /** Represents the Y position in 3d space. */
+    var y: Double,
+    /** Represents the Z position in 3d space. */
     var z: Double
+) {
 
-    constructor(copy: ThreeDimensionalDoubleVector) {
-        x = copy.x
-        y = copy.y
-        z = copy.z
-    }
+    constructor(copy: ThreeDimensionalDoubleVector) : this(copy.x, copy.y, copy.z)
 
-    constructor(x: Double, y: Double, z: Double) {
-        this.x = x
-        this.y = y
-        this.z = z
-    }
+    constructor(offset: VertexOffset): this(offset.deltaX.toDouble(), offset.deltaY.toDouble(), offset.deltaZ.toDouble())
 
-    constructor(offset: VertexOffset) {
-        x = offset.dx.toDouble()
-        y = offset.dy.toDouble()
-        z = offset.dz.toDouble()
-    }
-
-    constructor(copy: ThreeDimensionalIntVector) {
-        x = copy.x.toDouble()
-        y = copy.y.toDouble()
-        z = copy.z.toDouble()
-    }
+    constructor(copy: ThreeDimensionalIntVector): this(copy.x.toDouble(), copy.y.toDouble(), copy.z.toDouble())
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -54,6 +43,12 @@ class ThreeDimensionalDoubleVector {
 
     fun proj(other: ThreeDimensionalDoubleVector): ThreeDimensionalDoubleVector = mulOf(dot(other) / mg2())
 
+    /**
+     * Multiplies coordinates by itself and adds the sum of all of them
+     * EX if the position is (2, 2, 2) the result would be 2^2 + 2^2 + 2^2 or 4 + 4 + 4 = 12
+     *
+     * @return The sum of the power of coordinates combined.
+     */
     fun mg2(): Double = x * x + y * y + z * z
 
     fun subOf(other: ThreeDimensionalDoubleVector): ThreeDimensionalDoubleVector {
@@ -101,29 +96,29 @@ class ThreeDimensionalDoubleVector {
         )
     }
 
-    fun mul(amount: Double) {
-        mul(amount, amount, amount)
+    fun multiply(amount: Double) {
+        multiply(amount, amount, amount)
     }
 
-    fun mul(x: Double, y: Double, z: Double) {
+    fun multiply(x: Double, y: Double, z: Double) {
         this.x *= x
         this.y *= y
         this.z *= z
     }
 
-    fun sub(x: Double, y: Double, z: Double) {
+    fun subtract(x: Double, y: Double, z: Double) {
         this.x -= x
         this.y -= y
         this.z -= z
     }
 
-    fun sub(vector: ThreeDimensionalDoubleVector) {
+    fun subtract(vector: ThreeDimensionalDoubleVector) {
         x -= vector.x
         y -= vector.y
         z -= vector.z
     }
 
-    fun sub(vector: ThreeDimensionalIntVector) {
+    fun subtract(vector: ThreeDimensionalIntVector) {
         x -= vector.x
         y -= vector.y
         z -= vector.z
@@ -141,7 +136,7 @@ class ThreeDimensionalDoubleVector {
         this.z += z
     }
 
-    fun mulOf(other: ThreeDimensionalIntVector): ThreeDimensionalDoubleVector {
+    operator fun times(other: ThreeDimensionalIntVector): ThreeDimensionalDoubleVector {
         return ThreeDimensionalDoubleVector(
             x * other.x.toDouble(),
             y * other.y.toDouble(),
@@ -171,6 +166,13 @@ class ThreeDimensionalDoubleVector {
     fun contains(x: Int, y: Int, z: Int): Boolean =
         this.x == x.toDouble() && this.y == y.toDouble() && this.z == z.toDouble()
 
-    operator fun contains(coordinates: ThreeDimensionalIntVector): Boolean =
+    /**
+     * Check if this [ThreeDimensionalDoubleVector] is the same as another [ThreeDimensionalDoubleVector]
+     *
+     * @param coordinates The coordinates to crosscheck over this one
+     *
+     * @return If [coordinates] has the same x, y, and z as this [ThreeDimensionalDoubleVector]
+     */
+    fun sameAs(coordinates: ThreeDimensionalIntVector): Boolean =
         contains(coordinates.x, coordinates.y, coordinates.z)
 }
