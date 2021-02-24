@@ -1,7 +1,6 @@
 package com.extollit.gaming.ai.path.vector
 
 import com.extollit.linalg.immutable.VertexOffset
-import java.text.MessageFormat
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -40,7 +39,7 @@ class ThreeDimensionalIntVector(
     }
 
     override fun toString(): String =
-        MessageFormat.format("<{0,number,#}, {1,number,#}, {2,number,#}>", x, y, z)
+        "<{0,$x,#}, {1,$y,#}, {2,$z,#}>"
 
     fun plusOf(other: VertexOffset): ThreeDimensionalIntVector {
         return ThreeDimensionalIntVector(

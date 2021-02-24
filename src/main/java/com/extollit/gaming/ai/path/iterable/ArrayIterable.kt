@@ -1,7 +1,5 @@
 package com.extollit.gaming.ai.path.iterable
 
-import java.text.MessageFormat
-
 class ArrayIterable<out T>(val delegate: Array<out T>) : Iterable<T> {
     override operator fun iterator(): Iterator<T> = Iter(delegate)
 
@@ -32,11 +30,7 @@ class ArrayIterable<out T>(val delegate: Array<out T>) : Iterable<T> {
 
         init {
             if (length > array.size || length < 0) throw ArrayIndexOutOfBoundsException(
-                MessageFormat.format(
-                    "Iteration limit is not within bounds! 0 <= len < {0} but len = {1}",
-                    array.size,
-                    length
-                )
+                "Iteration limit is not within bounds! 0 <= len < ${array.size} but len = $length"
             )
         }
     }

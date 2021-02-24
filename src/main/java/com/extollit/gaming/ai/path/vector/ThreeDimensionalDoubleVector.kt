@@ -1,6 +1,5 @@
 package com.extollit.gaming.ai.path.vector
 
-import java.text.MessageFormat
 import kotlin.math.sqrt
 
 /**
@@ -39,7 +38,7 @@ class ThreeDimensionalDoubleVector(
         return result
     }
 
-    override fun toString(): String = MessageFormat.format("<{0,number,#.#}, {1,number,#.#}, {2,number,#.#}>", x, y, z)
+    override fun toString(): String = "<$x, $y, $z>"
 
     fun proj(other: ThreeDimensionalDoubleVector): ThreeDimensionalDoubleVector = mulOf(dot(other) / mg2())
 

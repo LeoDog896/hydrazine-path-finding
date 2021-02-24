@@ -8,7 +8,6 @@ import com.extollit.gaming.ai.path.num.FloatingRange
 import com.extollit.gaming.ai.path.num.range
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalDoubleVector
 import com.extollit.gaming.ai.path.vector.ThreeDimensionalIntVector
-import java.text.MessageFormat
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -30,7 +29,7 @@ class PathObject @JvmOverloads protected constructor(
 
     override fun truncateTo(length: Int) {
         if (length < 0 || length >= nodes.size) throw ArrayIndexOutOfBoundsException(
-            MessageFormat.format("Length is out of bounds 0 <= length < {0} but length = {1}", nodes.size, length)
+            "Length is out of bounds 0 <= length < ${nodes.size} but length = $length"
         )
         this.length = length
     }

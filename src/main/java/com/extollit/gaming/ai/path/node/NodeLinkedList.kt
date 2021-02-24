@@ -74,7 +74,7 @@ class NodeLinkedList(
     fun add(child: Node): Boolean {
 
         // Initialize this loop with [this], an element that may or may not have a next element.
-        var element: NodeLinkedList? = this
+        var element: NodeLinkedList = this
         var last: NodeLinkedList?
 
         do {
@@ -83,7 +83,7 @@ class NodeLinkedList(
 
             // Else, move to the next element.
             last = element
-        } while (element?.next.also { element = it } != null) // Sets [element] to element's [next] [Node], then loop if the next node is not null
+        } while (element.next?.also { element = it } != null) // Sets [element] to element's [next] [Node], then loop if the next node is not null
 
         // If the child ([next]) node is null, that means the last element has no children and its child can be set..
         last?.next = NodeLinkedList(child)
