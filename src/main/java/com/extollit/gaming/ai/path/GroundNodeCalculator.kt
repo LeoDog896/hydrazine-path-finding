@@ -9,20 +9,30 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
 
     // TODO hmmmmmm
     override fun passibleNodeNear(coords0: ThreeDimensionalIntVector, origin: ThreeDimensionalIntVector?, flagSampler: FlagSampler): Node {
+
         val point: Node
         val capabilities = capabilities
+
         val x0 = coords0.x
         val y0 = coords0.y
         val z0 = coords0.z
+
+        // Defines the delta (if there is no [origin] set this to zero)
         val delta: ThreeDimensionalIntVector = if (origin != null) coords0.subOf(origin) else ThreeDimensionalIntVector.ZERO
-        val hasOrigin = delta != ThreeDimensionalIntVector.ZERO
+
+        // Memory storage for if the origin isnt null
+        val hasOrigin = origin != null
+
         val climbsLadders = this.capabilities!!.climber()
+
         var passibility: Passibility = Passibility.Passible
+
         var minY = Int.MIN_VALUE
         var minPartY = 0f
         val r = discreteSize / 2
         var x = x0 - r
         val xN = x0 + discreteSize - r
+
         while (x < xN) {
             var z = z0 - r
             val zN = z0 + discreteSize - r
@@ -60,9 +70,8 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
                     }
                 }
                 partY = topOffsetAt(flagSampler, x, y - 1, z)
-                val ys: Int
                 passibility =
-                    verticalClearanceAt(flagSampler, tall, flags, passibility, delta, x, y.apply { ys = this }, z, partY)
+                    verticalClearanceAt(flagSampler, tall, flags, passibility, delta, x, y, z, partY)
                 var swimable = false
                 let {
                     var condition = !impedesMovement || unstable(flags)
@@ -92,7 +101,7 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
                 partY = topOffsetAt(flags, x, y++, z)
                 passibility = verticalClearanceAt(
                     flagSampler,
-                    ys - y,
+                    0,
                     flagSampler.flagsAt(x, y, z),
                     passibility,
                     delta,
@@ -101,21 +110,27 @@ internal class GroundNodeCalculator(instanceSpace: IInstanceSpace) : AbstractNod
                     z,
                     partY
                 )
+
                 if (y > minY) {
                     minY = y
                     minPartY = partY
-                } else if (y == minY && partY > minPartY) minPartY = partY
+                } else if (y == minY && partY > minPartY)
+                    minPartY = partY
+
                 passibility = passibility.between(
                     PassibilityHelpers.passibilityFrom(
                         flagSampler.flagsAt(x, y, z),
                         capabilities
                     )
                 )
-                if (passibility.impassible(capabilities)) return Node(
-                    coords0,
-                    Passibility.impassible,
-                    flagSampler.volatility > 0
-                )
+
+                if (passibility.impassible(capabilities))
+                    return Node(
+                        coords0,
+                        Passibility.impassible,
+                        flagSampler.volatility > 0
+                    )
+
                 ++z
             }
             ++x

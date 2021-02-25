@@ -723,9 +723,12 @@ open class OcclusionField : IOcclusionProvider {
         private const val WORD_LAST_OFFSET = (ELEMENTS_PER_WORD - 1).toByte()
         private const val COORDINATE_TO_INDEX_SHR: Byte = 4
         private const val DIMENSION_ORDER: Byte = 4
+
+        /** The total size of the occlusion field. EG 16. */
         const val DIMENSION_SIZE: Int = 1 shl DIMENSION_ORDER.toInt()
         const val DIMENSION_MASK: Int = (1 shl DIMENSION_ORDER.toInt()) - 1
         const val DIMENSION_EXTENT: Int = DIMENSION_SIZE - 1
+
         private const val DIMENSION_SQUARE_SIZE = DIMENSION_SIZE * DIMENSION_SIZE
         private const val LAST_INDEX = DIMENSION_SIZE * DIMENSION_SQUARE_SIZE - 1 shr COORDINATE_TO_INDEX_SHR.toInt()
         private const val ELEMENT_MASK = ((1 shl ELEMENT_LENGTH.toInt()) - 1).toLong()
@@ -750,7 +753,7 @@ open class OcclusionField : IOcclusionProvider {
                         }
                         Element.fire -> 'X'
                         Element.water -> '≋'
-                        else -> '?'
+//                        else -> '?'
                     }
                     sb.append(ch)
                 }

@@ -52,6 +52,26 @@ open class ColumnarOcclusionFieldList
      */
     fun onBlockChanged(x: Int, y: Int, z: Int, description: IBlockDescription?, metaData: Int) {
         if (fields == null) return
+        UNSAFE_onBlockChanged(x, y, z, description, metaData)
+    }
+
+    /**
+     * Notifies the occlusion field cache that a block in the containing columnar space has changed (i.e has been added,
+     * removed, changed type, or has had its meta-data changed).  The implementor must call this method whenever this
+     * change occurs in the server, it causes the associated occlusion field data to update accordingly.
+     *
+     * This method's coordinate parameters are exceptional because they are absolute (relative to the instance) rather
+     * than relative (to the parent columnar space).
+     *
+     * Does not check if fields are null.
+     *
+     * @param x absolute (relative to the instance space, not the columnar space) x coordinate of the block that changed
+     * @param y absolute (relative to the instance space, not the columnar space) y coordinate of the block that changed
+     * @param z absolute (relative to the instance space, not the columnar space) z coordinate of the block that changed
+     * @param description description of the new block replacing what existed previously
+     * @param metaData meta-data for the new block replacing what existed previously
+     */
+    fun UNSAFE_onBlockChanged(x: Int, y: Int, z: Int, description: IBlockDescription?, metaData: Int) {
         val field = fields!![y shr 4 and 0xF] ?: return
         field[container, x, y, z] = description
     }
